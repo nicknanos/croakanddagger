@@ -57,17 +57,3 @@ function canvasSetup() {
    camera.y = constrain(cameraSensor.y-30, cameraSensor.y-200, lastY);
    //camera.y = player.y
   }
-
-
-  function updateCameraY(){
-    
-   // //IMPLEMENT AFTER GROUNDSENSOR
-   // if(isOnGround()){
-   //   let difference = activePlayer.y - spawner().y;
-   //   if (difference < 0) {
-   //      //camera.y -= difference/5;
-   //     // camera.moveTo(camera.x, camera.y-=difference/2, 0.1)
-   //   }
-   // }
-    
-  }
