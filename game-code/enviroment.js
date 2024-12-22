@@ -47,13 +47,13 @@ function spawnHex(x, y) {
 
 }
 
-function setEnviroment(tileSet, tileSize, coinColor){
+function setEnviroment(tileSet, tileSize){
 		//current level spawn point
 		spawnPoint = new Group();
 		spawnPoint.layer = 3;
 		spawnPoint.collider = 'static';
-		spawnPoint.w = 3;
-		spawnPoint.h = 3;
+		spawnPoint.w = 1;
+		spawnPoint.h = 1;
 		spawnPoint.tile = 'S';
 		spawnPoint.visible = false;
 
@@ -76,12 +76,12 @@ function setEnviroment(tileSet, tileSize, coinColor){
 		coins.tile = 'c';
 		//coins.overlaps(activePlayer);
 		coins.spriteSheet = coinsImg;
+		coins.anis.offset.y = -2;
 		coins.addAnis({
-			gold: {row: 0, frames: 7, frameSize: [18,18], frameDelay: 8},
-			silver: {row: 1, frames: 7, frameSize: [18,18], frameDelay: 8},
-			bronze: {row: 2, frames: 7, frameSize: [18,18], frameDelay: 8},
+			mountain: {row: 0, frames: 7, frameSize: [18,18], frameDelay: 8},
+			forest: {row: 1, frames: 7, frameSize: [18,18], frameDelay: 8},
+			castle: {row: 2, frames: 7, frameSize: [18,18], frameDelay: 8}
 		})
-		//coins.changeAni(coinColor);
 
 		//ground
 		ground = new Group();
@@ -114,6 +114,7 @@ function setEnviroment(tileSet, tileSize, coinColor){
 			row: 0,
 			col: 3
 		});
+		groundL.isWalkable =true;
 
 		//ground right wall
 		groundR = new Group();
@@ -130,6 +131,7 @@ function setEnviroment(tileSet, tileSize, coinColor){
 			row: 0,
 			col: 4
 		});
+		ground.isWalkable = true;
 
 		//underground
 		underGround = new Group();
@@ -145,6 +147,7 @@ function setEnviroment(tileSet, tileSize, coinColor){
 			row: 0,
 			col: 1
 		});
+		underGround.isWalkable = true;
 
 		//floating platforms
 		platform = new Group();
@@ -160,6 +163,7 @@ function setEnviroment(tileSet, tileSize, coinColor){
 			row: 0,
 			col: 2
 		});
+		platform.isWalkable = true;
 
 		//spikes
 		spikes = new Group();
