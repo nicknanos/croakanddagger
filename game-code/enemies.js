@@ -1,10 +1,7 @@
 // Forest Enemies \\
     //Fly
-function spawnFly(...args){
+function initializeEnemies(){
     fly = new Group();
-    fly.x = () => random(args[0].x, args[args.length-1].x)
-    fly.y = () => random(args[0].y, args[args.length-1].y)
-    fly.amount = args.length
 	fly.w = 20;
 	fly.h = 20;
 	fly.layer = 5;
@@ -21,16 +18,10 @@ function spawnFly(...args){
         dead: { row: 5, frames: 0}
 	});
 
-    for(f of fly){
-	    f.changeAni('move');
-    }
-}
+    for(f of fly) f.changeAni('move');
 
-function spawnLeaf(...args){
+
     leaf = new Group();
-    leaf.x = () => random(args[0].x, args[args.length-1].x)
-    leaf.y = () => random(args[0].y, args[args.length-1].y)
-    leaf.amount = args.length
 	leaf.w = 12;
 	leaf.h = 12;
 	leaf.layer = 5;
@@ -49,9 +40,7 @@ function spawnLeaf(...args){
         dead: { row: 20, frames: 0}
 	});
 
-    for(l of leaf){
-	    l.changeAni('move');
-    }
+    for(l of leaf) l.changeAni('move');
 }
 
 
