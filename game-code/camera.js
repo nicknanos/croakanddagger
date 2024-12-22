@@ -1,5 +1,6 @@
 const backgroundColor = '#1f1f1f'
 let cWidth,cHeight,fScale
+let cameraYOffset = 30;
 
 //Initialize Canvas
 function canvasSetup() {
@@ -20,7 +21,7 @@ function canvasSetup() {
     //camera.x = cameraSensor.x;
     //camera.y = cameraSensor.y -50;
 
-    constrainCamera(player,map);
+    constrainCamera(map);
     cameraSensor.moveTowards(player, 0.07)
     camera.zoom = zoom;
 
@@ -38,15 +39,15 @@ function canvasSetup() {
           if (b.x < -width) b.x = 0;
           }
           //permanent cloud
-          image(cloudImg, cloudX, 0, canvas.w, canvas.h);
-          image(cloudImg, int(cloudX) + width, 0, canvas.w, canvas.h);
-          if (cloudX < -width) cloudX = 0;
-          cloudX -= 0.11;
+          //image(cloudImg, cloudX, 0, canvas.w, canvas.h);
+          //image(cloudImg, int(cloudX) + width, 0, canvas.w, canvas.h);
+          //if (cloudX < -width) cloudX = 0;
+          //cloudX -= 0.11;
     }
   }
 
   //Sets limits for the camera
-  function constrainCamera(player, tileGroup){
+  function constrainCamera(tileGroup){
    //X Axi
    let firstX = spawner().x;                             //x cord of spawner tile
    let lastX = tileGroup[tileGroup.length-1].position.x; //x cord of last tile in map
@@ -54,6 +55,6 @@ function canvasSetup() {
    //Y Axis
    let firstY = tileGroup[0].position.y;                 //y cord of first tile in map
    let lastY = tileGroup[tileGroup.length-1].position.y; //y cord of last tile in map
-   camera.y = constrain(cameraSensor.y-30, cameraSensor.y-200, lastY);
+   camera.y = constrain(cameraSensor.y-cameraYOffset, cameraSensor.y-200, lastY);
    //camera.y = player.y
   }
