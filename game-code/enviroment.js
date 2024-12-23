@@ -92,7 +92,7 @@ function setEnviroment(tileSet, tileSize){
 		ground.h = tileSize;
 		ground.tile = 'g';
 		ground.spriteSheet = tileSet;
-		ground.addImg({
+		ground.addAni({
 			w: tileSize,
 			h: tileSize,
 			row: 0,
@@ -108,7 +108,7 @@ function setEnviroment(tileSet, tileSize){
 		groundL.h = tileSize;
 		groundL.tile = 'l';
 		groundL.spriteSheet = tileSet;
-		groundL.addImg({
+		groundL.addAni({
 			w: tileSize,
 			h: tileSize,
 			row: 0,
@@ -125,7 +125,7 @@ function setEnviroment(tileSet, tileSize){
 		groundR.h = tileSize;
 		groundR.tile = 'r';
 		groundR.spriteSheet = tileSet;
-		groundR.addImg({
+		groundR.addAni({
 			w: tileSize,
 			h: tileSize,
 			row: 0,
@@ -141,7 +141,7 @@ function setEnviroment(tileSet, tileSize){
 		underGround.h = tileSize;
 		underGround.tile = 'b';
 		underGround.spriteSheet = tileSet;
-		underGround.addImg({
+		underGround.addAni({
 			w: tileSize,
 			h: tileSize,
 			row: 0,
@@ -157,7 +157,7 @@ function setEnviroment(tileSet, tileSize){
 		platform.h = tileSize;
 		platform.tile = 'f';
 		platform.spriteSheet = tileSet;
-		platform.addImg({
+		platform.addAni({
 			w: tileSize,
 			h: tileSize,
 			row: 0,
@@ -173,7 +173,7 @@ function setEnviroment(tileSet, tileSize){
 		spikes.h = tileSize;
 		spikes.tile = 'n';
 		spikes.spriteSheet = tileSet;
-		spikes.addImg({
+		spikes.addAni({
 			w: tileSize,
 			h: tileSize,
 			row: 1,
