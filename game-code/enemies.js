@@ -1,9 +1,12 @@
 // Forest Enemies \\
     //Fly
 function initializeEnemies(){
-    fly = new Group();
+	enemies = new Group();
+
+    fly = new enemies.Group();
 	fly.w = 20;
 	fly.h = 20;
+	fly.collider = 'none'
 	fly.layer = 5;
 	fly.rotationLock = 'true';
 	fly.spriteSheet = flyImg;
@@ -21,7 +24,7 @@ function initializeEnemies(){
     for(f of fly) f.changeAni('move');
 
 
-    leaf = new Group();
+    leaf = new enemies.Group();
 	leaf.w = 12;
 	leaf.h = 12;
 	leaf.layer = 5;
@@ -43,12 +46,11 @@ function initializeEnemies(){
     for(l of leaf) l.changeAni('move');
 }
 
-
 function enemyProximity(enemy, speed) {
 	for(e of enemy){
 		if ((abs(activePlayer.x - e.x))<100 && (abs(activePlayer.y - e.y))<100){
 			if((activePlayer.x - e.x)<0) e.mirror.x = true; else e.mirror.x = false;
-			e.moveTowards(activePlayer,e.y, speed)
+			e.moveTowards(activePlayer, speed)
 		}
 	}
 }
