@@ -56,6 +56,8 @@ function setEnviroment(tileSet, tileSize){
 		spawnPoint.h = 1;
 		spawnPoint.tile = 'S';
 		spawnPoint.visible = false;
+		spawnPoint.overlaps(allSprites);
+
 
 		//current level end point
 		endPoint = new Group();
@@ -65,6 +67,8 @@ function setEnviroment(tileSet, tileSize){
 		endPoint.h = 3;
 		endPoint.tile = 'E';
 		endPoint.visible = false;
+		endPoint.overlaps(allSprites);
+
 
 
 		//coins
@@ -87,7 +91,6 @@ function setEnviroment(tileSet, tileSize){
 		ground = new Group();
 		ground.layer = 1;
 		ground.collider = 'static';
-		ground.overlaps(ground);
 		ground.w = tileSize;
 		ground.h = tileSize;
 		ground.tile = 'g';
@@ -103,7 +106,6 @@ function setEnviroment(tileSet, tileSize){
 		groundL = new Group();
 		groundL.layer = 1;
 		groundL.collider = 'static';
-		groundL.overlaps(ground);
 		groundL.w = tileSize;
 		groundL.h = tileSize;
 		groundL.tile = 'l';
@@ -120,7 +122,6 @@ function setEnviroment(tileSet, tileSize){
 		groundR = new Group();
 		groundR.layer = 1;
 		groundR.collider = 'static';
-		groundR.overlaps(ground);
 		groundR.w = tileSize;
 		groundR.h = tileSize;
 		groundR.tile = 'r';
@@ -131,7 +132,39 @@ function setEnviroment(tileSet, tileSize){
 			row: 0,
 			col: 4
 		});
-		ground.isWalkable = true;
+		groundR.isWalkable = true;
+
+
+		//ground right corner
+		cornerR = new Group();
+		cornerR.layer = 1;
+		cornerR.collider = 'static';
+		cornerR.w = tileSize;
+		cornerR.h = tileSize;
+		cornerR.tile = '>';
+		cornerR.spriteSheet = tileSet;
+		cornerR.addAni({
+			w: tileSize,
+			h: tileSize,
+			row: 0,
+			col: 6
+		});
+		cornerR.isWalkable = true;
+
+		cornerL = new Group();
+		cornerL.layer = 1;
+		cornerL.collider = 'static';
+		cornerL.w = tileSize;
+		cornerL.h = tileSize;
+		cornerL.tile = '<';
+		cornerL.spriteSheet = tileSet;
+		cornerL.addAni({
+			w: tileSize,
+			h: tileSize,
+			row: 0,
+			col: 5
+		});
+		cornerL.isWalkable = true;
 
 		//underground
 		underGround = new Group();
@@ -179,4 +212,25 @@ function setEnviroment(tileSet, tileSize){
 			row: 1,
 			col: 0
 		});
+
+		//spawn point for first kind of enemy
+		enemySpawn1 = new Group();
+		enemySpawn1.layer = 3;
+		enemySpawn1.collider = 'static';
+		enemySpawn1.w = 1;
+		enemySpawn1.h = 1;
+		enemySpawn1.tile = 'e';
+		enemySpawn1.visible = false;
+		enemySpawn1.overlaps(allSprites);
+
+		//spawn point for second kind of enemy
+		enemySpawn2 = new Group();
+		enemySpawn2.layer = 3;
+		enemySpawn2.collider = 'static';
+		enemySpawn2.w = 1;
+		enemySpawn2.h = 1;
+		enemySpawn2.tile = 'E';
+		enemySpawn2.visible = false;
+		enemySpawn2.overlaps(allSprites);
+
 }
