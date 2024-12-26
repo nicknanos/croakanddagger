@@ -37,16 +37,14 @@ function spawnLizard(x,y){
 	lizard.layer = 5;
 	lizard.rotationLock = 'true';
 	lizard.spriteSheet = lizardImg;
-    //lizard.scale =1;
-
-	//lizard.addCollider(0,10,lizard.w,3);
-
 	lizard.anis.offset.x = 0;
 	lizard.anis.offset.y = 1.5;
 	lizard.anis.frameDelay = 6;
 	lizard.friction = 0;
 	lizard.anis.w=64;
 	lizard.anis.h=64;
+	lizard.maxHealth = 3;
+	lizard.health = lizard.maxHealth;
 
 	lizard.addAnis({
 		run: { row: 1, frames: 8, frameDelay: 7 },
