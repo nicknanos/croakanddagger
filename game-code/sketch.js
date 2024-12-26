@@ -32,7 +32,6 @@ let coins, ground, underGround, platform, spikes
 let coinsImg
 
 //Movement helpers
-let attacking = false
 let blocking = false
 let direction = 0;
 
@@ -40,6 +39,10 @@ let direction = 0;
 let attackTimer;
 let canAttack  = true;
 let attackSpeed = 300//ms
+
+let damageTimer;
+let canDamage  = true;
+let prevFrame = 0
 
 //Sprites and Assets
 let hero, partner, witch, lizard, portal, hex, frog, enemies, fly, leaf;
@@ -160,31 +163,24 @@ function preload() {
 //let cube 
 function setup() {
 	allSpritesGroup = new Group();
+	//SetUp Canvas
     canvasSetup()
 	world.gravity.y = mapGravity;
-
 	allSprites.pixelPerfect = true;
 	preloadLevels();
-	//introCutscene();
 
 	//Eniroment (tiles, objects etx)
 	setEnviroment(forestTiles,16);
-
 	changeLevel();
-	//tileGroup = new Tiles(levels[0].platforms, 0, 0, ground.w, ground.h);
 
 	spawnLizard(spawner().x,spawner().y);
 	activePlayer = lizard;
-	//spawnFly()
-	//cube = new Sprite(lizard.x+30, lizard.y,6,6)
-	//console.log(lizard.x, lizard.y)
-
 	activePlayer.overlaps(spawnPoint);
 	activePlayer.overlaps(coins);	
 
-	//ui
+	//UI
 	ui = new Group();
-	for (let i = 0; i < 3; i++) {
+	for (let i = 0; i < lizard.maxHealth; i++) {
 		heart = new ui.Sprite(30 + i * 40, 25, 19, 18, 'n');
 		heart.spriteSheet = heartImg;
 		heart.addAnis({
@@ -194,34 +190,35 @@ function setup() {
 		heart.changeAni('full')
 	}
 
-	f = new fly.Sprite(lizard.x+100, lizard.y-50)
+	spawnEnemies(fly);
 }
 function update() {
 	clear();
 	if(gameState=='runGame'){
-
+		//Background
 		displayBackground(forestBackground);
-
-		//if (hero.y>900) resetplayer();
-	
-		gameDebug(true);
+		//Player Controlls
 		gameControlls (activePlayer);
+		//Camera Controlls
 		cameraControll(activePlayer, tileGroup, 4);
-		//console.log(groundSensor.overlaps(spikes))
-
 		//Die on spikes
 		if(groundSensor.overlaps(spikes)) death();
-
 		//Change to next level
 		if(lizard.overlaps(endPoint)) endLevel();
-		
 		//collect coins
 		lizard.overlaps(coins)
 		keepScore();
 		chaseCheck();
+		//Background Music
 		//backgroundMusic(.0);
-
-		//ADD FALLING CHECK/ANIMATION												!!!
+		//check if player gets damaged
+		if(enemies.overlapping(lizard)&&canDamage) damage();
+		if (frameCount-prevFrame > 200){
+			lizard.opacity = 1
+			prevFrame = frameCount
+		}
+		//Debug Mode
+		gameDebug(true);
 	}
 }
 
@@ -247,15 +244,12 @@ function gameControlls(character){
 				character.vel.x = 0;
 				if(rightSensor.overlapping(walkable)){
 					character.vel.x = -playerSpeed;
-					//character.currentState = character.states.WALK;
 					changeState('WALK')
 				}
 			}else{
 				character.vel.x = -playerSpeed;
-				//character.currentState = character.states.WALK;
 				changeState('WALK')
 				direction = -1;
-				//displayBackground(currentMap, direction)
 			}
 		}
 
@@ -266,32 +260,26 @@ function gameControlls(character){
 				character.vel.x = 0;
 				if(leftSensor.overlapping(walkable)){	
 					character.vel.x = playerSpeed;
-					changeState('WALK')
+					changeState('WALK');
 					
-					//character.currentState = character.states.WALK;
 				}
 			}else{
 				character.vel.x = playerSpeed;
-				changeState('WALK')
-				
-				//character.currentState = character.states.WALK;
+				changeState('WALK');	
 				direction = 1;
-				//displayBackground(currentMap, direction);
 			}
 		}
 		else if (kb.released('right')||kb.released('left')){
 			character.changeAni('stand');
 			character.vel.x = 0;
 			changeState('IDLE')
-			//character.currentState = character.states.IDLE;
-			//displayBackground(currentMap, 0);
 		}
 		if (isOnGround()){
 			if(kb.presses('up')){
 				world.gravity.y = 15;
 				character.vel.y = -3.5;
-				character.changeAni(['jump','stand'])
-				world.gravity.y = 10
+				//character.changeAni(['jump','stand']);
+				world.gravity.y = 10;
 			}
 		}
 	}
@@ -309,6 +297,8 @@ function gameControlls(character){
 
 //resets player to starting position
 function resetplayer(resetCamera){
+	lizard.health = lizard.maxHealth;
+	for (h of ui) h.changeAni('full')
     lizard.speed = 0;
     lizard.rotationSpeed = 0;
     lizard.rotation = 0;
@@ -341,23 +331,20 @@ async function atttack(character) {
 	canAttack = false;
 	character.vel.x = 0;
 	changeState('ATTACK')
-	//character.currentState = character.states.ATTACK;
-	attacking = true
 	let attackArea = new Sprite((character.x+(20)*direction), (character.y), 17, 24) //creates an invisible sprite in front of player
 	attackArea.visible = false;
 	attackArea.mass = 0.0;
 	character.overlaps(attackArea);                                               //
-	attackArea.overlaps(allSprites);                                           //
+	attackArea.overlaps(allSprites);                                           	  //
 	let area =  new GlueJoint(character, attackArea);                             //
-	area.visible = false;                                                      //
+	area.visible = false;                                                         //
 	await character.changeAni('slash'); //plays attack animation
 	character.changeAni('stand');       //
-	await checkHit(attackArea);      //
-	attackArea.remove(); //removes sprite after attackends
 	changeState('IDLE')
-	//character.currentState = character.states.IDLE;
-	attacking =false;
-	attackTimer = setInterval(()=>{canAttack = true
+	await attackAreaProximity(attackArea);      //
+	attackArea.remove(); //removes sprite after attackends
+	attackTimer = setInterval(()=>{
+		canAttack = true
 		console.log('attack')
 		clearInterval(attackTimer);
 		attackTimer = undefined;
@@ -369,7 +356,6 @@ let blockingArea;
 function block(){
 	lizard.vel.x = 0;
 	changeState('BLOCK')
-	//lizard.currentState = lizard.states.BLOCK;
 	blocking = true
 	blockingArea = new Sprite((lizard.x+(12)*direction), (lizard.y), 2, 24) //creates an invisible sprite in front of player
 	blockingArea.visible = false;											//
@@ -384,8 +370,7 @@ function block(){
 function releaseBlock(){
 	lizard.changeAni(['blockRelease','stand']);
 	blockingArea.remove();
-	changeState('BLOCK')	
-	//lizard.currentState = lizard.states.IDLE;
+	changeState('IDLE');
 	blocking = false;
 }
 
@@ -405,6 +390,7 @@ function isOnGround() {
 //play death animation and reset player
 async function death() {
 	inSequence = true;
+	lizard.opacity = 1;
 	lizard.vel.x = 0;
 	await lizard.changeAni(['death','dead']);
 	resetplayer(resetCamera =false);
@@ -419,6 +405,10 @@ function keepScore() {
 			coinSound.play();
 			c.remove();
 			score++;
+			if(lizard.health<lizard.maxHealth){
+				ui[lizard.health].changeAni('full');
+				lizard.health++;
+			}
 		}
 	}
 }
@@ -426,18 +416,14 @@ function keepScore() {
 //Checks if attack hits an enemy
 // checks if enemy x cord is close enought to the attack area sprite x cord
 // this is used beacause attackArea.overlaps(enemy) doesnt work, even thought it should
-async function checkHit(area){
-	switch (currentMap) {
-		case 'forest':					//Check only forest enemies
-			attackAreaProximity(fly, area);
-			attackAreaProximity(leaf, area);
-	}
-}
-
-async function attackAreaProximity(enemy, area) {
-	for (let e of enemy){
+async function attackAreaProximity(area) {
+	for (let e of enemies){
 		if(abs(e.x - area.x) < 18 ){
+			canDamage = false;
 			await e.changeAni(['death','dead'])
+			e.vel.x = 0;
+			e.vel.y = 0;
+			e.speed = 0;
 			e.remove();		
 		}
 	}
@@ -477,4 +463,26 @@ async function endLevel() {
 	changeLevel();
 	lizard.changeAni('stand');
 	inSequence = false;
+}
+function damage() {
+	lizard.opacity = 0.4
+	console.log(frameCount-prevFrame);
+	canDamage = false;
+	ui[lizard.health-1].changeAni('empty');
+	lizard.health--;
+	if(lizard.health==0) death();
+	damageTimer = setInterval(()=>{
+		canDamage = true
+		clearInterval(damageTimer);
+		damageTimer = undefined;
+	}, 2000)
+}
+
+function spawnEnemies(enemy1, enemy2){
+	for(e1 of enemySpawn1){
+		 e = new enemy1.Sprite(e1.position.x, e1.position.y)
+	}
+	for(e2 of enemySpawn2){
+		e = new enemy2.Sprite(e2.position.x, e2.position.y)
+   }
 }
