@@ -9,8 +9,9 @@ let currentMap = 'forest'
 let currentLevel = 0;
 //Map Tiles
 let tileGroup;
+let myTiles;
 //Only Walkable Tiles
-let walkable;
+let walkableTiles;
 let spawnPoint, endPoint;
 
 //reset level helper
@@ -44,6 +45,9 @@ let damageTimer;
 let canDamage  = true;
 let prevFrame = 0
 
+//getting chased flag(prevens enemy animation overlap)
+let chasing = false;
+
 //Sprites and Assets
 let hero, partner, witch, lizard, portal, hex, frog, enemies, fly, leaf;
 let heroImg, partnerImg, witchImg, lizardImg, portalImg, hexImg, frogImg, cloudImg, flyImg, leafImg;
@@ -57,7 +61,7 @@ let floor, waitingRoom;
 let backgroundImg;
 
 //Sounds
-let forestMusic, coinSound;
+let forestMusic, coinSound, damageSound, defeatSound;
 
 //ui
 let ui, heart
@@ -154,6 +158,11 @@ function preload() {
 
 	forestMusic = loadSound('./assets/sound/forest.ogg');
 	coinSound = loadSound('./assets/sound/coin.wav');
+	damageSound = loadSound('./assets/sound/damage.wav');
+	damageSound.setVolume(.5)
+	defeatSound = loadSound('./assets/sound/enemy-defeat.wav');
+	defeatSound.setVolume(1);
+
 
 	heartImg = loadImage('./assets/ui/heart.png');
 
@@ -170,12 +179,11 @@ function setup() {
 	preloadLevels();
 
 	//Eniroment (tiles, objects etx)
-	setEnviroment(forestTiles,16);
+	setEnviroment(forestTiles);
 	changeLevel();
 
 	spawnLizard(spawner().x,spawner().y);
 	activePlayer = lizard;
-	activePlayer.overlaps(spawnPoint);
 	activePlayer.overlaps(coins);	
 
 	//UI
@@ -190,7 +198,7 @@ function setup() {
 		heart.changeAni('full')
 	}
 
-	spawnEnemies(fly);
+	spawnEnemies(fly, leaf);
 }
 function update() {
 	clear();
@@ -202,23 +210,32 @@ function update() {
 		//Camera Controlls
 		cameraControll(activePlayer, tileGroup, 4);
 		//Die on spikes
-		if(groundSensor.overlaps(spikes)) death();
+		if(groundSensor.overlaps(spikes)) {
+			death();
+			damageSound.play(); 
+		}
 		//Change to next level
 		if(lizard.overlaps(endPoint)) endLevel();
 		//collect coins
 		lizard.overlaps(coins)
 		keepScore();
-		chaseCheck();
+		
+		//Check when enemy is close enought to chase player
+		enemyProximity();
 		//Background Music
-		//backgroundMusic(.0);
+		backgroundMusic(.2);
 		//check if player gets damaged
-		if(enemies.overlapping(lizard)&&canDamage) damage();
-		if (frameCount-prevFrame > 200){
+		if(enemies.overlapping(lizard)&&canDamage) {
+			console.log('DAMAGE');
+			
+			damage();
+		}
+		if (frameCount-prevFrame > 100){
 			lizard.opacity = 1
 			prevFrame = frameCount
 		}
 		//Debug Mode
-		gameDebug(true);
+		gameDebug(true);		
 	}
 }
 
@@ -242,7 +259,7 @@ function gameControlls(character){
 			character.changeAni('run');
 			if(character.currentState == character.states.STUCK){
 				character.vel.x = 0;
-				if(rightSensor.overlapping(walkable)){
+				if(rightSensor.overlapping(walkableTiles)){
 					character.vel.x = -playerSpeed;
 					changeState('WALK')
 				}
@@ -258,7 +275,7 @@ function gameControlls(character){
 			character.changeAni('run');
 			if(character.currentState == character.states.STUCK){
 				character.vel.x = 0;
-				if(leftSensor.overlapping(walkable)){	
+				if(leftSensor.overlapping(walkableTiles)){	
 					character.vel.x = playerSpeed;
 					changeState('WALK');
 					
@@ -320,10 +337,10 @@ function gameDebug(showSprites){
 		fill('white')
 		text(round(frameRate()), 0, 100); //displays frames per second
 	}
-	else if (kb.released('`')){
-		allSprites.debug = false;
-		textSize(0)
-	}
+//	else if (kb.released('`')){
+//		allSprites.debug = false;
+//		textSize(0)
+//	}
 }
 
 //Attack action
@@ -331,7 +348,7 @@ async function atttack(character) {
 	canAttack = false;
 	character.vel.x = 0;
 	changeState('ATTACK')
-	let attackArea = new Sprite((character.x+(20)*direction), (character.y), 17, 24) //creates an invisible sprite in front of player
+	let attackArea = new Sprite((character.x+(8)*direction), (character.y), 25, 20) //creates an invisible sprite in front of player
 	attackArea.visible = false;
 	attackArea.mass = 0.0;
 	character.overlaps(attackArea);                                               //
@@ -418,23 +435,17 @@ function keepScore() {
 // this is used beacause attackArea.overlaps(enemy) doesnt work, even thought it should
 async function attackAreaProximity(area) {
 	for (let e of enemies){
-		if(abs(e.x - area.x) < 18 ){
+		if(abs(e.x - area.x) < 18 && abs(e.y - area.y) < 18){
 			canDamage = false;
+			defeatSound.play();
 			await e.changeAni(['death','dead'])
+			chasing = false;
 			e.vel.x = 0;
 			e.vel.y = 0;
 			e.speed = 0;
-			e.remove();		
+			e.remove();	
+			canDamage = true;
 		}
-	}
-}
-
-//Check when enemy is close enought to chase player
-function chaseCheck() {
-	switch (currentMap) {
-		case "forest":
-			enemyProximity(fly, fly.speed);
-			enemyProximity(leaf, leaf.speed);
 	}
 }
 
@@ -465,7 +476,9 @@ async function endLevel() {
 	inSequence = false;
 }
 function damage() {
-	lizard.opacity = 0.4
+	lizard.opacity = 0.4;
+	damageSound.play();
+	shake(lizard);
 	console.log(frameCount-prevFrame);
 	canDamage = false;
 	ui[lizard.health-1].changeAni('empty');
@@ -477,6 +490,12 @@ function damage() {
 		damageTimer = undefined;
 	}, 2000)
 }
+//shakes sprite
+async function shake(entity){
+	await entity.move(15, 'left',  1);
+	await entity.move(5, 'right', 1);
+
+}
 
 function spawnEnemies(enemy1, enemy2){
 	for(e1 of enemySpawn1){
@@ -486,3 +505,4 @@ function spawnEnemies(enemy1, enemy2){
 		e = new enemy2.Sprite(e2.position.x, e2.position.y)
    }
 }
+
