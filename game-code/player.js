@@ -167,10 +167,12 @@ function changeState(state) {
 //Checks if player is pushing against a platform
 //Used to prevent sprite bouncing and to controll the moving background
 function stuckCheck() {
-	if(leftSensor.overlapping(walkable) || rightSensor.overlapping(walkable)){
+	if(leftSensor.overlapping(walkableTiles) || rightSensor.overlapping(walkableTiles)){
+		console.log('STUCK');
+		
 		changeState('STUCK')
 	}
-	else if(!(leftSensor.overlapping(walkable) && rightSensor.overlapping(walkable))){
+	else {//if(!(leftSensor.overlapping(walkable) && rightSensor.overlapping(walkable))){
 		changeState('IDLE')
 	}
 }
