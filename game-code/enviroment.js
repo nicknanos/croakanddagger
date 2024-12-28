@@ -46,10 +46,13 @@ function spawnHex(x, y) {
 
 
 }
+let tileSize = 16;
+function setEnviroment(tileSet){
+		myTiles = new Group()
+		myTiles.spriteSheet = tileSet;
 
-function setEnviroment(tileSet, tileSize){
 		//current level spawn point
-		spawnPoint = new Group();
+		spawnPoint = new myTiles.Group();
 		spawnPoint.layer = 3;
 		spawnPoint.collider = 'static';
 		spawnPoint.w = 1;
@@ -60,7 +63,7 @@ function setEnviroment(tileSet, tileSize){
 
 
 		//current level end point
-		endPoint = new Group();
+		endPoint = new myTiles.Group();
 		endPoint.layer = 3;
 		endPoint.collider = 'static';
 		endPoint.w = 3;
@@ -72,7 +75,7 @@ function setEnviroment(tileSet, tileSize){
 
 
 		//coins
-		coins  = new Group();
+		coins  = new myTiles.Group();
 		coins.layer = 5;
 		coins.collider = 'static';
 		coins.w = 18;
@@ -81,20 +84,23 @@ function setEnviroment(tileSet, tileSize){
 		//coins.overlaps(activePlayer);
 		coins.spriteSheet = coinsImg;
 		coins.anis.offset.y = -2;
+		coins.scale = 0.7;
 		coins.addAnis({
 			mountain: {row: 0, frames: 7, frameSize: [18,18], frameDelay: 8},
 			forest: {row: 1, frames: 7, frameSize: [18,18], frameDelay: 8},
 			castle: {row: 2, frames: 7, frameSize: [18,18], frameDelay: 8}
 		})
+		
+		walkableTiles = new myTiles.Group();
 
 		//ground
-		ground = new Group();
+		ground = new myTiles.Group();
 		ground.layer = 1;
 		ground.collider = 'static';
 		ground.w = tileSize;
 		ground.h = tileSize;
 		ground.tile = 'g';
-		ground.spriteSheet = tileSet;
+		//ground.spriteSheet = tileSet;
 		ground.addAni({
 			w: tileSize,
 			h: tileSize,
@@ -103,13 +109,13 @@ function setEnviroment(tileSet, tileSize){
 		});
 
 		//ground left wall
-		groundL = new Group();
+		groundL = new walkableTiles.Group();
 		groundL.layer = 1;
 		groundL.collider = 'static';
 		groundL.w = tileSize;
 		groundL.h = tileSize;
 		groundL.tile = 'l';
-		groundL.spriteSheet = tileSet;
+		//groundL.spriteSheet = tileSet;
 		groundL.addAni({
 			w: tileSize,
 			h: tileSize,
@@ -119,13 +125,13 @@ function setEnviroment(tileSet, tileSize){
 		groundL.isWalkable =true;
 
 		//ground right wall
-		groundR = new Group();
+		groundR = new walkableTiles.Group();
 		groundR.layer = 1;
 		groundR.collider = 'static';
 		groundR.w = tileSize;
 		groundR.h = tileSize;
 		groundR.tile = 'r';
-		groundR.spriteSheet = tileSet;
+		//groundR.spriteSheet = tileSet;
 		groundR.addAni({
 			w: tileSize,
 			h: tileSize,
@@ -136,13 +142,13 @@ function setEnviroment(tileSet, tileSize){
 
 
 		//ground right corner
-		cornerR = new Group();
+		cornerR = new walkableTiles.Group();
 		cornerR.layer = 1;
 		cornerR.collider = 'static';
 		cornerR.w = tileSize;
 		cornerR.h = tileSize;
 		cornerR.tile = '>';
-		cornerR.spriteSheet = tileSet;
+		//cornerR.spriteSheet = tileSet;
 		cornerR.addAni({
 			w: tileSize,
 			h: tileSize,
@@ -151,13 +157,13 @@ function setEnviroment(tileSet, tileSize){
 		});
 		cornerR.isWalkable = true;
 
-		cornerL = new Group();
+		cornerL = new walkableTiles.Group();
 		cornerL.layer = 1;
 		cornerL.collider = 'static';
 		cornerL.w = tileSize;
 		cornerL.h = tileSize;
 		cornerL.tile = '<';
-		cornerL.spriteSheet = tileSet;
+		//cornerL.spriteSheet = tileSet;
 		cornerL.addAni({
 			w: tileSize,
 			h: tileSize,
@@ -167,13 +173,13 @@ function setEnviroment(tileSet, tileSize){
 		cornerL.isWalkable = true;
 
 		//underground
-		underGround = new Group();
+		underGround = new walkableTiles.Group();
 		underGround.layer = 1;
 		underGround.collider = 'static';
 		underGround.w = tileSize;
 		underGround.h = tileSize;
 		underGround.tile = 'b';
-		underGround.spriteSheet = tileSet;
+		//underGround.spriteSheet = tileSet;
 		underGround.addAni({
 			w: tileSize,
 			h: tileSize,
@@ -183,13 +189,13 @@ function setEnviroment(tileSet, tileSize){
 		underGround.isWalkable = true;
 
 		//floating platforms
-		platform = new Group();
+		platform = new walkableTiles.Group();
 		platform.layer = 2;
 		platform.collider = 'static';
 		platform.w = tileSize;
 		platform.h = tileSize;
 		platform.tile = 'f';
-		platform.spriteSheet = tileSet;
+		//platform.spriteSheet = tileSet;
 		platform.addAni({
 			w: tileSize,
 			h: tileSize,
@@ -199,13 +205,13 @@ function setEnviroment(tileSet, tileSize){
 		platform.isWalkable = true;
 
 		//spikes
-		spikes = new Group();
+		spikes = new walkableTiles.Group();
 		spikes.layer = 1;
 		spikes.collider = 'static';
 		spikes.w = tileSize;
 		spikes.h = tileSize;
 		spikes.tile = 'n';
-		spikes.spriteSheet = tileSet;
+		//spikes.spriteSheet = tileSet;
 		spikes.addAni({
 			w: tileSize,
 			h: tileSize,
@@ -214,12 +220,12 @@ function setEnviroment(tileSet, tileSize){
 		});
 
 		//spawn point for first kind of enemy
-		enemySpawn1 = new Group();
+		enemySpawn1 = new myTiles.Group();
 		enemySpawn1.layer = 3;
 		enemySpawn1.collider = 'static';
 		enemySpawn1.w = 1;
 		enemySpawn1.h = 1;
-		enemySpawn1.tile = 'e';
+		enemySpawn1.tile = '1';
 		enemySpawn1.visible = false;
 		enemySpawn1.overlaps(allSprites);
 
@@ -229,7 +235,7 @@ function setEnviroment(tileSet, tileSize){
 		enemySpawn2.collider = 'static';
 		enemySpawn2.w = 1;
 		enemySpawn2.h = 1;
-		enemySpawn2.tile = 'E';
+		enemySpawn2.tile = '2';
 		enemySpawn2.visible = false;
 		enemySpawn2.overlaps(allSprites);
 
