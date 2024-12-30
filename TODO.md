@@ -1,3 +1,12 @@
-- []Add Sensors to player (top, bottom, left, right)
-- []Tune enemy chase(colliders, damage)
-- []Make forest leveles
+- [x]Add Sensors to player (top, bottom, left, right)
+- [x]Tune enemy chase(colliders, damage)
+- [x]Make forest leveles
+- []ADD FALLING CHECK/ANIMATION
+- []TRY ADDING IMAGE IN FOREGROUNG image()
+- []Use only one variable for player(remove activeplayer, character, lizard)
+- []Enemies die on spikes
+- [x]Vertical level for mountain
+- []Hide mouse on final build
+- []Fix UI
+
+- []JsDoc Documentation?
