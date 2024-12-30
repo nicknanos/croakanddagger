@@ -86,9 +86,10 @@ function setEnviroment(tileSet){
 		coins.anis.offset.y = -2;
 		coins.scale = 0.7;
 		coins.addAnis({
-			mountain: {row: 0, frames: 7, frameSize: [18,18], frameDelay: 8},
+			mountain: {row: 2, frames: 7, frameSize: [18,18], frameDelay: 8},
 			forest: {row: 1, frames: 7, frameSize: [18,18], frameDelay: 8},
-			castle: {row: 2, frames: 7, frameSize: [18,18], frameDelay: 8}
+			castle: {row: 0, frames: 7, frameSize: [18,18], frameDelay: 8},
+			entrance: {row: 0, frames: 7, frameSize: [18,18], frameDelay: 8}
 		})
 		
 		walkableTiles = new myTiles.Group();
@@ -239,4 +240,17 @@ function setEnviroment(tileSet){
 		enemySpawn2.visible = false;
 		enemySpawn2.overlaps(allSprites);
 
+}
+//Updates the tileset image
+//All the tiles have to be reset with addAni()
+function updateTileset(set){
+	myTiles.spriteSheet = set;
+	ground.addAni({w: tileSize, h: tileSize, row: 0, col: 0});
+	groundL.addAni({w: tileSize, h: tileSize, row: 0, col: 3});
+	groundR.addAni({w: tileSize, h: tileSize, row: 0, col: 4});
+	cornerR.addAni({w: tileSize, h: tileSize, row: 0, col: 6});
+	cornerL.addAni({w: tileSize, h: tileSize, row: 0, col: 5});
+	underGround.addAni({w: tileSize, h: tileSize, row: 0, col: 1});
+	platform.addAni({w: tileSize, h: tileSize, row: 0, col: 2});
+	spikes.addAni({w: tileSize, h: tileSize, row: 1, col: 0});
 }
