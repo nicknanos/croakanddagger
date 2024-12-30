@@ -1,7 +1,7 @@
 const backgroundColor = '#1f1f1f'
 let cWidth,cHeight,fScale
 let cameraYOffset = 30;
-
+//canvas W H 1280 760
 //Initialize Canvas
 function canvasSetup() {
     fScale = 4;
@@ -27,12 +27,26 @@ function canvasSetup() {
 
   }
   //Displays parallax background
-  function displayBackground(level) {
+  function displayBackground() {
+    switch(currentMap){
+      case 'forest':
+        level = forestBackground;
+        break;
+      case 'mountain':
+        level = mountainBackground;
+        break;
+      case 'entrance':
+        level = entranceBackground;
+        break;
+      case 'castle':
+        level = castleBackground;
+        break;
+    }
     for (b of level){
       image(b.img, int(b.x), 0, canvas.w, canvas.h);
       image(b.img, int(b.x)+ width, 0, canvas.w, canvas.h); // draw background to the right of the base one || int() resolves seams between 
       image(b.img, int(b.x)- width, 0, canvas.w, canvas.h); // draw background to the left of the base one  || the instances of the background
-      if (activePlayer.currentState == activePlayer.states.WALK) b.x -= b.speed*direction+1*direction;
+      if (activePlayer.currentState == activePlayer.states.WALK && currentMap != "entrance") b.x -= b.speed*direction+1*direction;
       if (b.x < -width) b.x = 0;
       }
   }
@@ -47,6 +61,7 @@ function canvasSetup() {
    //Y Axis
    let firstY = tileGroup[0].position.y;                 //y cord of first tile in map
    let lastY = tileGroup[tileGroup.length-1].position.y; //y cord of last tile in map
+   if(currentMap=="entrance") cameraYOffset = 70;
    camera.y = constrain(cameraSensor.y-cameraYOffset, cameraSensor.y-200, lastY);
    //camera.y = player.y
   }
