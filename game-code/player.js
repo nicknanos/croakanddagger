@@ -32,7 +32,7 @@ function spawnHero(){
 
 function spawnLizard(x,y){
     lizard = new Sprite(x, y);
-	lizard.w=15;
+	lizard.w=12;
 	lizard.h=24;
 	lizard.layer = 5;
 	lizard.rotationLock = 'true';
@@ -77,7 +77,7 @@ function spawnLizard(x,y){
 	leftSensor = new Sprite();
 	leftSensor.w = 2;
 	leftSensor.h = lizard.h - 3;
-	leftSensor.x = lizard.x - 10;
+	leftSensor.x = lizard.x - 8;
 	leftSensor.y = lizard.y;
 	leftSensor.mass = 0.0;
 	leftSensor.collider = 'none';
@@ -90,7 +90,7 @@ function spawnLizard(x,y){
 	rightSensor = new Sprite();
 	rightSensor.w = 2;
 	rightSensor.h = lizard.h - 3;
-	rightSensor.x = lizard.x + 10;
+	rightSensor.x = lizard.x + 8;
 	rightSensor.y = lizard.y;
 	rightSensor.mass = 0.0;
 	rightSensor.collider = 'none';
