@@ -49,10 +49,12 @@ let prevFrame = 0
 let chasing = false;
 
 //Sprites and Assets
-let hero, partner, witch, lizard, portal, hex, frog, enemies, fly, leaf;
-let heroImg, partnerImg, witchImg, lizardImg, portalImg, hexImg, frogImg, cloudImg, flyImg, leafImg;
+let hero, partner, witch, lizard, portal, hex, frog, enemies, fly, leaf, bat, cobra, ghoul, imp;
+let heroImg, partnerImg, witchImg, lizardImg, portalImg, hexImg, frogImg, cloudImg, flyImg, leafImg, batImg, cobraImg, ghoulImg, impImg;
 
-let forestTiles, mountainTiles;
+let enemyGroup = {e1: undefined, e2: undefined}
+
+let forestTiles, mountainTiles, castleTiles;
 
 //let cloudX = 0;
 
@@ -61,7 +63,8 @@ let floor, waitingRoom;
 let backgroundImg;
 
 //Sounds
-let forestMusic, coinSound, damageSound, defeatSound;
+let forestMusic, mountainMusic, entranceMusic, castleMusic, coinSound, damageSound, defeatSound;
+let mapMusic;
 
 //ui
 let ui, heart
@@ -128,6 +131,73 @@ let mountainBackground = [
 	}
 ]
 
+let entranceBackground = [
+	{
+		file: './assets/backgrounds/entrance/1.png',
+		img: undefined,
+		x: 0,
+		speed: 0	
+	},
+	{
+		file: './assets/backgrounds/entrance/2.png',
+		img: undefined,
+		x: 0,
+		speed: 0	
+	},
+	{
+		file: './assets/backgrounds/entrance/3.png',
+		img: undefined,
+		x: 0,
+		speed: 0
+	},
+	{
+		file: './assets/backgrounds/entrance/4.png',
+		img: undefined,
+		x: 0,
+		speed: 0
+	},
+	{
+		file: './assets/backgrounds/entrance/5.png',
+		img: undefined,
+		x: 0,
+		speed: 0
+	}
+]
+
+let castleBackground = [
+	{
+		file: './assets/backgrounds/castle/1.png',
+		img: undefined,
+		x: 0,
+		speed: 0	
+	},
+	{
+		file: './assets/backgrounds/castle/2.png',
+		img: undefined,
+		x: 0,
+		speed: 0	
+	},
+	{
+		file: './assets/backgrounds/castle/3.png',
+		img: undefined,
+		x: 0,
+		speed: 0
+	},
+	{
+		file: './assets/backgrounds/castle/4.png',
+		img: undefined,
+		x: 0,
+		speed: 0
+	},
+	{
+		file: './assets/backgrounds/castle/5.png',
+		img: undefined,
+		x: 0,
+		speed: 0
+	}
+]
+
+
 let test
 
 //Preload assets
@@ -137,6 +207,14 @@ function preload() {
 	}
 
 	for (let b of mountainBackground){
+		b.img = loadImage(`${b.file}`)
+	}
+
+	for (let b of entranceBackground){
+		b.img = loadImage(`${b.file}`)
+	}
+
+	for (let b of castleBackground){
 		b.img = loadImage(`${b.file}`)
 	}
 
@@ -152,11 +230,22 @@ function preload() {
 
 	forestTiles = loadImage('./assets/enviroment/forestTiles2.png');
 	mountainTiles = loadImage('./assets/enviroment/mountainTiles.png');
+	castleTiles = loadImage('./assets/enviroment/castleTiles.png');
 	coinsImg = loadImage('./assets/enviroment/coin.png');
 	flyImg = loadImage('./assets/enemies/forest/fly.png');
 	leafImg = loadImage('./assets/enemies/forest/leaf.png');
+	batImg = loadImage('./assets/enemies/mountain/bat.png');
+	cobraImg = loadImage('./assets/enemies/mountain/cobra.png');
+	ghoulImg = loadImage('./assets/enemies/castle/ghoul.png');
+	impImg = loadImage('./assets/enemies/castle/imp.png');
+
+
 
 	forestMusic = loadSound('./assets/sound/forest.ogg');
+	mountainMusic = loadSound('./assets/sound/mountain.ogg');
+	entranceMusic = loadSound('./assets/sound/entrance.mp3');
+	castleMusic = loadSound('./assets/sound/castle.ogg');
+
 	coinSound = loadSound('./assets/sound/coin.wav');
 	damageSound = loadSound('./assets/sound/damage.wav');
 	damageSound.setVolume(.5)
@@ -179,7 +268,6 @@ function setup() {
 	preloadLevels();
 
 	//Eniroment (tiles, objects etx)
-	setEnviroment(forestTiles);
 	changeLevel();
 
 	spawnLizard(spawner().x,spawner().y);
@@ -197,14 +285,12 @@ function setup() {
 		});
 		heart.changeAni('full')
 	}
-
-	spawnEnemies(fly, leaf);
 }
 function update() {
 	clear();
 	if(gameState=='runGame'){
 		//Background
-		displayBackground(forestBackground);
+		displayBackground();
 		//Player Controlls
 		gameControlls (activePlayer);
 		//Camera Controlls
@@ -225,17 +311,14 @@ function update() {
 		//Background Music
 		backgroundMusic(.2);
 		//check if player gets damaged
-		if(enemies.overlapping(lizard)&&canDamage) {
-			console.log('DAMAGE');
-			
-			damage();
-		}
+		if(enemies.overlapping(lizard)&&canDamage) damage();
 		if (frameCount-prevFrame > 100){
 			lizard.opacity = 1
 			prevFrame = frameCount
 		}
+
 		//Debug Mode
-		gameDebug(true);		
+		gameDebug(showSprites = true);		
 	}
 }
 
@@ -292,7 +375,7 @@ function gameControlls(character){
 			changeState('IDLE')
 		}
 		if (isOnGround()){
-			if(kb.presses('up')){
+			if(kb.presses('space')||kb.presses('up')){
 				world.gravity.y = 15;
 				character.vel.y = -3.5;
 				//character.changeAni(['jump','stand']);
@@ -457,8 +540,19 @@ function backgroundMusic(volume){
 			forestMusic.setVolume(volume);
 			break;
 		case 'mountain':
+			forestMusic.pause();
+			mountainMusic.play();
+			mountainMusic.setVolume(volume);
+			break;
+		case 'entrance':
+			mountainMusic.pause();
+			entranceMusic.play();
+			entranceMusic.setVolume(volume);
 			break;
 		case 'castle':
+			entranceMusic.pause();
+			castleMusic.play();
+			castleMusic.setVolume(volume);
 			break;
 		case 'boss':
 			break;
@@ -476,11 +570,11 @@ async function endLevel() {
 	inSequence = false;
 }
 function damage() {
+	canDamage = false;
 	lizard.opacity = 0.4;
 	damageSound.play();
 	shake(lizard);
 	console.log(frameCount-prevFrame);
-	canDamage = false;
 	ui[lizard.health-1].changeAni('empty');
 	lizard.health--;
 	if(lizard.health==0) death();
