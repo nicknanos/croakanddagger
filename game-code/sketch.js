@@ -29,8 +29,8 @@ let groundSensor,leftSensor,rightSensor,topSensor, cameraSensor;
 let score = 0;
 
 //Enviroment
-let coins, ground, underGround, platform, spikes
-let coinsImg
+let coins, ground, groundL, groundR, invBlock, topBlock, underGround, platform, spikes;
+let coinsImg;
 
 //Movement helpers
 let blocking = false
@@ -49,8 +49,8 @@ let prevFrame = 0
 let chasing = false;
 
 //Sprites and Assets
-let hero, partner, witch, lizard, portal, hex, frog, enemies, fly, leaf, bat, cobra, ghoul, imp;
-let heroImg, partnerImg, witchImg, lizardImg, portalImg, hexImg, frogImg, cloudImg, flyImg, leafImg, batImg, cobraImg, ghoulImg, impImg;
+let hero, partner, witch, lizard, portal, hex, frog, enemies, fly, leaf, bat, cobra, ghoul, imp, boss;
+let heroImg, partnerImg, witchImg, lizardImg, portalImg, hexImg, frogImg, cloudImg, flyImg, leafImg, batImg, cobraImg, ghoulImg, impImg, bossImg;
 
 let enemyGroup = {e1: undefined, e2: undefined}
 
@@ -63,7 +63,7 @@ let floor, waitingRoom;
 let backgroundImg;
 
 //Sounds
-let forestMusic, mountainMusic, entranceMusic, castleMusic, coinSound, damageSound, defeatSound;
+let forestMusic, mountainMusic, entranceMusic, castleMusic, coinSound, damageSound, defeatSound, bossMusic;
 let mapMusic;
 
 //ui
@@ -96,7 +96,7 @@ let forestBackground = [
 		x: 0,
 		speed: 0.6	
 	}
-]
+];
 
 let mountainBackground = [
 	{
@@ -129,7 +129,7 @@ let mountainBackground = [
 		x: 0,
 		speed: 0.7
 	}
-]
+];
 
 let entranceBackground = [
 	{
@@ -162,40 +162,43 @@ let entranceBackground = [
 		x: 0,
 		speed: 0
 	}
-]
+];
 
 let castleBackground = [
 	{
-		file: './assets/backgrounds/castle/1.png',
+		file: './assets/backgrounds/castle/wall.png',
+		img: undefined,
+		x: 0,
+		speed: 0	
+	}
+];
+
+let bossBackground = [
+	{
+		file: './assets/backgrounds/boss/sky-full.png',
 		img: undefined,
 		x: 0,
 		speed: 0	
 	},
 	{
-		file: './assets/backgrounds/castle/2.png',
+		file: './assets/backgrounds/boss/mountain1-full.png',
 		img: undefined,
 		x: 0,
-		speed: 0	
+		speed: 0.2	
 	},
 	{
-		file: './assets/backgrounds/castle/3.png',
+		file: './assets/backgrounds/boss/mountain2-full.png',
 		img: undefined,
 		x: 0,
-		speed: 0
+		speed: 0.4
 	},
 	{
-		file: './assets/backgrounds/castle/4.png',
-		img: undefined,
-		x: 0,
-		speed: 0
-	},
-	{
-		file: './assets/backgrounds/castle/5.png',
+		file: './assets/backgrounds/boss/foreground.png',
 		img: undefined,
 		x: 0,
 		speed: 0
 	}
-]
+];
 
 
 let test
@@ -214,7 +217,9 @@ function preload() {
 		b.img = loadImage(`${b.file}`)
 	}
 
-	for (let b of castleBackground){
+	castleBackground[0].img = loadImage(castleBackground[0].file)
+
+	for (let b of bossBackground){
 		b.img = loadImage(`${b.file}`)
 	}
 
@@ -238,13 +243,15 @@ function preload() {
 	cobraImg = loadImage('./assets/enemies/mountain/cobra.png');
 	ghoulImg = loadImage('./assets/enemies/castle/ghoul.png');
 	impImg = loadImage('./assets/enemies/castle/imp.png');
-
+	bossImg = loadImage('./assets/boss/goblin.png')
 
 
 	forestMusic = loadSound('./assets/sound/forest.ogg');
 	mountainMusic = loadSound('./assets/sound/mountain.ogg');
 	entranceMusic = loadSound('./assets/sound/entrance.mp3');
 	castleMusic = loadSound('./assets/sound/castle.ogg');
+	bossMusic = loadSound('./assets/sound/boss-music.ogg');
+
 
 	coinSound = loadSound('./assets/sound/coin.wav');
 	damageSound = loadSound('./assets/sound/damage.wav');
@@ -294,7 +301,12 @@ function update() {
 		//Player Controlls
 		gameControlls (activePlayer);
 		//Camera Controlls
-		cameraControll(activePlayer, tileGroup, 4);
+		if(currentMap!='bossRoom'){
+			cameraControll(activePlayer, tileGroup, 4);
+		}else {
+			camera.x =spawner().x + 34;
+			camera.y =spawner().y - 48;
+		}
 		//Die on spikes
 		if(groundSensor.overlaps(spikes)) {
 			death();
@@ -484,7 +496,9 @@ function isOnGround() {
 	return  groundSensor.overlapping(ground)||
 			groundSensor.overlapping(platform)||
 			groundSensor.overlapping(cornerR)||
-			groundSensor.overlapping(cornerL)
+			groundSensor.overlapping(cornerL)||
+			groundSensor.overlapping(invBlock)
+
 }
 
 //play death animation and reset player
@@ -554,7 +568,10 @@ function backgroundMusic(volume){
 			castleMusic.play();
 			castleMusic.setVolume(volume);
 			break;
-		case 'boss':
+		case 'bossRoom':
+			castleMusic.pause();
+			bossMusic.play();
+			bossMusic.setVolume(volume);
 			break;
 	}
 }
