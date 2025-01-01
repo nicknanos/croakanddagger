@@ -82,6 +82,7 @@ function setEnviroment(tileSet){
 		coins.h = 18;
 		coins.tile = 'c';
 		//coins.overlaps(activePlayer);
+		coins.overlaps(enemies);
 		coins.spriteSheet = coinsImg;
 		coins.anis.offset.y = -2;
 		coins.scale = 0.7;
@@ -89,7 +90,9 @@ function setEnviroment(tileSet){
 			mountain: {row: 2, frames: 7, frameSize: [18,18], frameDelay: 8},
 			forest: {row: 1, frames: 7, frameSize: [18,18], frameDelay: 8},
 			castle: {row: 0, frames: 7, frameSize: [18,18], frameDelay: 8},
-			entrance: {row: 0, frames: 7, frameSize: [18,18], frameDelay: 8}
+			entrance: {row: 0, frames: 7, frameSize: [18,18], frameDelay: 8},
+			bossRoom: {row: 0, frames: 7, frameSize: [18,18], frameDelay: 8}
+
 		})
 		
 		walkableTiles = new myTiles.Group();
@@ -101,7 +104,6 @@ function setEnviroment(tileSet){
 		ground.w = tileSize;
 		ground.h = tileSize;
 		ground.tile = 'g';
-		//ground.spriteSheet = tileSet;
 		ground.addAni({
 			w: tileSize,
 			h: tileSize,
@@ -116,7 +118,6 @@ function setEnviroment(tileSet){
 		groundL.w = tileSize;
 		groundL.h = tileSize;
 		groundL.tile = 'l';
-		//groundL.spriteSheet = tileSet;
 		groundL.addAni({
 			w: tileSize,
 			h: tileSize,
@@ -132,7 +133,6 @@ function setEnviroment(tileSet){
 		groundR.w = tileSize;
 		groundR.h = tileSize;
 		groundR.tile = 'r';
-		//groundR.spriteSheet = tileSet;
 		groundR.addAni({
 			w: tileSize,
 			h: tileSize,
@@ -149,7 +149,6 @@ function setEnviroment(tileSet){
 		cornerR.w = tileSize;
 		cornerR.h = tileSize;
 		cornerR.tile = '>';
-		//cornerR.spriteSheet = tileSet;
 		cornerR.addAni({
 			w: tileSize,
 			h: tileSize,
@@ -164,7 +163,6 @@ function setEnviroment(tileSet){
 		cornerL.w = tileSize;
 		cornerL.h = tileSize;
 		cornerL.tile = '<';
-		//cornerL.spriteSheet = tileSet;
 		cornerL.addAni({
 			w: tileSize,
 			h: tileSize,
@@ -173,6 +171,20 @@ function setEnviroment(tileSet){
 		});
 		cornerL.isWalkable = true;
 
+		topBlock = new walkableTiles.Group();
+		topBlock.layer = 1;
+		topBlock.collider = 'static';
+		topBlock.w = tileSize;
+		topBlock.h = tileSize;
+		topBlock.tile = 't';
+		topBlock.addAni({
+			w: tileSize,
+			h: tileSize,
+			row: 0,
+			col: 7
+		});
+		topBlock.isWalkable = true;
+
 		//underground
 		underGround = new walkableTiles.Group();
 		underGround.layer = 1;
@@ -180,7 +192,6 @@ function setEnviroment(tileSet){
 		underGround.w = tileSize;
 		underGround.h = tileSize;
 		underGround.tile = 'b';
-		//underGround.spriteSheet = tileSet;
 		underGround.addAni({
 			w: tileSize,
 			h: tileSize,
@@ -196,7 +207,6 @@ function setEnviroment(tileSet){
 		platform.w = tileSize;
 		platform.h = tileSize;
 		platform.tile = 'f';
-		//platform.spriteSheet = tileSet;
 		platform.addAni({
 			w: tileSize,
 			h: tileSize,
@@ -212,7 +222,6 @@ function setEnviroment(tileSet){
 		spikes.w = tileSize;
 		spikes.h = tileSize;
 		spikes.tile = 'n';
-		//spikes.spriteSheet = tileSet;
 		spikes.addAni({
 			w: tileSize,
 			h: tileSize,
@@ -240,6 +249,15 @@ function setEnviroment(tileSet){
 		enemySpawn2.visible = false;
 		enemySpawn2.overlaps(allSprites);
 
+		//Invisible colliding block
+		invBlock = new myTiles.Group();
+		invBlock.layer = 3;
+		invBlock.collider = 'static';
+		invBlock.w = tileSize;
+		invBlock.h = tileSize;
+		invBlock.tile = 'i';
+		invBlock.visible = false;
+
 }
 //Updates the tileset image
 //All the tiles have to be reset with addAni()
@@ -250,6 +268,7 @@ function updateTileset(set){
 	groundR.addAni({w: tileSize, h: tileSize, row: 0, col: 4});
 	cornerR.addAni({w: tileSize, h: tileSize, row: 0, col: 6});
 	cornerL.addAni({w: tileSize, h: tileSize, row: 0, col: 5});
+	topBlock.addAni({w: tileSize, h: tileSize, row: 0, col: 7});
 	underGround.addAni({w: tileSize, h: tileSize, row: 0, col: 1});
 	platform.addAni({w: tileSize, h: tileSize, row: 0, col: 2});
 	spikes.addAni({w: tileSize, h: tileSize, row: 1, col: 0});
