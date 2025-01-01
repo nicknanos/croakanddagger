@@ -8,5 +8,8 @@
 - [x]Vertical level for mountain
 - []Hide mouse on final build
 - []Fix UI
+- [x]Coins overlap enemies
+- [x]Fix boss room background
+- []New boss fight game state?
 
 - []JsDoc Documentation?
