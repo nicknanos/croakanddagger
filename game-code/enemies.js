@@ -152,6 +152,29 @@ function initializeEnemies(){
 
     for(i of imp) i.changeAni('stand');
 
+	boss = new Group();
+	boss.w = 10;
+	boss.h = 15;
+	boss.rotationLock = 'false';
+	boss.spriteSheet = bossImg;
+	boss.friction = 0;
+	boss.speed = 0.01;
+	boss.health  = 5;
+	boss.anis.w = 64;
+	boss.anis.h = 64;
+	boss.anis.offset.x = 0;
+	boss.anis.offset.y = 0;
+	boss.addAnis({
+		stand: { row: 0, frames: 3, frameDelay: 10 },
+		move: { row: 1, frames: 5, frameDelay: 10 },
+		damage: { row: 6, frames: 4, frameDelay: 10 },
+		bounceU: {row: 9, frames: 5, frameDelay: 10},
+		bounceD: {row: 10, frames: 6, frameDelay: 10},
+        death: { row: 7, frames: 10, frameDelay: 10},
+        dead: { row: 20, frames: 0}
+	})
+    for(b of boss) b.changeAni('stand');
+
 }
 
 //Constantly checks if enemy is near player
