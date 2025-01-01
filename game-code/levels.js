@@ -49,12 +49,15 @@ function changeLevel(){
                 case 'entrance':
                     currentMap = 'entrance';
                     updateTileset(castleTiles);
-                    enemyGroup = {e1:imp , e2:ghoul }
+                    enemyGroup = {e1:imp , e2:ghoul}
                     break;
                 case 'castle':
                     currentMap = 'castle';
                     updateTileset(castleTiles);
-                    //enemyGroup = {e1: , e2: }
+                    enemyGroup = {e1:imp , e2:ghoul}
+                    break;
+                case 'bossRoom':
+                    currentMap = 'bossRoom';
                     break;
             }
         }
@@ -68,6 +71,8 @@ function changeLevel(){
         //reste player to spawn point
         if(currentLevel>0) resetplayer(resetCamera = true);
         currentLevel++;
+        console.log(currentLevel);
+        
 	    spawnEnemies(enemyGroup.e1, enemyGroup.e2);
 }
 
@@ -233,11 +238,75 @@ function preloadLevels() {
 "b......................................................",
 "b......................................................",
 "b......................................................",
-"b........S...........1..........2.........E............",
+"b........S...E.........................................",
 "ggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
 ],
         map: "entrance",
         level: 3
+    });
+ 
+    levels.push({
+        platforms: [
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"lttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttr",
+"l......................................................................................................................................................................................................r",
+"l......................................................................................................................................................................................................r",
+"l......................................................................................................................................................................................................r",
+"l.....................................................................................................................2................................................................................r",
+"l.....................................................................................................................<>........<ggg..>................................................................r",
+"l.....................................................................................................................rl........r....fb>...............................................................r",
+"l...........................................................................................................f.....c...rl.......<b.....bb>....c.........................................................r",
+"l..........................c..........................................................................1...............rl......<bb...f.bbb>.............................................................rbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"l...........................................................................................<gg>...<ggggg>.....<ggggggbb.....<bbb.....bbbb>............................................................rbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"l........................................................................................f..bbbb...bbbbbbb.....bbbbbbbbb.....rbbbf....bbbbb>...........................................................rbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"l..................f...f...f...f...f...f....................................c...............................................<bbbbfff..bbbbbb>..........................................................rbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"...............f..........................f..........................f...............fff...................f................rbbbb....fbbbbbbb>.........................................................rtttttttttttttttttttttttttt",
+".............................................f...................g.......g.................................................<bbbbb.....bbbbbbbb>...................................................................................",
+".............f................................................g..b.......b.........f..........................f...........<bbbbbbcc.f.bbbbbbbbb>..................................................................................",
+".....S....E................................c..........1.......b..b2....2gb...............................................<bbbbbbb2c...bbbbbbbbbb>...........1g........2g....1......2g.............................................",
+"ggggggggggggggggnnnnnnnnnnnnnnnnnnnnnnnnnnggggggggggggggggggggbggbggggggbbggggggggggggnnnnnnnnnnnnnnnnnnnnnnnnnngggggggggbbbbbbbbgggggbbbbbbbbbbbggggggggggggbgggggggggbggggggggggggbggggggggggggggggggggggggggggggggggggggggggggg",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+],
+        map: "castle",
+        level: 4
+    });
+
+    levels.push({
+        platforms: [
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".............E...........................................",
+".........................................................",
+"b.....................b..................................",
+"b.....................b..................................",
+"b.....................b..................................",
+"b.......S.............b..................................",
+"iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
+],
+        map: "bossRoom",
+        level: 5
     });
     
     currentLevel = levels[0].level;
