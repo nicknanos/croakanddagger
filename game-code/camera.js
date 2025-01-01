@@ -1,6 +1,6 @@
 const backgroundColor = '#1f1f1f'
 let cWidth,cHeight,fScale
-let cameraYOffset = 30;
+let cameraYOffset;
 //canvas W H 1280 760
 //Initialize Canvas
 function canvasSetup() {
@@ -61,6 +61,7 @@ function canvasSetup() {
    //Y Axis
    let firstY = tileGroup[0].position.y;                 //y cord of first tile in map
    let lastY = tileGroup[tileGroup.length-1].position.y; //y cord of last tile in map
+   cameraYOffset = 30;
    if(currentMap=="entrance") cameraYOffset = 70;
    camera.y = constrain(cameraSensor.y-cameraYOffset, cameraSensor.y-200, lastY);
    //camera.y = player.y
