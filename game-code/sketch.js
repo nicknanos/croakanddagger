@@ -1,6 +1,5 @@
 //Set Variables
 let gameState = "runGame";
-
 let mapGravity = 10;
 
 //Level Creation
@@ -49,8 +48,8 @@ let prevFrame = 0
 let chasing = false;
 
 //Sprites and Assets
-let hero, partner, witch, lizard, portal, hex, frog, enemies, fly, leaf, bat, cobra, ghoul, imp, boss;
-let heroImg, partnerImg, witchImg, lizardImg, portalImg, hexImg, frogImg, cloudImg, flyImg, leafImg, batImg, cobraImg, ghoulImg, impImg, bossImg;
+let hero, partner, witch, lizard, portal, hex, frog, enemies, fly, leaf, bat, cobra, ghoul, imp, boss, goblinKing, bossAttackArea;
+let heroImg, partnerImg, witchImg, lizardImg, portalImg, hexImg, frogImg, cloudImg, flyImg, leafImg, batImg, cobraImg, ghoulImg, impImg, bossImg,bossAttackAreaImg;
 
 let enemyGroup = {e1: undefined, e2: undefined}
 
@@ -243,7 +242,8 @@ function preload() {
 	cobraImg = loadImage('./assets/enemies/mountain/cobra.png');
 	ghoulImg = loadImage('./assets/enemies/castle/ghoul.png');
 	impImg = loadImage('./assets/enemies/castle/imp.png');
-	bossImg = loadImage('./assets/boss/goblin.png')
+	bossImg = loadImage('./assets/boss/goblin.png');
+	bossAttackAreaImg = loadImage('./assets/boss/bossAttack.png');
 
 
 	forestMusic = loadSound('./assets/sound/forest.ogg');
@@ -330,7 +330,12 @@ function update() {
 		}
 
 		//Debug Mode
-		gameDebug(showSprites = true);		
+		gameDebug(showSprites = true);
+
+		if (currentMap == 'bossRoom'){
+			lizard.overlaps(goblinKing)
+			bossAI();
+		}		
 	}
 }
 
@@ -453,7 +458,11 @@ async function atttack(character) {
 	await character.changeAni('slash'); //plays attack animation
 	character.changeAni('stand');       //
 	changeState('IDLE')
-	await attackAreaProximity(attackArea);      //
+	if(!(currentMap == 'bossRoom')){
+		await attackAreaProximity(attackArea);
+	}else{
+		await damageBoss(attackArea);
+	}
 	attackArea.remove(); //removes sprite after attackends
 	attackTimer = setInterval(()=>{
 		canAttack = true
@@ -592,7 +601,7 @@ function damage() {
 	damageSound.play();
 	shake(lizard);
 	console.log(frameCount-prevFrame);
-	ui[lizard.health-1].changeAni('empty');
+	//ui[lizard.health-1].changeAni('empty');
 	lizard.health--;
 	if(lizard.health==0) death();
 	damageTimer = setInterval(()=>{

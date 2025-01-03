@@ -41,12 +41,15 @@ function canvasSetup() {
       case 'castle':
         level = castleBackground;
         break;
+      case 'bossRoom':
+        level = bossBackground;
+        break;
     }
     for (b of level){
       image(b.img, int(b.x), 0, canvas.w, canvas.h);
       image(b.img, int(b.x)+ width, 0, canvas.w, canvas.h); // draw background to the right of the base one || int() resolves seams between 
       image(b.img, int(b.x)- width, 0, canvas.w, canvas.h); // draw background to the left of the base one  || the instances of the background
-      if (activePlayer.currentState == activePlayer.states.WALK && currentMap != "entrance") b.x -= b.speed*direction+1*direction;
+      if (activePlayer.currentState == activePlayer.states.WALK && currentMap != "entrance" && currentMap != 'bossRoom') b.x -= b.speed*direction+1*direction;
       if (b.x < -width) b.x = 0;
       }
   }

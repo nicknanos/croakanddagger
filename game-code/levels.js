@@ -72,7 +72,7 @@ function changeLevel(){
         if(currentLevel>0) resetplayer(resetCamera = true);
         currentLevel++;
         console.log(currentLevel);
-        
+        if(currentMap=='bossRoom') initializeBoss();
 	    spawnEnemies(enemyGroup.e1, enemyGroup.e2);
 }
 
@@ -302,7 +302,7 @@ function preloadLevels() {
 "b.....................b..................................",
 "b.....................b..................................",
 "b.....................b..................................",
-"b.......S.............b..................................",
+"b.......S.........B...b..................................",
 "iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
 ],
         map: "bossRoom",

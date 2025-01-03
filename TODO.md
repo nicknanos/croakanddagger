@@ -10,6 +10,8 @@
 - []Fix UI
 - [x]Coins overlap enemies
 - [x]Fix boss room background
-- []New boss fight game state?
+- [x]Add boss fight logic
+- [] Finish cutscenes
+- [] Tutorial level
 
 - []JsDoc Documentation?

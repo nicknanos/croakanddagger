@@ -153,17 +153,18 @@ function initializeEnemies(){
     for(i of imp) i.changeAni('stand');
 
 	boss = new Group();
-	boss.w = 10;
-	boss.h = 15;
+	boss.w = 15;
+	boss.h = 20;
 	boss.rotationLock = 'false';
 	boss.spriteSheet = bossImg;
 	boss.friction = 0;
 	boss.speed = 0.01;
-	boss.health  = 5;
+	boss.health  = 2;
 	boss.anis.w = 64;
 	boss.anis.h = 64;
+	boss.scale = 2;
 	boss.anis.offset.x = 0;
-	boss.anis.offset.y = 0;
+	boss.anis.offset.y = -5.5;
 	boss.addAnis({
 		stand: { row: 0, frames: 3, frameDelay: 10 },
 		move: { row: 1, frames: 5, frameDelay: 10 },
@@ -171,7 +172,7 @@ function initializeEnemies(){
 		bounceU: {row: 9, frames: 5, frameDelay: 10},
 		bounceD: {row: 10, frames: 6, frameDelay: 10},
         death: { row: 7, frames: 10, frameDelay: 10},
-        dead: { row: 20, frames: 0}
+        dead: { row: 4, frames: 1}
 	})
     for(b of boss) b.changeAni('stand');
 
@@ -203,6 +204,83 @@ function enemyProximity() {
 			}else{		//Walking enemies move only on the X axis
 				e.moveTowards(activePlayer.x - (20*e.dir),enemyCurrentY, e.groups[2].speed)	
 			}
+		}
+	}
+}
+
+function initializeBoss(){
+	for(sp of bossSpawner){		
+		goblinKing = new boss.Sprite(sp.position.x, sp.position.y)
+		goblinKing.mirror.x = true;
+		bossAttackArea = new Sprite(goblinKing.x-50,goblinKing.y,75,4);
+		bossAttackArea.scale = 2;
+		bossAttackArea.overlaps(goblinKing);
+		bossAttackArea.overlaps(lizard);
+		bossAttackArea.visible = false;
+		bossAttackArea.canDmg = false;
+		bossAttackArea.spriteSheet = bossAttackAreaImg;
+		bossAttackArea.anis.w = 64;
+		bossAttackArea.anis.h = 64;
+		bossAttackArea.anis.offset.x = -5;
+		bossAttackArea.addAnis({
+			active: {row: 0, frames: 12, frameDelay: 5},
+			inactive: {row:10, frames:0}
+		})
+		bossAttackArea.changeAni('inactive')
+   }
+}
+let bossBody, deathTrigger = false;
+async function bossAI(){
+	if(goblinKing.health>0){
+		bossAttack();
+	}else if(!deathTrigger){
+		deathTrigger = true;
+		bossAttackArea.remove();
+		bossBody = new boss.Sprite(goblinKing.x, goblinKing.y)
+		bossBody.overlaps(goblinKing);
+		bossBody.overlaps(lizard);
+		goblinKing.remove();
+		await bossBody.changeAni(['death','dead']);
+	}
+}
+let bossAttackAreaTimer, canBossAttack = true, bossPrevFrame;
+async function bossAttack(){
+	if(canBossAttack){
+		canBossAttack = false
+		bossPrevFrame = frameCount;
+		await goblinKing.changeAni(['bounceU','bounceD']);
+		bossAttackArea.canDmg = true;
+		//bossAttackArea = new Sprite(b.x,b.y,100,8);
+		bossAttackArea.visible = true;
+		bossAttackArea.changeAni('active');
+		await goblinKing.changeAni('stand');
+		if(abs(bossPrevFrame-frameCount)>80){
+			bossAttackArea.visible = false;
+			bossAttackArea.canDmg = false;
+			bossAttackArea.changeAni('inactive')
+		}
+		if (bossAttackArea.overlapping(lizard)) damage();
+	}
+	if(abs(bossPrevFrame-frameCount)>350){
+		canBossAttack = true
+	}	
+
+	//bossAttackAreaTimer = setInterval(()=>{
+	//	//bossAttackArea.remove();
+//
+	//	clearInterval(bossAttackAreaTimer);
+	//	bossAttackAreaTimer = undefined;
+	//}, 5000)
+}
+
+async function damageBoss(area){
+	if(!bossAttackArea.canDmg){
+		if(abs(goblinKing.x - area.x) < 24 && abs(goblinKing.y - area.y) < 24){
+			canDamage = false;
+			defeatSound.play();
+			await goblinKing.changeAni(['damage','stand'])
+			goblinKing.health--
+			canDamage = true;
 		}
 	}
 }

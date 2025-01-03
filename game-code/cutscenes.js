@@ -92,3 +92,8 @@ async function introCutscene(){
 	
 	
 }
+
+
+function endCutscene(){
+	
+}

@@ -258,6 +258,15 @@ function setEnviroment(tileSet){
 		invBlock.tile = 'i';
 		invBlock.visible = false;
 
+		bossSpawner = new Group();
+		bossSpawner.layer = 3;
+		bossSpawner.collider = 'static';
+		bossSpawner.w = 1;
+		bossSpawner.h = 1;
+		bossSpawner.tile = 'B';
+		bossSpawner.visible = false;
+		bossSpawner.overlaps(allSprites);
+
 }
 //Updates the tileset image
 //All the tiles have to be reset with addAni()
