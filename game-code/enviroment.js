@@ -267,6 +267,15 @@ function setEnviroment(tileSet){
 		bossSpawner.visible = false;
 		bossSpawner.overlaps(allSprites);
 
+		finaleTrigger = new Group();
+		finaleTrigger.layer = 3;
+		finaleTrigger.collider = 'static';
+		finaleTrigger.w = 1;
+		finaleTrigger.h = 1;
+		finaleTrigger.tile = 'T';
+		finaleTrigger.visible = false;
+		finaleTrigger.overlaps(allSprites);
+
 }
 //Updates the tileset image
 //All the tiles have to be reset with addAni()

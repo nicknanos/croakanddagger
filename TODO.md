@@ -1,8 +1,6 @@
 - [x]Add Sensors to player (top, bottom, left, right)
 - [x]Tune enemy chase(colliders, damage)
 - [x]Make forest leveles
-- []ADD FALLING CHECK/ANIMATION
-- []TRY ADDING IMAGE IN FOREGROUNG image()
 - []Use only one variable for player(remove activeplayer, character, lizard)
 - []Enemies die on spikes
 - [x]Vertical level for mountain
@@ -14,5 +12,6 @@
 - [] Finish cutscenes
 - [] Tutorial level
 - [] Add tint according to level
+- [] Change asset routing to work online
 
 - []JsDoc Documentation?

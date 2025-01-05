@@ -49,7 +49,7 @@ let chasing = false;
 
 //Sprites and Assets
 let hero, partner, witch, lizard, portal, hex, frog, enemies, fly, leaf, bat, cobra, ghoul, imp, boss, goblinKing, bossAttackArea;
-let heroImg, partnerImg, witchImg, lizardImg, portalImg, hexImg, frogImg, cloudImg, flyImg, leafImg, batImg, cobraImg, ghoulImg, impImg, bossImg,bossAttackAreaImg, menuImg;
+let heroImg, partnerImg, witchImg, lizardImg, portalImg, hexImg, frogImg, cloudImg, flyImg, leafImg, batImg, cobraImg, ghoulImg, impImg, bossImg, bossAttackAreaImg, menuImg;
 
 let enemyGroup = {e1: undefined, e2: undefined}
 
@@ -62,7 +62,7 @@ let floor, waitingRoom;
 let backgroundImg;
 
 //Sounds
-let forestMusic, mountainMusic, entranceMusic, castleMusic, coinSound, damageSound, defeatSound, bossMusic, menuMusic, introMusic;
+let forestMusic, mountainMusic, entranceMusic, castleMusic, coinSound, damageSound, defeatSound, bossMusic, menuMusic, introMusic, outroMusic;
 let mapMusic;
 
 //ui
@@ -217,6 +217,29 @@ let introScenes = [
 		img: undefined,
 	},
 ]
+
+let outroScenes = [
+	{
+		file: './assets/outro/1.jpg',
+		img: undefined,
+	},
+	{
+		file: './assets/outro/2.jpg',
+		img: undefined,
+	},
+	{
+		file: './assets/outro/3.jpg',
+		img: undefined,
+	},
+	{
+		file: './assets/outro/4.jpg',
+		img: undefined,
+	},
+	{
+		file: './assets/outro/5.jpg',
+		img: undefined,
+	},
+]
 let currentScene = 0;
 
 let test
@@ -242,6 +265,10 @@ function preload() {
 	}
 
 	for (let b of introScenes){
+		b.img = loadImage(`${b.file}`)
+	}
+
+	for (let b of outroScenes){
 		b.img = loadImage(`${b.file}`)
 	}
 
@@ -274,8 +301,6 @@ function preload() {
 	entranceMusic = loadSound('./assets/sound/entrance.mp3');
 	castleMusic = loadSound('./assets/sound/castle.ogg');
 	bossMusic = loadSound('./assets/sound/boss-music.ogg');
-
-
 	coinSound = loadSound('./assets/sound/coin.wav');
 	damageSound = loadSound('./assets/sound/damage.wav');
 	damageSound.setVolume(.5)
@@ -285,6 +310,8 @@ function preload() {
 	menuMusic.setVolume(.3);
 	introMusic = loadSound('./assets/sound/intro-music.ogg');
 	introMusic.setVolume(.3);
+	outroMusic = loadSound('./assets/sound/outro-music.ogg');
+	outroMusic.setVolume(.3);
 
 	heartImg = loadImage('./assets/ui/heart.png');
 	menuImg = loadImage('./assets/menu.jpg');
@@ -327,6 +354,8 @@ function update() {
 	if(gameState=='menu') menu();
 	if(gameState=='intro') intro();
 	if(gameState=='runGame') runGame();
+	if(gameState=='endGame') endGame();
+	if(gameState=='replay') location.reload();
 }
 
 //Draws elements ignoring camera controll
@@ -359,7 +388,21 @@ function intro(){
 	if(currentScene<introScenes.length){
 		background(introScenes[currentScene].img);
 		if(mouse.pressed()) currentScene++;
-	} else gameState = 'runGame'
+	} else{
+		currentScene = 0;
+		gameState = 'runGame';
+	} 
+}
+
+function endGame(){
+	allSprites.remove();
+	bossMusic.pause();
+	outroMusic.play();
+	mouse.visible = true;
+	if(currentScene<outroScenes.length){
+		background(outroScenes[currentScene].img);
+		if(mouse.pressed()) ++currentScene;
+	} else gameState = 'replay';
 }
 
 function runGame(){
@@ -377,6 +420,7 @@ function runGame(){
 	//Camera Controlls
 	if(currentMap!='bossRoom'){
 		cameraControll(activePlayer, tileGroup, 4);
+		enemyProximity();
 	}else {
 		camera.x =spawner().x + 34;
 		camera.y =spawner().y - 48;
@@ -393,7 +437,6 @@ function runGame(){
 	keepScore();
 	
 	//Check when enemy is close enought to chase player
-	enemyProximity();
 	//Background Music
 	backgroundMusic(volume = .2);
 	//check if player gets damaged
@@ -409,6 +452,14 @@ function runGame(){
 	if (currentMap == 'bossRoom'){
 		lizard.overlaps(goblinKing)
 		bossAI();
+		if(lizard.overlaps(finaleTrigger)&&deathTrigger){
+			endLevel();
+		}
+		if(currentLevel==7) {
+			witch.mirror.x = true;
+			frog.mirror.x = true;
+			if(lizard.overlaps(frog)) gameState = 'endGame'
+		}
 	}	
 }
 
@@ -523,7 +574,7 @@ async function atttack(character) {
 	await character.changeAni('slash'); //plays attack animation
 	character.changeAni('stand');       //
 	changeState('IDLE')
-	if(!(currentMap == 'bossRoom')){
+	if(!(currentLevel == 6)){
 		await attackAreaProximity(attackArea);
 	}else{
 		await damageBoss(attackArea);
@@ -606,7 +657,7 @@ function keepScore() {
 // this is used beacause attackArea.overlaps(enemy) doesnt work, even thought it should
 async function attackAreaProximity(area) {
 	for (let e of enemies){
-		if(abs(e.x - area.x) < 18 && abs(e.y - area.y) < 18){
+		if(abs(e.x - area.x) < 18 && abs(e.y - area.y) < 25){
 			canDamage = false;
 			defeatSound.play();
 			await e.changeAni(['death','dead'])

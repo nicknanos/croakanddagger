@@ -176,6 +176,55 @@ function initializeEnemies(){
 	})
     for(b of boss) b.changeAni('stand');
 
+
+	witch = new enemies.Group();
+	witch.w = 6;
+	witch.h = 10;
+	witch.scale = 2;
+	witch.layer = 5;
+	witch.mirror.x = true;
+	witch.rotationLock = 'true';
+	witch.spriteSheet = witchImg;
+	witch.anis.offset.x = 0;
+	witch.anis.offset.y = -2;
+	witch.anis.frameDelay = 6;
+	witch.friction = 0;
+	witch.anis.w=32;
+	witch.anis.h=32;
+	witch.addAnis({
+		stand: { row: 0, frames: 4, frameDelay: 10},
+		run: { row: 1, frames: 8 },
+        hex: { row: 2, frames: 8, frameDelay: 10},
+        death: { row: 4, frames: 10, frameDelay: 10},
+        dead: { row: 20, frames: 0, frameDelay: 10},
+        fly: { row: 5, frames: 4, frameDelay: 10},
+        hit: { row: 3, frames: 4, frameDelay: 10}
+	});
+	for (w of witch) w.changeAni('stand');
+
+
+	frog = new enemies.Group();
+	frog.w = 5;
+	frog.h = 5;
+	frog.scale = 2;
+	frog.layer = 5;
+	frog.mirror.x = true;
+	frog.rotationLock = true;
+	frog.friction = 0;
+	frog.spriteSheet = frogImg;
+	frog.anis.offset.x = 0;
+	frog.anis.offset.y = -5;
+	frog.anis.frameDelay = 10;
+	frog.anis.w=32;
+	frog.anis.h=32;
+	frog.addAnis({
+		stand: { row: 0, frames: 4 },
+		move: { row: 1, frames: 6, frameDelay:5 },
+		jump: { row: 2, frames: 5, frameDelay: 10 },
+		death: { row: 0, frames: 1, frameDelay: 10},
+        dead: { row: 20, frames: 0, frameDelay: 10},
+	});
+	for(f of frog)  f.changeAni('stand');
 }
 
 //Constantly checks if enemy is near player
@@ -275,7 +324,7 @@ async function bossAttack(){
 
 async function damageBoss(area){
 	if(!bossAttackArea.canDmg){
-		if(abs(goblinKing.x - area.x) < 24 && abs(goblinKing.y - area.y) < 24){
+		if(abs(goblinKing.x - area.x) < 30 && abs(goblinKing.y - area.y) < 30){
 			canDamage = false;
 			defeatSound.play();
 			await goblinKing.changeAni(['damage','stand'])
