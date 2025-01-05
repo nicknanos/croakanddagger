@@ -13,5 +13,6 @@
 - [x]Add boss fight logic
 - [] Finish cutscenes
 - [] Tutorial level
+- [] Add tint according to level
 
 - []JsDoc Documentation?
