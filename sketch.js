@@ -72,25 +72,25 @@ let heartImg
 // background images object
 let forestBackground = [
 	{
-		file: 'assets/backgrounds/forest/1.png',
+		file: 'assets/Backgrounds/forest/1.png',
 		img: undefined,
 		x: 0,
 		speed: 0	
 	},
 	{
-		file: 'assets/backgrounds/forest/2.png',
+		file: 'assets/Backgrounds/forest/2.png',
 		img: undefined,
 		x: 0,
 		speed: 0.2	
 	},
 	{
-		file: 'assets/backgrounds/forest/3.png',
+		file: 'assets/Backgrounds/forest/3.png',
 		img: undefined,
 		x: 0,
 		speed: 0.4	
 	},
 	{
-		file: 'assets/backgrounds/forest/4.png',
+		file: 'assets/Backgrounds/forest/4.png',
 		img: undefined,
 		x: 0,
 		speed: 0.6	
@@ -99,31 +99,31 @@ let forestBackground = [
 
 let mountainBackground = [
 	{
-		file: 'assets/backgrounds/mountain/sky.png',
+		file: 'assets/Backgrounds/mountain/sky.png',
 		img: undefined,
 		x: 0,
 		speed: 0	
 	},
 	{
-		file: 'assets/backgrounds/mountain/city.png',
+		file: 'assets/Backgrounds/mountain/city.png',
 		img: undefined,
 		x: 0,
 		speed: 0.2	
 	},
 	{
-		file: 'assets/backgrounds/mountain/mountain1.png',
+		file: 'assets/Backgrounds/mountain/mountain1.png',
 		img: undefined,
 		x: 0,
 		speed: 0.4
 	},
 	{
-		file: 'assets/backgrounds/mountain/mountain2.png',
+		file: 'assets/Backgrounds/mountain/mountain2.png',
 		img: undefined,
 		x: 0,
 		speed: 0.6
 	},
 	{
-		file: 'assets/backgrounds/mountain/mountain3.png',
+		file: 'assets/Backgrounds/mountain/mountain3.png',
 		img: undefined,
 		x: 0,
 		speed: 0.7
@@ -132,31 +132,31 @@ let mountainBackground = [
 
 let entranceBackground = [
 	{
-		file: 'assets/backgrounds/entrance/1.png',
+		file: 'assets/Backgrounds/entrance/1.png',
 		img: undefined,
 		x: 0,
 		speed: 0	
 	},
 	{
-		file: 'assets/backgrounds/entrance/2.png',
+		file: 'assets/Backgrounds/entrance/2.png',
 		img: undefined,
 		x: 0,
 		speed: 0	
 	},
 	{
-		file: 'assets/backgrounds/entrance/3.png',
+		file: 'assets/Backgrounds/entrance/3.png',
 		img: undefined,
 		x: 0,
 		speed: 0
 	},
 	{
-		file: 'assets/backgrounds/entrance/4.png',
+		file: 'assets/Backgrounds/entrance/4.png',
 		img: undefined,
 		x: 0,
 		speed: 0
 	},
 	{
-		file: 'assets/backgrounds/entrance/5.png',
+		file: 'assets/Backgrounds/entrance/5.png',
 		img: undefined,
 		x: 0,
 		speed: 0
@@ -165,7 +165,7 @@ let entranceBackground = [
 
 let castleBackground = [
 	{
-		file: 'assets/backgrounds/castle/wall.png',
+		file: 'assets/Backgrounds/castle/wall.png',
 		img: undefined,
 		x: 0,
 		speed: 0	
@@ -174,25 +174,25 @@ let castleBackground = [
 
 let bossBackground = [
 	{
-		file: 'assets/backgrounds/boss/sky-full.png',
+		file: 'assets/Backgrounds/boss/sky-full.png',
 		img: undefined,
 		x: 0,
 		speed: 0	
 	},
 	{
-		file: 'assets/backgrounds/boss/mountain1-full.png',
+		file: 'assets/Backgrounds/boss/mountain1-full.png',
 		img: undefined,
 		x: 0,
 		speed: 0.2	
 	},
 	{
-		file: 'assets/backgrounds/boss/mountain2-full.png',
+		file: 'assets/Backgrounds/boss/mountain2-full.png',
 		img: undefined,
 		x: 0,
 		speed: 0.4
 	},
 	{
-		file: 'assets/backgrounds/boss/foreground.png',
+		file: 'assets/Backgrounds/boss/foreground.png',
 		img: undefined,
 		x: 0,
 		speed: 0
@@ -280,12 +280,12 @@ function preload() {
 	hexImg = loadImage('assets/boss/hex.png');
 	frogImg = loadImage('assets/boss/frog.png');
 
-	cloudImg =loadImage('assets/backgrounds/forest/cloud.png');
+	cloudImg =loadImage('assets/Backgrounds/forest/cloud.png');
 
-	forestTiles = loadImage('assets/enviroment/forestTiles2.png');
-	mountainTiles = loadImage('assets/enviroment/mountainTiles.png');
-	castleTiles = loadImage('assets/enviroment/castleTiles.png');
-	coinsImg = loadImage('assets/enviroment/coin.png');
+	forestTiles = loadImage('assets/Enviroment/forestTiles2.png');
+	mountainTiles = loadImage('assets/Enviroment/mountainTiles.png');
+	castleTiles = loadImage('assets/Enviroment/castleTiles.png');
+	coinsImg = loadImage('assets/Enviroment/coin.png');
 	flyImg = loadImage('assets/enemies/forest/fly.png');
 	leafImg = loadImage('assets/enemies/forest/leaf.png');
 	batImg = loadImage('assets/enemies/mountain/bat.png');
