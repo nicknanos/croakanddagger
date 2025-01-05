@@ -72,25 +72,25 @@ let heartImg
 // background images object
 let forestBackground = [
 	{
-		file: './assets/backgrounds/forest/1.png',
+		file: 'assets/backgrounds/forest/1.png',
 		img: undefined,
 		x: 0,
 		speed: 0	
 	},
 	{
-		file: './assets/backgrounds/forest/2.png',
+		file: 'assets/backgrounds/forest/2.png',
 		img: undefined,
 		x: 0,
 		speed: 0.2	
 	},
 	{
-		file: './assets/backgrounds/forest/3.png',
+		file: 'assets/backgrounds/forest/3.png',
 		img: undefined,
 		x: 0,
 		speed: 0.4	
 	},
 	{
-		file: './assets/backgrounds/forest/4.png',
+		file: 'assets/backgrounds/forest/4.png',
 		img: undefined,
 		x: 0,
 		speed: 0.6	
@@ -99,31 +99,31 @@ let forestBackground = [
 
 let mountainBackground = [
 	{
-		file: './assets/backgrounds/mountain/sky.png',
+		file: 'assets/backgrounds/mountain/sky.png',
 		img: undefined,
 		x: 0,
 		speed: 0	
 	},
 	{
-		file: './assets/backgrounds/mountain/city.png',
+		file: 'assets/backgrounds/mountain/city.png',
 		img: undefined,
 		x: 0,
 		speed: 0.2	
 	},
 	{
-		file: './assets/backgrounds/mountain/mountain1.png',
+		file: 'assets/backgrounds/mountain/mountain1.png',
 		img: undefined,
 		x: 0,
 		speed: 0.4
 	},
 	{
-		file: './assets/backgrounds/mountain/mountain2.png',
+		file: 'assets/backgrounds/mountain/mountain2.png',
 		img: undefined,
 		x: 0,
 		speed: 0.6
 	},
 	{
-		file: './assets/backgrounds/mountain/mountain3.png',
+		file: 'assets/backgrounds/mountain/mountain3.png',
 		img: undefined,
 		x: 0,
 		speed: 0.7
@@ -132,31 +132,31 @@ let mountainBackground = [
 
 let entranceBackground = [
 	{
-		file: './assets/backgrounds/entrance/1.png',
+		file: 'assets/backgrounds/entrance/1.png',
 		img: undefined,
 		x: 0,
 		speed: 0	
 	},
 	{
-		file: './assets/backgrounds/entrance/2.png',
+		file: 'assets/backgrounds/entrance/2.png',
 		img: undefined,
 		x: 0,
 		speed: 0	
 	},
 	{
-		file: './assets/backgrounds/entrance/3.png',
+		file: 'assets/backgrounds/entrance/3.png',
 		img: undefined,
 		x: 0,
 		speed: 0
 	},
 	{
-		file: './assets/backgrounds/entrance/4.png',
+		file: 'assets/backgrounds/entrance/4.png',
 		img: undefined,
 		x: 0,
 		speed: 0
 	},
 	{
-		file: './assets/backgrounds/entrance/5.png',
+		file: 'assets/backgrounds/entrance/5.png',
 		img: undefined,
 		x: 0,
 		speed: 0
@@ -165,7 +165,7 @@ let entranceBackground = [
 
 let castleBackground = [
 	{
-		file: './assets/backgrounds/castle/wall.png',
+		file: 'assets/backgrounds/castle/wall.png',
 		img: undefined,
 		x: 0,
 		speed: 0	
@@ -174,25 +174,25 @@ let castleBackground = [
 
 let bossBackground = [
 	{
-		file: './assets/backgrounds/boss/sky-full.png',
+		file: 'assets/backgrounds/boss/sky-full.png',
 		img: undefined,
 		x: 0,
 		speed: 0	
 	},
 	{
-		file: './assets/backgrounds/boss/mountain1-full.png',
+		file: 'assets/backgrounds/boss/mountain1-full.png',
 		img: undefined,
 		x: 0,
 		speed: 0.2	
 	},
 	{
-		file: './assets/backgrounds/boss/mountain2-full.png',
+		file: 'assets/backgrounds/boss/mountain2-full.png',
 		img: undefined,
 		x: 0,
 		speed: 0.4
 	},
 	{
-		file: './assets/backgrounds/boss/foreground.png',
+		file: 'assets/backgrounds/boss/foreground.png',
 		img: undefined,
 		x: 0,
 		speed: 0
@@ -201,42 +201,42 @@ let bossBackground = [
 
 let introScenes = [
 	{
-		file: './assets/intro/1.jpg',
+		file: 'assets/intro/1.jpg',
 		img: undefined,
 	},
 	{
-		file: './assets/intro/2.jpg',
+		file: 'assets/intro/2.jpg',
 		img: undefined,
 	},
 	{
-		file: './assets/intro/3.jpg',
+		file: 'assets/intro/3.jpg',
 		img: undefined,
 	},
 	{
-		file: './assets/intro/4.jpg',
+		file: 'assets/intro/4.jpg',
 		img: undefined,
 	},
 ]
 
 let outroScenes = [
 	{
-		file: './assets/outro/1.jpg',
+		file: 'assets/outro/1.jpg',
 		img: undefined,
 	},
 	{
-		file: './assets/outro/2.jpg',
+		file: 'assets/outro/2.jpg',
 		img: undefined,
 	},
 	{
-		file: './assets/outro/3.jpg',
+		file: 'assets/outro/3.jpg',
 		img: undefined,
 	},
 	{
-		file: './assets/outro/4.jpg',
+		file: 'assets/outro/4.jpg',
 		img: undefined,
 	},
 	{
-		file: './assets/outro/5.jpg',
+		file: 'assets/outro/5.jpg',
 		img: undefined,
 	},
 ]
@@ -272,49 +272,49 @@ function preload() {
 		b.img = loadImage(`${b.file}`)
 	}
 
-	heroImg = loadImage('./assets/player/hero.png');
-	partnerImg  = loadImage('./assets/player/partner.png');
-	witchImg = loadImage('./assets/boss/witch.png');
-	lizardImg = loadImage('./assets/player/lizard.png');
-	portalImg =loadImage('./assets/boss/portal.png');
-	hexImg = loadImage('./assets/boss/hex.png');
-	frogImg = loadImage('./assets/boss/frog.png');
+	heroImg = loadImage('assets/player/hero.png');
+	partnerImg  = loadImage('assets/player/partner.png');
+	witchImg = loadImage('assets/boss/witch.png');
+	lizardImg = loadImage('assets/player/lizard.png');
+	portalImg =loadImage('assets/boss/portal.png');
+	hexImg = loadImage('assets/boss/hex.png');
+	frogImg = loadImage('assets/boss/frog.png');
 
-	cloudImg =loadImage('./assets/backgrounds/forest/cloud.png');
+	cloudImg =loadImage('assets/backgrounds/forest/cloud.png');
 
-	forestTiles = loadImage('./assets/enviroment/forestTiles2.png');
-	mountainTiles = loadImage('./assets/enviroment/mountainTiles.png');
-	castleTiles = loadImage('./assets/enviroment/castleTiles.png');
-	coinsImg = loadImage('./assets/enviroment/coin.png');
-	flyImg = loadImage('./assets/enemies/forest/fly.png');
-	leafImg = loadImage('./assets/enemies/forest/leaf.png');
-	batImg = loadImage('./assets/enemies/mountain/bat.png');
-	cobraImg = loadImage('./assets/enemies/mountain/cobra.png');
-	ghoulImg = loadImage('./assets/enemies/castle/ghoul.png');
-	impImg = loadImage('./assets/enemies/castle/imp.png');
-	bossImg = loadImage('./assets/boss/goblin.png');
-	bossAttackAreaImg = loadImage('./assets/boss/bossAttack.png');
+	forestTiles = loadImage('assets/enviroment/forestTiles2.png');
+	mountainTiles = loadImage('assets/enviroment/mountainTiles.png');
+	castleTiles = loadImage('assets/enviroment/castleTiles.png');
+	coinsImg = loadImage('assets/enviroment/coin.png');
+	flyImg = loadImage('assets/enemies/forest/fly.png');
+	leafImg = loadImage('assets/enemies/forest/leaf.png');
+	batImg = loadImage('assets/enemies/mountain/bat.png');
+	cobraImg = loadImage('assets/enemies/mountain/cobra.png');
+	ghoulImg = loadImage('assets/enemies/castle/ghoul.png');
+	impImg = loadImage('assets/enemies/castle/imp.png');
+	bossImg = loadImage('assets/boss/goblin.png');
+	bossAttackAreaImg = loadImage('assets/boss/bossAttack.png');
 
 
-	forestMusic = loadSound('./assets/sound/forest.ogg');
-	mountainMusic = loadSound('./assets/sound/mountain.ogg');
-	entranceMusic = loadSound('./assets/sound/entrance.mp3');
-	castleMusic = loadSound('./assets/sound/castle.ogg');
-	bossMusic = loadSound('./assets/sound/boss-music.ogg');
-	coinSound = loadSound('./assets/sound/coin.wav');
-	damageSound = loadSound('./assets/sound/damage.wav');
+	forestMusic = loadSound('assets/sound/forest.ogg');
+	mountainMusic = loadSound('assets/sound/mountain.ogg');
+	entranceMusic = loadSound('assets/sound/entrance.mp3');
+	castleMusic = loadSound('assets/sound/castle.ogg');
+	bossMusic = loadSound('assets/sound/boss-music.ogg');
+	coinSound = loadSound('assets/sound/coin.wav');
+	damageSound = loadSound('assets/sound/damage.wav');
 	damageSound.setVolume(.5)
-	defeatSound = loadSound('./assets/sound/enemy-defeat.wav');
+	defeatSound = loadSound('assets/sound/enemy-defeat.wav');
 	defeatSound.setVolume(1);
-	menuMusic = loadSound('./assets/sound/menu.ogg');
+	menuMusic = loadSound('assets/sound/menu.ogg');
 	menuMusic.setVolume(.3);
-	introMusic = loadSound('./assets/sound/intro-music.ogg');
+	introMusic = loadSound('assets/sound/intro-music.ogg');
 	introMusic.setVolume(.3);
-	outroMusic = loadSound('./assets/sound/outro-music.ogg');
+	outroMusic = loadSound('assets/sound/outro-music.ogg');
 	outroMusic.setVolume(.3);
 
-	heartImg = loadImage('./assets/ui/heart.png');
-	menuImg = loadImage('./assets/menu.jpg');
+	heartImg = loadImage('assets/ui/heart.png');
+	menuImg = loadImage('assets/menu.jpg');
 
 	initializeEnemies();
 }
