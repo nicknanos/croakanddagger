@@ -1,5 +1,5 @@
 //Set Variables
-let gameState = "runGame";
+let gameState = "menu";
 let mapGravity = 10;
 
 //Level Creation
@@ -49,7 +49,7 @@ let chasing = false;
 
 //Sprites and Assets
 let hero, partner, witch, lizard, portal, hex, frog, enemies, fly, leaf, bat, cobra, ghoul, imp, boss, goblinKing, bossAttackArea;
-let heroImg, partnerImg, witchImg, lizardImg, portalImg, hexImg, frogImg, cloudImg, flyImg, leafImg, batImg, cobraImg, ghoulImg, impImg, bossImg,bossAttackAreaImg;
+let heroImg, partnerImg, witchImg, lizardImg, portalImg, hexImg, frogImg, cloudImg, flyImg, leafImg, batImg, cobraImg, ghoulImg, impImg, bossImg,bossAttackAreaImg, menuImg;
 
 let enemyGroup = {e1: undefined, e2: undefined}
 
@@ -62,7 +62,7 @@ let floor, waitingRoom;
 let backgroundImg;
 
 //Sounds
-let forestMusic, mountainMusic, entranceMusic, castleMusic, coinSound, damageSound, defeatSound, bossMusic;
+let forestMusic, mountainMusic, entranceMusic, castleMusic, coinSound, damageSound, defeatSound, bossMusic, menuMusic, introMusic;
 let mapMusic;
 
 //ui
@@ -199,6 +199,25 @@ let bossBackground = [
 	}
 ];
 
+let introScenes = [
+	{
+		file: './assets/intro/1.jpg',
+		img: undefined,
+	},
+	{
+		file: './assets/intro/2.jpg',
+		img: undefined,
+	},
+	{
+		file: './assets/intro/3.jpg',
+		img: undefined,
+	},
+	{
+		file: './assets/intro/4.jpg',
+		img: undefined,
+	},
+]
+let currentScene = 0;
 
 let test
 
@@ -219,6 +238,10 @@ function preload() {
 	castleBackground[0].img = loadImage(castleBackground[0].file)
 
 	for (let b of bossBackground){
+		b.img = loadImage(`${b.file}`)
+	}
+
+	for (let b of introScenes){
 		b.img = loadImage(`${b.file}`)
 	}
 
@@ -258,10 +281,13 @@ function preload() {
 	damageSound.setVolume(.5)
 	defeatSound = loadSound('./assets/sound/enemy-defeat.wav');
 	defeatSound.setVolume(1);
-
+	menuMusic = loadSound('./assets/sound/menu.ogg');
+	menuMusic.setVolume(.3);
+	introMusic = loadSound('./assets/sound/intro-music.ogg');
+	introMusic.setVolume(.3);
 
 	heartImg = loadImage('./assets/ui/heart.png');
-
+	menuImg = loadImage('./assets/menu.jpg');
 
 	initializeEnemies();
 }
@@ -283,6 +309,9 @@ function setup() {
 
 	//UI
 	ui = new Group();
+	ui.isPerm = true;
+	ui.overlaps(allSprites);
+	ui.layer = 100;
 	for (let i = 0; i < lizard.maxHealth; i++) {
 		heart = new ui.Sprite(30 + i * 40, 25, 19, 18, 'n');
 		heart.spriteSheet = heartImg;
@@ -295,58 +324,92 @@ function setup() {
 }
 function update() {
 	clear();
-	if(gameState=='runGame'){
-		//Background
-		displayBackground();
-		//Player Controlls
-		gameControlls (activePlayer);
-		//Camera Controlls
-		if(currentMap!='bossRoom'){
-			cameraControll(activePlayer, tileGroup, 4);
-		}else {
-			camera.x =spawner().x + 34;
-			camera.y =spawner().y - 48;
-		}
-		//Die on spikes
-		if(groundSensor.overlaps(spikes)) {
-			death();
-			damageSound.play(); 
-		}
-		//Change to next level
-		if(lizard.overlaps(endPoint)) endLevel();
-		//collect coins
-		lizard.overlaps(coins)
-		keepScore();
-		
-		//Check when enemy is close enought to chase player
-		enemyProximity();
-		//Background Music
-		backgroundMusic(.2);
-		//check if player gets damaged
-		if(enemies.overlapping(lizard)&&canDamage) damage();
-		if (frameCount-prevFrame > 100){
-			lizard.opacity = 1
-			prevFrame = frameCount
-		}
-
-		//Debug Mode
-		gameDebug(showSprites = true);
-
-		if (currentMap == 'bossRoom'){
-			lizard.overlaps(goblinKing)
-			bossAI();
-		}		
-	}
+	if(gameState=='menu') menu();
+	if(gameState=='intro') intro();
+	if(gameState=='runGame') runGame();
 }
 
 //Draws elements ignoring camera controll
 function drawFrame() {
 	camera.off();
-	ui.color = 'orange';
-	for (let i = 0; i < 9; i++) {
-		if (kb[i + 1]) ui[i].color = 'red';
-	}
 	ui.draw();
+}
+
+//Menu function
+function menu(){
+	mouse.visible = false;
+	menuMusic.play();
+	walkableTiles.visible = false;
+	enemies.visible = false;
+	lizard.visible  = false;
+	ui.visible      = false;
+	coins.visible   = false;
+	background(menuImg)
+	textAlign(CENTER, MIDDLE);
+	fill('white');
+	textSize(30);
+	text('Press "Space" to start',canvas.hw, canvas.hh+150)
+	if(kb.presses('space')) gameState = 'intro';
+}
+
+function intro(){
+	menuMusic.pause();
+	introMusic.play();
+	mouse.visible = true;
+	if(currentScene<introScenes.length){
+		background(introScenes[currentScene].img);
+		if(mouse.pressed()) currentScene++;
+	} else gameState = 'runGame'
+}
+
+function runGame(){
+	mouse.visible = false;
+	introMusic.pause();
+	walkableTiles.visible = true;
+	enemies.visible = true;
+	lizard.visible  = true;
+	ui.visible      = true;
+	coins.visible   = true;
+	//Background
+	displayBackground();
+	//Player Controlls
+	gameControlls (activePlayer);
+	//Camera Controlls
+	if(currentMap!='bossRoom'){
+		cameraControll(activePlayer, tileGroup, 4);
+	}else {
+		camera.x =spawner().x + 34;
+		camera.y =spawner().y - 48;
+	}
+	//Die on spikes
+	if(groundSensor.overlaps(spikes)) {
+		death();
+		damageSound.play(); 
+	}
+	//Change to next level
+	if(lizard.overlaps(endPoint)) endLevel();
+	//collect coins
+	lizard.overlaps(coins)
+	keepScore();
+	
+	//Check when enemy is close enought to chase player
+	enemyProximity();
+	//Background Music
+	backgroundMusic(volume = .2);
+	//check if player gets damaged
+	if(enemies.overlapping(lizard)&&canDamage) damage();
+	if (frameCount-prevFrame > 100){
+		lizard.opacity = 1
+		prevFrame = frameCount
+	}
+
+	//Debug Mode
+	gameDebug(showSprites = true);
+
+	if (currentMap == 'bossRoom'){
+		lizard.overlaps(goblinKing)
+		bossAI();
+	}	
 }
 
 //keyboard/controller controlls
@@ -413,9 +476,11 @@ function gameControlls(character){
 }
 
 //resets player to starting position
-function resetplayer(resetCamera){
-	lizard.health = lizard.maxHealth;
-	for (h of ui) h.changeAni('full')
+function resetplayer(resetCamera, resetHealth){
+	if(resetHealth){
+		lizard.health = lizard.maxHealth;
+		for (h of ui) h.changeAni('full')
+	}
     lizard.speed = 0;
     lizard.rotationSpeed = 0;
     lizard.rotation = 0;
@@ -516,7 +581,7 @@ async function death() {
 	lizard.opacity = 1;
 	lizard.vel.x = 0;
 	await lizard.changeAni(['death','dead']);
-	resetplayer(resetCamera =false);
+	resetplayer(resetCamera =false, resetHealth = true);
 	lizard.changeAni('stand')
 	inSequence = false;
 }
@@ -601,7 +666,7 @@ function damage() {
 	damageSound.play();
 	shake(lizard);
 	console.log(frameCount-prevFrame);
-	//ui[lizard.health-1].changeAni('empty');
+	ui[lizard.health-1].changeAni('empty');
 	lizard.health--;
 	if(lizard.health==0) death();
 	damageTimer = setInterval(()=>{
