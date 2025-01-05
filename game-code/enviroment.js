@@ -98,7 +98,7 @@ function setEnviroment(tileSet){
 		walkableTiles = new myTiles.Group();
 
 		//ground
-		ground = new myTiles.Group();
+		ground = new walkableTiles.Group();
 		ground.layer = 1;
 		ground.collider = 'static';
 		ground.w = tileSize;
