@@ -18,8 +18,8 @@ function changeLevel(){
             allSprites[i] != cameraSensor &&
             allSprites[i] != leftSensor &&
             allSprites[i] != rightSensor &&
-            allSprites[i] != topSensor
-
+            allSprites[i] != topSensor &&
+            !allSprites[i].isPerm
         ) {
             allSpritesGroup.add(allSprites[i]);
         }
@@ -69,7 +69,7 @@ function changeLevel(){
         //update map name
         currentMap = levels[currentLevel].map;
         //reste player to spawn point
-        if(currentLevel>0) resetplayer(resetCamera = true);
+        if(currentLevel>0) resetplayer(resetCamera = true, resetHealth = false);
         currentLevel++;
         console.log(currentLevel);
         if(currentMap=='bossRoom') initializeBoss();
@@ -100,8 +100,8 @@ function preloadLevels() {
 "b........fffff...............f.<g>........rbl.....f.......rbl......f.........................................f.........................................<bb...bb>...........<bb.....bb>..........................<bbbbbbbb...............................",
 "b..............................rbb>.......rbl.............rbl....................f................c...................f.......f...f...f...............<bbb...bbb>.........<bbb.....bbb>........................<bbbbbbbbb.........ff....................",
 "b...............<gg>.......ff..rbbb>......................rbl........ff.............f............c.c.................................................<bbbb...bbbb>.......<bbbb.....bbbb>......................<bbbbbbbbbb...............................",
-"b.........S...E.rbbl.........2.rbbbb>............2....2...rbl.............................2..g......................................................<bbbbbnnnbbbbb>.....<bbbbbnnnnnbbbbb>............2.......<bbbbbbbbbbb.ccc...........................",
-"bgggggggggggggggbbbbgggggggggggbbbbbbgggggggggggggggggggggbbbgggggggggggg...gggggggggggggggggbggg...ggggggggggggggggggggggggggggggggggggggggggggggggbbbbbbgggbbbbbbgggggbbbbbbbbbbbbbbbbbggggggggggggggggggggbbbbbbbbbbbbggggggggggggggggggggggggggggggg",
+"b.........S.....rbbl.........2.rbbbb>............2....2...rbl.............................2..g......................................................<bbbbbnnnbbbbb>.....<bbbbbnnnnnbbbbb>............2.......<bbbbbbbbbbb.ccc.................E.........",
+"bgggggggggggggggbbbbgggggggggggbbbbbbgggggggggggggggggggggbbbgggggggggggg...gggggggggggggggggbggg...ggggggggggggggggggggggggggggggggggggggggggggggggbbbbbbbbbbbbbbbgggggbbbbbbbbbbbbbbbbbggggggggggggggggggggbbbbbbbbbbbbggggggggggggggggggggggggggggggg",
 "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbnnnbbbbbbbbbbbbbbbbbbbbbnnnbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
 "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
 "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
@@ -131,11 +131,11 @@ function preloadLevels() {
 "............................g...b..b............................<gbb....................f..rbl...rbl...rbl...................f...........f.................rbl......................<b...............................<.b.rbl...........ffff.................",
 "............................b...b..b.g.........................<bbb........................rbl...rbl...rbl..............................................f..rblc..ffff..............<b.............ff................<b.b.rbl................................",
 ".........................g..b...b..b.b...g...................<gbbbb..................f.....rbl...rbl.......................f...............f...........ff..rbl....................<bbc..ffff.......................<bb.b.rbl........f.......................",
-"............S......E..g..b..b...b..b.b...b..g.............<ggbbbb................2.........rbbnnnbbl..............................................2........rbl...............2...<bbbgg...........................<bbb.b.rbl................................",
-"ggggggggggggggggggggggbnnbnnbnnnbnnbnbnnnbnnbgggggggggggggbbbbbbbnnnnnnngggggggggggggggggggbbbbbbbbbgggggggggggggggggggggggggnnnnnnnnnnnnngggggggggggggggggbbbgggggggggggggggggggbbbbbbnnnngggggggggggggggggggggggbbbbnbnbbbgggggggggggggggggggggggggggggggg",
-"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"............S.........g..b..b...b..b.b...b..g.............<ggbbbb................2.........rbbnnnbbl..............................................2........rbl...............2...<bbbgg...........................<bbb.b.rbl.........................E............",
+"ggggggggggggggggggggggbnnbnnbnnnbnnbnbnnnbnnbgggggggggggggbbbbbbbnnnnnnngggggggggggggggggggbbbbbbbbbgggggggggggggggggggggggggnnnnnnnnnnnnngggggggggggggggggbbbgggggggggggggggggggbbbbbbnnnngggggggggggggggggggggggbbbbnbnbbbgggggggggggggggggggggggggggggggggggggg",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
         ],
         map: "forest",
         level: 1
@@ -152,7 +152,7 @@ function preloadLevels() {
 ".......r......................................l",
 ".......r....................1.................l",
 ".......r..............................................l",
-".......r..........g...2......2.........................l",
+".......r..........g...2......2.............E...........l",
 ".......r......ffffbffffffffffffffffffffffffffffffffffff",
 ".......r......................................l",
 ".......r...f..................................l",
@@ -205,7 +205,7 @@ function preloadLevels() {
 "...........................fffff..............l",
 ".b............................................l",
 ".b.....................fff..................c.l",
-".b...........S...E............................l",
+".b...........S................................l",
 "ggggggggggggggggggggggggggggggggggggggggggggggb",
 "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
 "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
@@ -238,7 +238,7 @@ function preloadLevels() {
 "b......................................................",
 "b......................................................",
 "b......................................................",
-"b........S...E.........................................",
+"b........S.............................E...............",
 "ggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
 ],
         map: "entrance",
@@ -260,7 +260,7 @@ function preloadLevels() {
 "l.....................................................................................................................2................................................................................r",
 "l.....................................................................................................................<>........<ggg..>................................................................r",
 "l.....................................................................................................................rl........r....fb>...............................................................r",
-"l...........................................................................................................f.....c...rl.......<b.....bb>....c.........................................................r",
+"l...........................................................................................................f.....c...rl.......<b.....bb>....c.........................................................rbbbbbbbbbbbbbbbbbbbbbbbbbb",
 "l..........................c..........................................................................1...............rl......<bb...f.bbb>.............................................................rbbbbbbbbbbbbbbbbbbbbbbbbbb",
 "l...........................................................................................<gg>...<ggggg>.....<ggggggbb.....<bbb.....bbbb>............................................................rbbbbbbbbbbbbbbbbbbbbbbbbbb",
 "l........................................................................................f..bbbb...bbbbbbb.....bbbbbbbbb.....rbbbf....bbbbb>...........................................................rbbbbbbbbbbbbbbbbbbbbbbbbbb",
@@ -268,8 +268,8 @@ function preloadLevels() {
 "...............f..........................f..........................f...............fff...................f................rbbbb....fbbbbbbb>.........................................................rtttttttttttttttttttttttttt",
 ".............................................f...................g.......g.................................................<bbbbb.....bbbbbbbb>...................................................................................",
 ".............f................................................g..b.......b.........f..........................f...........<bbbbbbcc.f.bbbbbbbbb>..................................................................................",
-".....S....E................................c..........1.......b..b2....2gb...............................................<bbbbbbb2c...bbbbbbbbbb>...........1g........2g....1......2g.............................................",
-"ggggggggggggggggnnnnnnnnnnnnnnnnnnnnnnnnnnggggggggggggggggggggbggbggggggbbggggggggggggnnnnnnnnnnnnnnnnnnnnnnnnnngggggggggbbbbbbbbgggggbbbbbbbbbbbggggggggggggbgggggggggbggggggggggggbggggggggggggggggggggggggggggggggggggggggggggg",
+".........S.................................c..........1.......b..b2....2gb...............................................<bbbbbbb2c...bbbbbbbbbb>...........1g........2g....1......2g.............E...............................",
+"nnggggggggggggggnnnnnnnnnnnnnnnnnnnnnnnnnnggggggggggggggggggggbggbggggggbbggggggggggggnnnnnnnnnnnnnnnnnnnnnnnnnngggggggggbbbbbbbbgggggbbbbbbbbbbbggggggggggggbgggggggggbggggggggggggbggggggggggggggggggggggggggggggggggggggggggggg",
 "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
 "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
 "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
