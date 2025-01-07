@@ -5,26 +5,32 @@
 const playerSpeed = 1.2;
 
 
-/**
+/** 
+ * 
  * Creates and initializes the lizard character sprite, including its size, animations, health, and various sensors 
  * that interact with the environment. The function sets up the lizard's appearance, behavior, and associated detection 
  * sensors to handle movement, collision, and state transitions during gameplay.
+ * 
+ * -**Ground Sensor**
+ * -Sprite attached to bottom of player, used in isOnGround
+ * -**Left/Right Sensors**
+ * -Sprites attached in the left and right of the player used in stuckCheck
+ * -**Top Sensor**
+ * -Currently not in use
+ * -**Camera Sensor**
+ * - Floating Sprite on top of player used in cameraControll
+ * 
+
  * 
  * @function spawnLizard
  * @param {number} x - The x-coordinate for the lizard's spawn position.
  * @param {number} y - The y-coordinate for the lizard's spawn position.
  * @returns {void} Does not return a value.
  * 
- * @details
- * -**Ground Sensor**
- * -Sprite attached to bottom of player, used in @see{@link isOnGround}
- * -**Left/Right Sensors**
- * -Sprites attached in the left and right of the player used in @see stuckCheck
- * -**Top Sensor**
- * -Currently not in use
- * -**Camera Sensor**
- * - Floating Sprite on top of player used in @see {@link cameraControll}
- * 
+
+ * @see {@link isOnGround}
+ * @see {@link stuckCheck}
+ * @see {@link cameraControll}
  */
 function spawnLizard(x,y){
     lizard = new Sprite(x, y);
@@ -146,7 +152,7 @@ function spawnLizard(x,y){
  * 
  * @returns {void}
  * 
- * @see spawnLizard for state initialization
+ * @see {@link spawnLizard} for state initialization
  */
 function changeState(state) {
 	lizard.prevState = lizard.currentState;	
@@ -187,7 +193,7 @@ function changeState(state) {
  * @function stuckCheck
  * @returns {void} 
  * 
- * @see spawnLizard for sensor initialization
+ * @see {@link spawnLizard} for sensor initialization
 
  */
 function stuckCheck() {

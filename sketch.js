@@ -62,7 +62,7 @@ let myTiles;
  * A subset of `myTiles` containing only walkable tiles.
  * Represents areas the player can move on.
  * @type {Group}
- * @see myTiles For the parent group of all tiles.
+ * @see {@link myTiles} For the parent group of all tiles.
  * @see {@link setEnviroment} for initialization
  */
 let walkableTiles;
@@ -71,7 +71,7 @@ let walkableTiles;
  * A subset of `myTiles` containing the spawn and level end point Groups.
  * Only one Sprite of each groupe is used per level to declare its starting and end point
  * @type {Group}
- * @see myTiles For the parent group of all tiles.
+ * @see {@link myTiles} For the parent group of all tiles.
  * @see {@link setEnviroment} for initialization
  */
 let spawnPoint, endPoint;
@@ -107,7 +107,7 @@ let topSensor;
 /**
  * Keeps track of score (number of coins collected)
  * @type {number}
- * @see keepScore for usage
+ * @see {@link keepScore} for usage
  */
 let score = 0;
 
@@ -116,7 +116,7 @@ let score = 0;
  * Children Sprite Groups of my myTiles Group
  * Each Group has multuple instances(Sprites) on each level
  * @type {Group}
- * @see myTiles
+ * @see {@link myTiles}
  */
 let coins, ground, groundL, groundR, invBlock, topBlock, underGround, platform, spikes;
 
@@ -131,42 +131,42 @@ let coinsImg;
  * Used to indicate player direction
  * Takes values of 1 or -1
  * @type {number}
- * @see gameControlls
+ * @see {@link gameControlls}
  */
 let direction = 0;
 
 /**
  * Timer ID for managing attack intervals.
  * @type {number}
- * @see attack
+ * @see {@link attack}
  */
 let attackTimer;
 
 /**
  * Flag indicating when a character can attack
  * @type {boolean}
- * @see attack
+ * @see {@link attack}
  */
 let canAttack  = true;
 
 /**
  * Indicates the time between player attacks
  * @type {number}
- * @see attack
+ * @see {@link attack}
  */
 let attackSpeed = 300//ms
 
 /**
  * Timer ID for managing damge taking intervals.
  * @type {number}
- * @see damage
+ * @see {@link damage}
  */
 let damageTimer;
 
 /**
  * Flag indicating when a character can get damaged
  * @type {boolean}
- * @see damage
+ * @see {@link damage}
  */
 let canDamage  = true;
 
@@ -174,14 +174,14 @@ let canDamage  = true;
  * Stores the frame of the time of an attack
  * Used to calculate when the players sprite opacity returns to normal
  * @type {number}
- * @see damge
- * @see runGame
+ * @see {@link damge}
+ * @see {@link runGame}
  */
 let prevFrame = 0
 
 /**
  * Flag indicating when the player's getting chased by an enemy(prevens enemy animation overlap)
- * @see killEnemy
+ * @see {@link killEnemy}
  * 
  */
 let chasing = false;
@@ -199,7 +199,7 @@ let witch, lizard, frog, fly, leaf, bat, cobra, ghoul, imp, goblinKing;
 /**
  * Animation spritesheets caontaining the animaations for the player and enemies
  * @type {q5.Image}
- * @see preload
+ * @see {@link preload}
  * @see https://q5js.org/learn/#loadImage for loadImage documantation
  */
 let heroImg, partnerImg, witchImg, lizardImg, portalImg, hexImg, frogImg, cloudImg, flyImg, leafImg, batImg, cobraImg, ghoulImg, impImg, bossImg, bossAttackAreaImg;
@@ -215,7 +215,7 @@ let enemies;
 /**
  * A subset of 'myTiles' used to determin the spawn coordinates for each enemy type
  * @type {Group}
- * @see myTiles For the parent group of all tiles.
+ * @see {@link myTiles} For the parent group of all tiles.
  * @see {@link setEnviroment} for initialization
  */
 let enemies1, enemies2;
@@ -254,7 +254,7 @@ let bossAttackArea;
 /**
  * Sound files for background music and sound effects
  * @type {q5.Sound}
- * @see preload
+	* @see {@link preload}
  * @see https://q5js.org/learn/#loadSound for loadSound documantation
  */
 let forestMusic, mountainMusic, entranceMusic, castleMusic, coinSound, damageSound, defeatSound, bossMusic, menuMusic, introMusic, outroMusic;
@@ -262,7 +262,7 @@ let forestMusic, mountainMusic, entranceMusic, castleMusic, coinSound, damageSou
 /**
  * Sprite Group used for the UI (Health bar)
  * @type {Group}
- * @see setUI
+	* @see {@link setUI}
  */
 let ui;
 
@@ -270,7 +270,7 @@ let ui;
  * Sprite belonging to ui group
  * Represents individual hearts(player hit points)
  * @type {Sprite}
- * @see setUI
+ * @see {@link setUI}
  */
 let heart;
 
@@ -283,7 +283,7 @@ let heartImg
 /**
  * Images for the main menu and Controlls page
  * @type {q5.Image}
- * @see menu
+ * @see {@link menu}
  */
 let menuImg, controllsImg;
 
@@ -527,8 +527,8 @@ let outroScenes = [
 /**
  * Represents the current story scene shown in the intro and outro of the game
  * @type {number}
- * @see intro
- * @see outro
+ * @see {@link intro}
+ * @see {@link outro}
  */
 let currentScene = 0;
 
@@ -620,8 +620,8 @@ function preload() {
  * @see {@link preloadLevels} For preloading all the level maps.
  * @see {@link changeLevel} For setting up the environment groups/tiles.
  * @see {@link spawnLizard} For creating the lizard(player) sprite function.
- * @see setUI For initializing the user interface.
- * @see spawner for determining the spanw point coordinates
+ * @see {@link setUI} For initializing the user interface.
+ * @see {@link spawner} for determining the spanw point coordinates
  * @see https://q5js.org/learn/#setup for documantaion
  * @see https://p5play.org/docs/Sprite.html#pixelPerfect for pixelPerfect documanation
  */
@@ -644,10 +644,10 @@ function setup() {
  * @function update
  * @global
  * @returns {void} Does not return a value.
- * @see menu for the starting menu 
- * @see intro for the intro story
- * @see runGame for main game functionality
- * @see endGame for ending story
+ * @see {@link menu} for the starting menu 
+ * @see {@link intro} for the intro story
+ * @see {@link runGame} for main game functionality
+ * @see {@link endGame} for ending story
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Location/reload for location.reload documantation
  * */
 function update() {
@@ -762,13 +762,13 @@ function endGame(){
  * @returns {void} Does not return a value.
  *
  * @see {@link displayBackground} For background rendering logic.
- * @see gameControlls For managing player input.
+ * @see {@link gameControlls} For managing player input.
  * @see {@link cameraControll} For controlling the camera.
  * @see {@link enemyProximity} For enemy chase logic
  * @see {@link bossAI} For handling boss-specific behavior.
- * @see endLevel For transitioning to the next level.
- * @see damage For applying damage to the player.
- * @see gameDebug For enabling debug mode and debugging utilities.
+ * @see {@link endLevel} For transitioning to the next level.
+ * @see {@link damage} For applying damage to the player.
+ * @see {@link gameDebug} For enabling debug mode and debugging utilities.
  */
 function runGame(){
 	mouse.visible = false;
@@ -845,10 +845,10 @@ function runGame(){
  * 
  * @see {@link stuckCheck} For handling scenarios where the character is stuck.
  * @see {@link changeState} For updating the character's state.
- * @see isOnGround For checking if the character is on the ground.
- * @see attack For handling attack actions.
- * @see block For initiating a block action.
- * @see releaseBlock For releasing a block action.
+ * @see {@link isOnGround} For checking if the character is on the ground.
+ * @see {@link attack} For handling attack actions.
+ * @see {@link block} For initiating a block action.
+ * @see {@link releaseBlock} For releasing a block action.
  */
 function gameControlls(character){	
 	//----------Controls----------\\
@@ -922,7 +922,7 @@ function gameControlls(character){
  * @param {boolean} resetCamera Option to reset the camera | Avoid weird camera movements during level change
  * @param {boolean} resetHealth Option to reseet player health | Doesnt reset health on level change
  * @returns {void}
- * @see spawner For spawning coordinates
+ * @see {@link spawner} For spawning coordinates
  */
 function resetplayer(resetCamera, resetHealth){
 	if(resetHealth){
@@ -972,7 +972,7 @@ function gameDebug(showSprites){
  * @returns {Promise<void>} Resolves when the attack sequence is complete.
  * 
  * @see {@link changeState} For updating the character's state.
- * @see attackAreaProximity For handling proximity-based attack effects on regular enemies.
+ * @see {@link attackAreaProximity} For handling proximity-based attack effects on regular enemies.
  * @see {@link damageBoss} For applying damage to the boss in level 6.
  * @see https://p5play.org/docs/GlueJoint.html for GlueJoint documentation
  * @see https://p5play.org/learn/animation.html?page=6 for using async/await for animation sequencing
@@ -1012,7 +1012,7 @@ async function attack(character) {
  * @function spawner
  * @returns {{x: number, y: number}} An object containing the x and y coordinates for the spawn point.
  * 
- * @see spawnPoint For the reference to the spawn point from which the coordinates are derived.
+ * @see {@link spawnPoint} For the reference to the spawn point from which the coordinates are derived.
  */
 function spawner(){
 	return {x: spawnPoint[0].position.x+24, y: spawnPoint[0].position.y-5};
@@ -1023,7 +1023,7 @@ function spawner(){
  * Prevents multiple jumps and jumping while touching the sides of walls
  * @function isOnGround
  * @returns {boolean}
- * @see groundSensor
+ * @see {@link groundSensor}
  */
 function isOnGround() {
 	return  groundSensor.overlapping(ground)||
@@ -1039,8 +1039,8 @@ function isOnGround() {
  * @async
  * @function death
  * @returns {void}
- * @see resetPlayer for player reset
- * @see inSequence for its usage/logic
+ * @see {@link resetPlayer} for player reset
+ * @see {@link inSequence} for its usage/logic
  */
 async function death() {
 	inSequence = true;
@@ -1080,8 +1080,8 @@ function keepScore() {
  * @function attackAreaProximity
  * @param {Sprite} area The attacking area created during an attack
  * @returns {void}
- * @see attack for attacking area creation
- * @see killEnemy for killing enemy logic
+ * @see {@link attack} for attacking area creation
+ * @see {@link killEnemy} for killing enemy logic
  */
 function attackAreaProximity(area) {
 	for (let e of enemies){
@@ -1096,7 +1096,7 @@ function attackAreaProximity(area) {
  * @function killEnemy
  * @param {Sprite} e The specific enemy that gets hit by the attack
  * @returns {void}
- * @see attackAreaProximity for attack detection
+ * @see {@link attackAreaProximity} for attack detection
  */
 async function killEnemy(e) {
 	canDamage = false;
@@ -1116,7 +1116,7 @@ async function killEnemy(e) {
  * @function backgroundMusic
  * @param {number} volume The volume at which the background music is played
  * @returns {void}
- * @see currentMap
+ * @see {@link currentMap}
  */
 function backgroundMusic(volume){
 	switch(currentMap){
@@ -1171,8 +1171,8 @@ async function endLevel() {
  * @function damage
  * @returns {void}
  * 
- * @see shake For handling the player shake effect when the character takes damage.
- * @see death For triggering the death sequence when health reaches zero.
+ * @see {@link shake} For handling the player shake effect when the character takes damage.
+ * @see {@link death} For triggering the death sequence when health reaches zero.
  */
 function damage() {
 	canDamage = false;
@@ -1210,8 +1210,8 @@ async function shake(entity){
  * @param {Object} enemy2 - Spawner tile for the first enemy type
  * @returns {void} 
  * 
- * @see enemySpawn1 For the first set of spawn points where enemy1 is placed.
- * @see enemySpawn2 For the second set of spawn points where enemy2 is placed.
+ * @see {@link enemySpawn1} For the first set of spawn points where enemy1 is placed.
+ * @see {@link enemySpawn2} For the second set of spawn points where enemy2 is placed.
  */
 function spawnEnemies(enemy1, enemy2){
 	for(e1 of enemySpawn1){

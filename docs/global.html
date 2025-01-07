@@ -770,7 +770,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="enemies.js.html">enemies.js</a>, <a href="enemies.js.html#line366">line 366</a>
+        <a href="enemies.js.html">enemies.js</a>, <a href="enemies.js.html#line365">line 365</a>
     </li></ul></dd>
     
 
@@ -1898,7 +1898,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="enemies.js.html">enemies.js</a>, <a href="enemies.js.html#line372">line 372</a>
+        <a href="enemies.js.html">enemies.js</a>, <a href="enemies.js.html#line371">line 371</a>
     </li></ul></dd>
     
 
@@ -2138,7 +2138,7 @@
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
         <ul>
-            <li>myTiles For the parent group of all tiles.</li>
+            <li><a href="global.html#myTiles">myTiles</a> For the parent group of all tiles.</li>
         
             <li><a href="global.html#setEnviroment">setEnviroment</a> for initialization</li>
         </ul>
@@ -2209,7 +2209,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="enemies.js.html">enemies.js</a>, <a href="enemies.js.html#line277">line 277</a>
+        <a href="enemies.js.html">enemies.js</a>, <a href="enemies.js.html#line275">line 275</a>
     </li></ul></dd>
     
 
@@ -2219,7 +2219,7 @@
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
         <ul>
-            <li>enemyProximity for use</li>
+            <li><a href="global.html#enemyProximity">enemyProximity</a> for use</li>
         </ul>
     </dd>
     
@@ -3885,7 +3885,7 @@
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
         <ul>
-            <li>keepScore for usage</li>
+            <li><a href="global.html#keepScore">keepScore</a> for usage</li>
         </ul>
     </dd>
     
@@ -3964,7 +3964,7 @@
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
         <ul>
-            <li>myTiles For the parent group of all tiles.</li>
+            <li><a href="global.html#myTiles">myTiles</a> For the parent group of all tiles.</li>
         
             <li><a href="global.html#setEnviroment">setEnviroment</a> for initialization</li>
         </ul>
@@ -4360,7 +4360,7 @@
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
         <ul>
-            <li>myTiles For the parent group of all tiles.</li>
+            <li><a href="global.html#myTiles">myTiles</a> For the parent group of all tiles.</li>
         
             <li><a href="global.html#setEnviroment">setEnviroment</a> for initialization</li>
         </ul>
@@ -4581,7 +4581,7 @@
         <ul>
             <li><a href="global.html#changeState">changeState</a> For updating the character's state.</li>
         
-            <li>attackAreaProximity For handling proximity-based attack effects on regular enemies.</li>
+            <li><a href="global.html#attackAreaProximity">attackAreaProximity</a> For handling proximity-based attack effects on regular enemies.</li>
         
             <li><a href="global.html#damageBoss">damageBoss</a> For applying damage to the boss in level 6.</li>
         
@@ -4753,9 +4753,9 @@
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
         <ul>
-            <li>attack for attacking area creation</li>
+            <li><a href="global.html#attack">attack</a> for attacking area creation</li>
         
-            <li>killEnemy for killing enemy logic</li>
+            <li><a href="global.html#killEnemy">killEnemy</a> for killing enemy logic</li>
         </ul>
     </dd>
     
@@ -4976,7 +4976,7 @@
 
 
 <div class="description">
-    This asynchronous function manages the boss's actions and state transitions. If the boss's health is greater than zero, it performs its attacks. When the boss's health reaches zero, the function triggers its death sequence, including removing its attack area, transitioning its animations, and handling its removal from the game.
+    Handles the behavior and logic of the boss character during gameplay.This asynchronous function manages the boss's actions and state transitions. If the boss's health is greater than zero, it performs its attacks. When the boss's health reaches zero, the function triggers its death sequence, including removing its attack area, transitioning its animations, and handling its removal from the game.
 </div>
 
 
@@ -5020,7 +5020,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="enemies.js.html">enemies.js</a>, <a href="enemies.js.html#line374">line 374</a>
+        <a href="enemies.js.html">enemies.js</a>, <a href="enemies.js.html#line373">line 373</a>
     </li></ul></dd>
     
 
@@ -5086,7 +5086,7 @@
 
 
 <div class="description">
-    Executes the boss's attack behavior, including animation transitions and damage logic.
+    Executes the boss's attack behavior, including animation transitions and damage logic.- **Attack Triggering**:   - The attack can only occur if `canBossAttack` is `true`.  - Sets a cooldown for the boss's attack by toggling `canBossAttack` and storing the frame count in `bossPrevFrame`.- **Animation Sequence**:  - Plays an upward and downward bounce animation for the boss (`bounceU` and `bounceD`).  - Activates the attack area by making it visible, enabling damage, and switching to the 'active' animation state.  - After the attack, transitions the boss back to its 'stand' animation state.- **Damage Logic**:  - If the attack area overlaps with the player (`lizard`), the `damage` function is triggered.- **Attack Reset**:  - After a specific number of frames, the attack area is deactivated by hiding it, disabling damage, and changing its animation state to 'inactive'.  - Once the cooldown period is reached (350 frames), the boss is ready to attack again by setting `canBossAttack` to `true`.
 </div>
 
 
@@ -5335,7 +5335,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="camera.js.html">camera.js</a>, <a href="camera.js.html#line46">line 46</a>
+        <a href="camera.js.html">camera.js</a>, <a href="camera.js.html#line45">line 45</a>
     </li></ul></dd>
     
 
@@ -5345,7 +5345,7 @@
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
         <ul>
-            <li>constrainCamera For constraining the camera within the map's boundaries.</li>
+            <li><a href="global.html#constrainCamera">constrainCamera</a> For constraining the camera within the map's boundaries.</li>
         
             <li><a href="global.html#spawnLizard">spawnLizard</a> For detecting the camera's position and smoothly moving it towards the player.</li>
         
@@ -5467,8 +5467,6 @@
     <dd class="tag-see">
         <ul>
             <li><a href="https://q5js.org/learn/#createCanvas%20For%20the%20createCanvas%20documentations">https://q5js.org/learn/#createCanvas For the createCanvas documentations</a></li>
-        
-            <li>backgroundColor For the color value used to set the background color.</li>
         
             <li><a href="https://p5play.org/docs/p5play.js.html#line9287%20for%20documentayion">https://p5play.org/docs/p5play.js.html#line9287 for documentayion</a></li>
         </ul>
@@ -5756,7 +5754,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="player.js.html">player.js</a>, <a href="player.js.html#line133">line 133</a>
+        <a href="player.js.html">player.js</a>, <a href="player.js.html#line139">line 139</a>
     </li></ul></dd>
     
 
@@ -5766,7 +5764,7 @@
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
         <ul>
-            <li>spawnLizard for state initialization</li>
+            <li><a href="global.html#spawnLizard">spawnLizard</a> for state initialization</li>
         </ul>
     </dd>
     
@@ -5918,7 +5916,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="camera.js.html">camera.js</a>, <a href="camera.js.html#line108">line 108</a>
+        <a href="camera.js.html">camera.js</a>, <a href="camera.js.html#line107">line 107</a>
     </li></ul></dd>
     
 
@@ -5928,7 +5926,7 @@
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
         <ul>
-            <li>cameraControll For the camera sensor logic</li>
+            <li><a href="global.html#cameraControll">cameraControll</a> For the camera sensor logic</li>
         </ul>
     </dd>
     
@@ -6041,9 +6039,9 @@
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
         <ul>
-            <li>shake For handling the player shake effect when the character takes damage.</li>
+            <li><a href="global.html#shake">shake</a> For handling the player shake effect when the character takes damage.</li>
         
-            <li>death For triggering the death sequence when health reaches zero.</li>
+            <li><a href="global.html#death">death</a> For triggering the death sequence when health reaches zero.</li>
         </ul>
     </dd>
     
@@ -6102,7 +6100,7 @@
 
 
 <div class="description">
-    Checks if the boss can damage the player and then if the player is within range. If so, it reduces the boss's health, plays a sound effect, and transitions the boss through its damage animation sequence.
+    Handles applying damage to the boss when certain conditions are met.Checks if the boss can damage the player and then if the player is within range. If so, it reduces the boss's health, plays a sound effect, and transitions the boss through its damage animation sequence.
 </div>
 
 
@@ -6195,7 +6193,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="enemies.js.html">enemies.js</a>, <a href="enemies.js.html#line465">line 465</a>
+        <a href="enemies.js.html">enemies.js</a>, <a href="enemies.js.html#line466">line 466</a>
     </li></ul></dd>
     
 
@@ -6315,9 +6313,9 @@
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
         <ul>
-            <li>resetPlayer for player reset</li>
+            <li><a href="global.html#resetPlayer">resetPlayer</a> for player reset</li>
         
-            <li>inSequence for its usage/logic</li>
+            <li><a href="global.html#inSequence">inSequence</a> for its usage/logic</li>
         </ul>
     </dd>
     
@@ -6420,7 +6418,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="camera.js.html">camera.js</a>, <a href="camera.js.html#line68">line 68</a>
+        <a href="camera.js.html">camera.js</a>, <a href="camera.js.html#line67">line 67</a>
     </li></ul></dd>
     
 
@@ -6825,7 +6823,7 @@
 
 
 <div class="description">
-    This function iterates over all the enemies in the map and checks if any of them are near the player.The proximity is determined by a distance check (100 units in both the X and Y axes).If an enemy is within this range, the following actions occur:- Enemy orientation is adjusted based on the player's position.- If the enemy is not already chasing, it begins chasing the player, and its Y-coordinate is tracked.- If the enemy's Y-coordinate changes significantly (i.e., falls to a lower level), it applies a downward force.- Flying enemies can move freely toward the player, while walking enemies are limited to moving along the X-axis.- Enemies also interact with environmental hazards (e.g., spikes) by dying upon overlap.
+    Constantly checks if an enemy is near the player and updates enemy behavior accordingly.If the enemy is within a specified proximity of the player, it will start chasing the player.It also handles enemy orientation, movement, and interactions with environmental elements like spikes and platforms.This function iterates over all the enemies in the map and checks if any of them are near the player.The proximity is determined by a distance check (100 units in both the X and Y axes).If an enemy is within this range, the following actions occur:- Enemy orientation is adjusted based on the player's position.- If the enemy is not already chasing, it begins chasing the player, and its Y-coordinate is tracked.- If the enemy's Y-coordinate changes significantly (i.e., falls to a lower level), it applies a downward force.- Flying enemies can move freely toward the player, while walking enemies are limited to moving along the X-axis.- Enemies also interact with environmental hazards (e.g., spikes) by dying upon overlap.
 </div>
 
 
@@ -6869,7 +6867,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="enemies.js.html">enemies.js</a>, <a href="enemies.js.html#line279">line 279</a>
+        <a href="enemies.js.html">enemies.js</a>, <a href="enemies.js.html#line277">line 277</a>
     </li></ul></dd>
     
 
@@ -7038,9 +7036,9 @@
         
             <li><a href="global.html#changeState">changeState</a> For updating the character's state.</li>
         
-            <li>isOnGround For checking if the character is on the ground.</li>
+            <li><a href="global.html#isOnGround">isOnGround</a> For checking if the character is on the ground.</li>
         
-            <li>attack For handling attack actions.</li>
+            <li><a href="global.html#attack">attack</a> For handling attack actions.</li>
         
             <li>block For initiating a block action.</li>
         
@@ -7107,7 +7105,7 @@
 
 
 <div class="description">
-    This function creates an instance of the boss (Goblin King) at the boss spawner locationand sets up its attack area. The boss attack area is an invisible sprite that overlaps with both the boss and the player (lizard) to detect attacks. The function configures the boss's visual properties, its attack area, and the animation states for the attack area.
+    Initializes the boss character and its associated attack area.This function creates an instance of the boss (Goblin King) at the boss spawner locationand sets up its attack area. The boss attack area is an invisible sprite that overlaps with both the boss and the player (lizard) to detect attacks. The function configures the boss's visual properties, its attack area, and the animation states for the attack area.
 </div>
 
 
@@ -7151,7 +7149,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="enemies.js.html">enemies.js</a>, <a href="enemies.js.html#line326">line 326</a>
+        <a href="enemies.js.html">enemies.js</a>, <a href="enemies.js.html#line325">line 325</a>
     </li></ul></dd>
     
 
@@ -7217,7 +7215,7 @@
 
 
 <div class="description">
-    This function creates multiple types of enemies with different behaviors and characteristics. The enemies include flying enemies (like `fly` and `bat`), ground-based enemies (like `leaf`, `cobra`, `imp`, and `ghoul`), as well as special enemies like `boss`, `witch`, and `frog`. Each enemy type is configured with a sprite sheet, animations (stand, move, attack, death, etc.), speed, friction, and other relevant properties. The function ensures each enemy is set to its idle 'stand' animation upon initialization.
+    Initializes various enemy groups and assigns their properties, animations, and behaviors.Each enemy group is configured with specific attributes such as size, movement type, sprite sheet, animations, and other properties like speed, friction, and scale. The function also sets their initial animations to 'stand'.This function creates multiple types of enemies with different behaviors and characteristics. The enemies include flying enemies (like `fly` and `bat`), ground-based enemies (like `leaf`, `cobra`, `imp`, and `ghoul`), as well as special enemies like `boss`, `witch`, and `frog`. Each enemy type is configured with a sprite sheet, animations (stand, move, attack, death, etc.), speed, friction, and other relevant properties. The function ensures each enemy is set to its idle 'stand' animation upon initialization.
 </div>
 
 
@@ -7310,7 +7308,7 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>//Enemy Properties explanation	enemy = new enemies.Group(); (Subgroup of enemies Group)	enemy.w = number;  (enemy width)	enemy.h = number;  (enemy height)	enemy.layer = number;   (Determines the layer of a Sprite in case of overlapping)	enemy.flying = false;	(attribute determining if an enemy can fly)	enemy.rotationLock = 'true'; (Prevents sprite from spinning)	enemy.spriteSheet = 'img';   (Sets animation spritesheet to group) 	enemy.mass = 'number;	     (Sprites mass, is affected by gravity)	enemy.speed = 0.015;  		 (Enemy speed, used in chasing)	enemy.friction = 0;			 (Sprite friction with other sprites)	enemy.anis.w= 32;			 (Widht of animation frame in spritesheet)	enemy.anis.h= 32;			 (Height of animation frame in spritesheet)	enemy.scale = 1.7;			 (Sprite size scalling)	enemy.anis.offset.x = 0;	 (x cord offset of the animation frame to the center of the sprite)	enemy.anis.offset.y = -2.4;  (y cord offset of the animation frame to the center of the sprite)	enemy.addAnis({										(Determines which part of the spritesheet is corresponds to each animation)		stand: { row: 0, frames: 4, frameDelay: 10 },			move: { row: 1, frames: 8, frameDelay: 10 },		attack: { row: 2, frames: 6, frameDelay: 13 },     death: { row: 4, frames: 6, frameDelay: 10},     dead: { row: 20, frames: 0}	});</code></pre>
+    <pre class="prettyprint"><code>//Enemy Properties explanation	enemy = new enemies.Group(); (Subgroup of enemies Group)	enemy.w = number;  									'(enemy width)'	enemy.h = number;  									'(enemy height)'	enemy.layer = number;   							'(Determines the layer of a Sprite in case of overlapping)'	enemy.flying = false;								'(attribute determining if an enemy can fly)'	enemy.rotationLock = 'true'; 						'(Prevents sprite from spinning)'	enemy.spriteSheet = 'img';   						'(Sets animation spritesheet to group)'	enemy.mass = 'number';	     						'(Sprites mass, is affected by gravity)'	enemy.speed = 'number;  		 					'(Enemy speed, used in chasing)'	enemy.friction = 'number;			 				'(Sprite friction with other sprites)'	enemy.anis.w= 'number;			 					'(Widht of animation frame in spritesheet)'	enemy.anis.h= 'number;				 				'(Height of animation frame in spritesheet)'	enemy.scale = 'number;			 					'(Sprite size scalling)'	enemy.anis.offset.x = 'number;	 					'(x cord offset of the animation frame to the center of the sprite)'	enemy.anis.offset.y = 'number;  					'(y cord offset of the animation frame to the center of the sprite)'	enemy.addAnis({										'(Determines which part of the spritesheet is corresponds to each animation)'		stand: { row: 0, frames: 4, frameDelay: 10 },			move: { row: 1, frames: 8, frameDelay: 10 },		attack: { row: 2, frames: 6, frameDelay: 13 },     death: { row: 4, frames: 6, frameDelay: 10},     dead: { row: 20, frames: 0}	});</code></pre>
 
 
 
@@ -7756,7 +7754,7 @@
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
         <ul>
-            <li>attackAreaProximity for attack detection</li>
+            <li><a href="global.html#attackAreaProximity">attackAreaProximity</a> for attack detection</li>
         </ul>
     </dd>
     
@@ -8257,7 +8255,7 @@
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
         <ul>
-            <li>spawner For spawning coordinates</li>
+            <li><a href="global.html#spawner">spawner</a> For spawning coordinates</li>
         </ul>
     </dd>
     
@@ -8372,7 +8370,7 @@
         <ul>
             <li><a href="global.html#displayBackground">displayBackground</a> For background rendering logic.</li>
         
-            <li>gameControlls For managing player input.</li>
+            <li><a href="global.html#gameControlls">gameControlls</a> For managing player input.</li>
         
             <li><a href="global.html#cameraControll">cameraControll</a> For controlling the camera.</li>
         
@@ -8380,9 +8378,9 @@
         
             <li><a href="global.html#bossAI">bossAI</a> For handling boss-specific behavior.</li>
         
-            <li>endLevel For transitioning to the next level.</li>
+            <li><a href="global.html#endLevel">endLevel</a> For transitioning to the next level.</li>
         
-            <li>damage For applying damage to the player.</li>
+            <li><a href="global.html#damage">damage</a> For applying damage to the player.</li>
         
             <li>gameDebug For enabling debug mode and debugging utilities.</li>
         </ul>
@@ -8614,7 +8612,7 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>//Group Properties Explanationgroup = new Group() (No parent group)	group = new myTiles.Group() | walkableTiles.Group(); (Determines which subgroup the group belongs)	group.layer = 'number'; (Determines the layer of a Sprite in case of overlapping)	group.collider = 'static'; (Determines sprite collider('none', 'static', 'kinematic'))	group.w = tileSize; (Sprite width)	group.h = tileSize; (Sprite Height)	group.tile = 'character'; (Determines which character the sprite represents in the tile map)	group.addAni({  (Determines which part of the spritesheet is corresponds to the Sprite)		w: tileSize,		h: tileSize,		row: 0,		col: 0	});</code></pre>
+    <pre class="prettyprint"><code>//Group Properties Explanationgroup = new Group() 									 '(No parent group)'	group = new myTiles.Group() | walkableTiles.Group(); '(Determines which subgroup the group belongs)'	group.layer = 'number'; 							 '(Determines the layer of a Sprite in case of overlapping)'	group.collider = 'static'; 							 '(Determines sprite collider('none', 'static', 'kinematic'))'	group.w = tileSize; 								 '(Sprite width)'	group.h = tileSize; 								 '(Sprite Height)'	group.tile = 'character'; 							 '(Determines which character the sprite represents in the tile map)'	group.addAni({  									 '(Determines which part of the spritesheet is corresponds to the Sprite)'		w: tileSize,		h: tileSize,		row: 0,		col: 0	});</code></pre>
 
 
 
@@ -8802,7 +8800,7 @@
         
             <li>setUI For initializing the user interface.</li>
         
-            <li>spawner for determining the spanw point coordinates</li>
+            <li><a href="global.html#spawner">spawner</a> for determining the spanw point coordinates</li>
         
             <li><a href="https://q5js.org/learn/#setup%20for%20documantaion">https://q5js.org/learn/#setup for documantaion</a></li>
         
@@ -9211,7 +9209,7 @@
 
 
 <div class="description">
-    Creates and initializes the lizard character sprite, including its size, animations, health, and various sensors that interact with the environment. The function sets up the lizard's appearance, behavior, and associated detection sensors to handle movement, collision, and state transitions during gameplay.
+    Creates and initializes the lizard character sprite, including its size, animations, health, and various sensors that interact with the environment. The function sets up the lizard's appearance, behavior, and associated detection sensors to handle movement, collision, and state transitions during gameplay.-**Ground Sensor**-Sprite attached to bottom of player, used in isOnGround-**Left/Right Sensors**-Sprites attached in the left and right of the player used in stuckCheck-**Top Sensor**-Currently not in use-**Camera Sensor**- Floating Sprite on top of player used in cameraControll
 </div>
 
 
@@ -9334,6 +9332,17 @@
     
 
     
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="global.html#isOnGround">isOnGround</a></li>
+        
+            <li><a href="global.html#stuckCheck">stuckCheck</a></li>
+        
+            <li><a href="global.html#cameraControll">cameraControll</a></li>
+        </ul>
+    </dd>
+    
 
     
 </dl>
@@ -9447,7 +9456,7 @@
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
         <ul>
-            <li>spawnPoint For the reference to the spawn point from which the coordinates are derived.</li>
+            <li><a href="global.html#spawnPoint">spawnPoint</a> For the reference to the spawn point from which the coordinates are derived.</li>
         </ul>
     </dd>
     
@@ -9554,7 +9563,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="player.js.html">player.js</a>, <a href="player.js.html#line182">line 182</a>
+        <a href="player.js.html">player.js</a>, <a href="player.js.html#line188">line 188</a>
     </li></ul></dd>
     
 
@@ -9564,7 +9573,7 @@
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
         <ul>
-            <li>spawnLizard for sensor initialization</li>
+            <li><a href="global.html#spawnLizard">spawnLizard</a> for sensor initialization</li>
         </ul>
     </dd>
     
@@ -9677,11 +9686,11 @@
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
         <ul>
-            <li>menu for the starting menu</li>
+            <li><a href="global.html#menu">menu</a> for the starting menu</li>
         
-            <li>intro for the intro story</li>
+            <li><a href="global.html#intro">intro</a> for the intro story</li>
         
-            <li>runGame for main game functionality</li>
+            <li><a href="global.html#runGame">runGame</a> for main game functionality</li>
         
             <li>endGame for ending story</li>
         
@@ -10390,7 +10399,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue Jan 07 2025 22:41:45 GMT+0200 (Χειμερινή ώρα Ανατολικής Ευρώπης)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Wed Jan 08 2025 00:01:59 GMT+0200 (Χειμερινή ώρα Ανατολικής Ευρώπης)
 </footer>
 
 <script> prettyPrint(); </script>

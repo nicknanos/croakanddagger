@@ -31,7 +31,6 @@ let cameraYOffset;
  * @returns {void} 
  * 
  * @see https://q5js.org/learn/#createCanvas For the createCanvas documentations
- * @see backgroundColor For the color value used to set the background color.
  * @see https://p5play.org/docs/p5play.js.html#line9287 for documentayion
  */
 function canvasSetup() {
@@ -54,7 +53,7 @@ function canvasSetup() {
  * @param {number} zoom - The zoom level to set for the camera.
  * @returns {void} Does not return a value.
  * 
- * @see constrainCamera For constraining the camera within the map's boundaries.
+ * @see {@link constrainCamera} For constraining the camera within the map's boundaries.
  * @see {@link spawnLizard} For detecting the camera's position and smoothly moving it towards the player.
  * @see https://p5play.org/docs/Camera.html For the camera object documentaion
  */
@@ -123,7 +122,7 @@ function cameraControll(player,map, zoom) {
  *                             the vertical bounds of the camera.
  * @returns {void} 
  * 
- * @see cameraControll For the camera sensor logic
+ * @see {@link cameraControll} For the camera sensor logic
  */
   function constrainCamera(tileGroup){
    //X Axi

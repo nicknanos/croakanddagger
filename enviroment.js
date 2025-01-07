@@ -25,14 +25,14 @@ let tileSize = 16;
  * @example
  * //Group Properties Explanation
  * 
- *group = new Group() (No parent group)
- * 	group = new myTiles.Group() | walkableTiles.Group(); (Determines which subgroup the group belongs)
- *	group.layer = 'number'; (Determines the layer of a Sprite in case of overlapping)
- *	group.collider = 'static'; (Determines sprite collider('none', 'static', 'kinematic'))
- *	group.w = tileSize; (Sprite width)
- *	group.h = tileSize; (Sprite Height)
- *	group.tile = 'character'; (Determines which character the sprite represents in the tile map)
- *	group.addAni({  (Determines which part of the spritesheet is corresponds to the Sprite)
+ *group = new Group() 									 '(No parent group)'
+ * 	group = new myTiles.Group() | walkableTiles.Group(); '(Determines which subgroup the group belongs)'
+ *	group.layer = 'number'; 							 '(Determines the layer of a Sprite in case of overlapping)'
+ *	group.collider = 'static'; 							 '(Determines sprite collider('none', 'static', 'kinematic'))'
+ *	group.w = tileSize; 								 '(Sprite width)'
+ *	group.h = tileSize; 								 '(Sprite Height)'
+ *	group.tile = 'character'; 							 '(Determines which character the sprite represents in the tile map)'
+ *	group.addAni({  									 '(Determines which part of the spritesheet is corresponds to the Sprite)'
  *		w: tileSize,
  *		h: tileSize,
  *		row: 0,

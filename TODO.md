@@ -14,8 +14,8 @@
 - [x] Change asset routing to work online
 - [x]Optimize assets
 - []Minify JS
-- []Disable blocking
-- []JsDoc Documentation?
+- [x]Disable blocking
+- [x]JsDoc Documentation?
     -[x] Better sensor,coin explanation
     -[x] addAnis explanation on lizard, enemies
     -[x]@example on eneviroment, enemies
