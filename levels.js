@@ -11,10 +11,10 @@
  * @see {@link setEnviroment} For setting up the tileset based on the level.
  * @see {@link updateTileset} For updating the current tileset.
  * @see {@link spawnEnemies} For spawning the enemies specific to the current level.
- * @see {@link resetplayer} For resetting the player's state at the beginning of the new level.
+ * @see {@link resetPlayer} For resetting the player's state at the beginning of the new level.
  * @see {@link initializeBoss} For initializing the boss encounter when the level is a boss room.
  * @see {@link allSpritesGroup} For the usage of allSpritesGroup
- * @see {@link enemyGrouo} For the usage of enemyGrouo
+ * @see {@link enemyGroup} For the usage of enemyGrouo
  * @see https://p5play.org/docs/global.html#allSprites for the allSprites Group documentation
  */
 function changeLevel(){
@@ -75,7 +75,7 @@ function changeLevel(){
         //update map name
         currentMap = levels[currentLevel].map;
         //reset player to spawn point
-        if(currentLevel>0) resetplayer(resetCamera = true, resetHealth = false);
+        if(currentLevel>0) resetPlayer(resetCamera = true, resetHealth = false);
 
         currentLevel++;
 

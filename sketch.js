@@ -100,7 +100,7 @@ let groundSensor,leftSensor,rightSensor, cameraSensor;
  * Sprites attached to the top of the player, used as "sensor"
  * @type {Sprite}
  * @see {@link spawnLizard} for initialization
- * @deprecated and to be removed
+ * @deprecated to be removed
  */
 let topSensor;
 
@@ -174,7 +174,7 @@ let canDamage  = true;
  * Stores the frame of the time of an attack
  * Used to calculate when the players sprite opacity returns to normal
  * @type {number}
- * @see {@link damge}
+ * @see {@link damage}
  * @see {@link runGame}
  */
 let prevFrame = 0
@@ -218,7 +218,7 @@ let enemies;
  * @see {@link myTiles} For the parent group of all tiles.
  * @see {@link setEnviroment} for initialization
  */
-let enemies1, enemies2;
+let enemySpawn1, enemySpawn2
 
 /**
  * An object containing enemy groups for different types of enemies.
@@ -528,7 +528,7 @@ let outroScenes = [
  * Represents the current story scene shown in the intro and outro of the game
  * @type {number}
  * @see {@link intro}
- * @see {@link outro}
+ * @see {@link endGame}
  */
 let currentScene = 0;
 
@@ -674,6 +674,7 @@ function drawFrame() {
  * Sets up the UI - Player Health
  * Creates heart sprites, same ammount as the players maxHealth property
  * @function setInput
+ * @global
  * @return {void}
  */
 function setUI(){
@@ -768,7 +769,6 @@ function endGame(){
  * @see {@link bossAI} For handling boss-specific behavior.
  * @see {@link endLevel} For transitioning to the next level.
  * @see {@link damage} For applying damage to the player.
- * @see {@link gameDebug} For enabling debug mode and debugging utilities.
  */
 function runGame(){
 	mouse.visible = false;
@@ -847,8 +847,6 @@ function runGame(){
  * @see {@link changeState} For updating the character's state.
  * @see {@link isOnGround} For checking if the character is on the ground.
  * @see {@link attack} For handling attack actions.
- * @see {@link block} For initiating a block action.
- * @see {@link releaseBlock} For releasing a block action.
  */
 function gameControlls(character){	
 	//----------Controls----------\\
@@ -924,7 +922,7 @@ function gameControlls(character){
  * @returns {void}
  * @see {@link spawner} For spawning coordinates
  */
-function resetplayer(resetCamera, resetHealth){
+function resetPlayer(resetCamera, resetHealth){
 	if(resetHealth){
 		lizard.health = lizard.maxHealth;
 		for (h of ui) h.changeAni('full')
@@ -1047,7 +1045,7 @@ async function death() {
 	lizard.opacity = 1;
 	lizard.vel.x = 0;
 	await lizard.changeAni(['death','dead']);
-	resetplayer(resetCamera =false, resetHealth = true);
+	resetPlayer(resetCamera =false, resetHealth = true);
 	lizard.changeAni('stand')
 	inSequence = false;
 }

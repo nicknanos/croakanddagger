@@ -128,7 +128,7 @@ let groundSensor,leftSensor,rightSensor, cameraSensor;
  * Sprites attached to the top of the player, used as "sensor"
  * @type {Sprite}
  * @see {@link spawnLizard} for initialization
- * @deprecated and to be removed
+ * @deprecated to be removed
  */
 let topSensor;
 
@@ -202,7 +202,7 @@ let canDamage  = true;
  * Stores the frame of the time of an attack
  * Used to calculate when the players sprite opacity returns to normal
  * @type {number}
- * @see {@link damge}
+ * @see {@link damage}
  * @see {@link runGame}
  */
 let prevFrame = 0
@@ -246,7 +246,7 @@ let enemies;
  * @see {@link myTiles} For the parent group of all tiles.
  * @see {@link setEnviroment} for initialization
  */
-let enemies1, enemies2;
+let enemySpawn1, enemySpawn2
 
 /**
  * An object containing enemy groups for different types of enemies.
@@ -556,7 +556,7 @@ let outroScenes = [
  * Represents the current story scene shown in the intro and outro of the game
  * @type {number}
  * @see {@link intro}
- * @see {@link outro}
+ * @see {@link endGame}
  */
 let currentScene = 0;
 
@@ -702,6 +702,7 @@ function drawFrame() {
  * Sets up the UI - Player Health
  * Creates heart sprites, same ammount as the players maxHealth property
  * @function setInput
+ * @global
  * @return {void}
  */
 function setUI(){
@@ -796,7 +797,6 @@ function endGame(){
  * @see {@link bossAI} For handling boss-specific behavior.
  * @see {@link endLevel} For transitioning to the next level.
  * @see {@link damage} For applying damage to the player.
- * @see {@link gameDebug} For enabling debug mode and debugging utilities.
  */
 function runGame(){
 	mouse.visible = false;
@@ -875,8 +875,6 @@ function runGame(){
  * @see {@link changeState} For updating the character's state.
  * @see {@link isOnGround} For checking if the character is on the ground.
  * @see {@link attack} For handling attack actions.
- * @see {@link block} For initiating a block action.
- * @see {@link releaseBlock} For releasing a block action.
  */
 function gameControlls(character){	
 	//----------Controls----------\\
@@ -952,7 +950,7 @@ function gameControlls(character){
  * @returns {void}
  * @see {@link spawner} For spawning coordinates
  */
-function resetplayer(resetCamera, resetHealth){
+function resetPlayer(resetCamera, resetHealth){
 	if(resetHealth){
 		lizard.health = lizard.maxHealth;
 		for (h of ui) h.changeAni('full')
@@ -1075,7 +1073,7 @@ async function death() {
 	lizard.opacity = 1;
 	lizard.vel.x = 0;
 	await lizard.changeAni(['death','dead']);
-	resetplayer(resetCamera =false, resetHealth = true);
+	resetPlayer(resetCamera =false, resetHealth = true);
 	lizard.changeAni('stand')
 	inSequence = false;
 }
@@ -1260,13 +1258,13 @@ function spawnEnemies(enemy1, enemy2){
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#allSpritesGroup">allSpritesGroup</a></li><li><a href="global.html#attack">attack</a></li><li><a href="global.html#attackAreaProximity">attackAreaProximity</a></li><li><a href="global.html#attackSpeed">attackSpeed</a></li><li><a href="global.html#attackTimer">attackTimer</a></li><li><a href="global.html#backgroundColor">backgroundColor</a></li><li><a href="global.html#backgroundMusic">backgroundMusic</a></li><li><a href="global.html#boss">boss</a></li><li><a href="global.html#bossAI">bossAI</a></li><li><a href="global.html#bossAttack">bossAttack</a></li><li><a href="global.html#bossAttackArea">bossAttackArea</a></li><li><a href="global.html#bossAttackAreaTimer">bossAttackAreaTimer</a></li><li><a href="global.html#bossBackground">bossBackground</a></li><li><a href="global.html#bossBody">bossBody</a></li><li><a href="global.html#bossPrevFrame">bossPrevFrame</a></li><li><a href="global.html#cWidth">cWidth</a></li><li><a href="global.html#cameraControll">cameraControll</a></li><li><a href="global.html#cameraYOffset">cameraYOffset</a></li><li><a href="global.html#canAttack">canAttack</a></li><li><a href="global.html#canBossAttack">canBossAttack</a></li><li><a href="global.html#canDamage">canDamage</a></li><li><a href="global.html#canvasSetup">canvasSetup</a></li><li><a href="global.html#castleBackground">castleBackground</a></li><li><a href="global.html#changeLevel">changeLevel</a></li><li><a href="global.html#changeState">changeState</a></li><li><a href="global.html#chasing">chasing</a></li><li><a href="global.html#coins">coins</a></li><li><a href="global.html#coinsImg">coinsImg</a></li><li><a href="global.html#constrainCamera">constrainCamera</a></li><li><a href="global.html#currentLevel">currentLevel</a></li><li><a href="global.html#currentMap">currentMap</a></li><li><a href="global.html#currentScene">currentScene</a></li><li><a href="global.html#damage">damage</a></li><li><a href="global.html#damageBoss">damageBoss</a></li><li><a href="global.html#damageTimer">damageTimer</a></li><li><a href="global.html#death">death</a></li><li><a href="global.html#deathTrigger">deathTrigger</a></li><li><a href="global.html#direction">direction</a></li><li><a href="global.html#displayBackground">displayBackground</a></li><li><a href="global.html#drawFrame">drawFrame</a></li><li><a href="global.html#endLevel">endLevel</a></li><li><a href="global.html#endgame">endgame</a></li><li><a href="global.html#enemies">enemies</a></li><li><a href="global.html#enemies1">enemies1</a></li><li><a href="global.html#enemyCurrentY">enemyCurrentY</a></li><li><a href="global.html#enemyGroup">enemyGroup</a></li><li><a href="global.html#enemyProximity">enemyProximity</a></li><li><a href="global.html#entranceBackground">entranceBackground</a></li><li><a href="global.html#fScale">fScale</a></li><li><a href="global.html#forestBackground">forestBackground</a></li><li><a href="global.html#forestMusic">forestMusic</a></li><li><a href="global.html#forestTiles">forestTiles</a></li><li><a href="global.html#gameControlls">gameControlls</a></li><li><a href="global.html#gameState">gameState</a></li><li><a href="global.html#groundSensor">groundSensor</a></li><li><a href="global.html#heart">heart</a></li><li><a href="global.html#heartImg">heartImg</a></li><li><a href="global.html#heroImg">heroImg</a></li><li><a href="global.html#inSequence">inSequence</a></li><li><a href="global.html#initializeBoss">initializeBoss</a></li><li><a href="global.html#initializeEnemies">initializeEnemies</a></li><li><a href="global.html#intro">intro</a></li><li><a href="global.html#introScenes">introScenes</a></li><li><a href="global.html#isOnGround">isOnGround</a></li><li><a href="global.html#keepScore">keepScore</a></li><li><a href="global.html#killEnemy">killEnemy</a></li><li><a href="global.html#levels">levels</a></li><li><a href="global.html#mapGravity">mapGravity</a></li><li><a href="global.html#menu">menu</a></li><li><a href="global.html#menuImg">menuImg</a></li><li><a href="global.html#mountainBackground">mountainBackground</a></li><li><a href="global.html#myTiles">myTiles</a></li><li><a href="global.html#outroScenes">outroScenes</a></li><li><a href="global.html#playerSpeed">playerSpeed</a></li><li><a href="global.html#preload">preload</a></li><li><a href="global.html#preloadLevels">preloadLevels</a></li><li><a href="global.html#prevFrame">prevFrame</a></li><li><a href="global.html#resetPlayer">resetPlayer</a></li><li><a href="global.html#runGame">runGame</a></li><li><a href="global.html#score">score</a></li><li><a href="global.html#setEnviroment">setEnviroment</a></li><li><a href="global.html#setInput">setInput</a></li><li><a href="global.html#setup">setup</a></li><li><a href="global.html#shake">shake</a></li><li><a href="global.html#spawnEnemies">spawnEnemies</a></li><li><a href="global.html#spawnLizard">spawnLizard</a></li><li><a href="global.html#spawnPoint">spawnPoint</a></li><li><a href="global.html#spawner">spawner</a></li><li><a href="global.html#stuckCheck">stuckCheck</a></li><li><a href="global.html#tileGroup">tileGroup</a></li><li><a href="global.html#tileSize">tileSize</a></li><li><a href="global.html#topSensor">topSensor</a></li><li><a href="global.html#ui">ui</a></li><li><a href="global.html#update">update</a></li><li><a href="global.html#updateTileset">updateTileset</a></li><li><a href="global.html#walkableTiles">walkableTiles</a></li><li><a href="global.html#witch">witch</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#allSpritesGroup">allSpritesGroup</a></li><li><a href="global.html#attack">attack</a></li><li><a href="global.html#attackAreaProximity">attackAreaProximity</a></li><li><a href="global.html#attackSpeed">attackSpeed</a></li><li><a href="global.html#attackTimer">attackTimer</a></li><li><a href="global.html#backgroundColor">backgroundColor</a></li><li><a href="global.html#backgroundMusic">backgroundMusic</a></li><li><a href="global.html#boss">boss</a></li><li><a href="global.html#bossAI">bossAI</a></li><li><a href="global.html#bossAttack">bossAttack</a></li><li><a href="global.html#bossAttackArea">bossAttackArea</a></li><li><a href="global.html#bossAttackAreaTimer">bossAttackAreaTimer</a></li><li><a href="global.html#bossBackground">bossBackground</a></li><li><a href="global.html#bossBody">bossBody</a></li><li><a href="global.html#bossPrevFrame">bossPrevFrame</a></li><li><a href="global.html#cWidth">cWidth</a></li><li><a href="global.html#cameraControll">cameraControll</a></li><li><a href="global.html#cameraYOffset">cameraYOffset</a></li><li><a href="global.html#canAttack">canAttack</a></li><li><a href="global.html#canBossAttack">canBossAttack</a></li><li><a href="global.html#canDamage">canDamage</a></li><li><a href="global.html#canvasSetup">canvasSetup</a></li><li><a href="global.html#castleBackground">castleBackground</a></li><li><a href="global.html#changeLevel">changeLevel</a></li><li><a href="global.html#changeState">changeState</a></li><li><a href="global.html#chasing">chasing</a></li><li><a href="global.html#coins">coins</a></li><li><a href="global.html#coinsImg">coinsImg</a></li><li><a href="global.html#constrainCamera">constrainCamera</a></li><li><a href="global.html#currentLevel">currentLevel</a></li><li><a href="global.html#currentMap">currentMap</a></li><li><a href="global.html#currentScene">currentScene</a></li><li><a href="global.html#damage">damage</a></li><li><a href="global.html#damageBoss">damageBoss</a></li><li><a href="global.html#damageTimer">damageTimer</a></li><li><a href="global.html#death">death</a></li><li><a href="global.html#deathTrigger">deathTrigger</a></li><li><a href="global.html#direction">direction</a></li><li><a href="global.html#displayBackground">displayBackground</a></li><li><a href="global.html#drawFrame">drawFrame</a></li><li><a href="global.html#endLevel">endLevel</a></li><li><a href="global.html#endgame">endgame</a></li><li><a href="global.html#enemies">enemies</a></li><li><a href="global.html#enemyCurrentY">enemyCurrentY</a></li><li><a href="global.html#enemyGroup">enemyGroup</a></li><li><a href="global.html#enemyProximity">enemyProximity</a></li><li><a href="global.html#enemySpawn1">enemySpawn1</a></li><li><a href="global.html#entranceBackground">entranceBackground</a></li><li><a href="global.html#fScale">fScale</a></li><li><a href="global.html#forestBackground">forestBackground</a></li><li><a href="global.html#forestMusic">forestMusic</a></li><li><a href="global.html#forestTiles">forestTiles</a></li><li><a href="global.html#gameControlls">gameControlls</a></li><li><a href="global.html#gameState">gameState</a></li><li><a href="global.html#groundSensor">groundSensor</a></li><li><a href="global.html#heart">heart</a></li><li><a href="global.html#heartImg">heartImg</a></li><li><a href="global.html#heroImg">heroImg</a></li><li><a href="global.html#inSequence">inSequence</a></li><li><a href="global.html#initializeBoss">initializeBoss</a></li><li><a href="global.html#initializeEnemies">initializeEnemies</a></li><li><a href="global.html#intro">intro</a></li><li><a href="global.html#introScenes">introScenes</a></li><li><a href="global.html#isOnGround">isOnGround</a></li><li><a href="global.html#keepScore">keepScore</a></li><li><a href="global.html#killEnemy">killEnemy</a></li><li><a href="global.html#levels">levels</a></li><li><a href="global.html#mapGravity">mapGravity</a></li><li><a href="global.html#menu">menu</a></li><li><a href="global.html#menuImg">menuImg</a></li><li><a href="global.html#mountainBackground">mountainBackground</a></li><li><a href="global.html#myTiles">myTiles</a></li><li><a href="global.html#outroScenes">outroScenes</a></li><li><a href="global.html#playerSpeed">playerSpeed</a></li><li><a href="global.html#preload">preload</a></li><li><a href="global.html#preloadLevels">preloadLevels</a></li><li><a href="global.html#prevFrame">prevFrame</a></li><li><a href="global.html#resetPlayer">resetPlayer</a></li><li><a href="global.html#runGame">runGame</a></li><li><a href="global.html#score">score</a></li><li><a href="global.html#setEnviroment">setEnviroment</a></li><li><a href="global.html#setInput">setInput</a></li><li><a href="global.html#setup">setup</a></li><li><a href="global.html#shake">shake</a></li><li><a href="global.html#spawnEnemies">spawnEnemies</a></li><li><a href="global.html#spawnLizard">spawnLizard</a></li><li><a href="global.html#spawnPoint">spawnPoint</a></li><li><a href="global.html#spawner">spawner</a></li><li><a href="global.html#stuckCheck">stuckCheck</a></li><li><a href="global.html#tileGroup">tileGroup</a></li><li><a href="global.html#tileSize">tileSize</a></li><li><a href="global.html#topSensor">topSensor</a></li><li><a href="global.html#ui">ui</a></li><li><a href="global.html#update">update</a></li><li><a href="global.html#updateTileset">updateTileset</a></li><li><a href="global.html#walkableTiles">walkableTiles</a></li><li><a href="global.html#witch">witch</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Wed Jan 08 2025 00:01:59 GMT+0200 (Χειμερινή ώρα Ανατολικής Ευρώπης)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Wed Jan 08 2025 00:20:33 GMT+0200 (Χειμερινή ώρα Ανατολικής Ευρώπης)
 </footer>
 
 <script> prettyPrint(); </script>

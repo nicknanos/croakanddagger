@@ -18,9 +18,6 @@ let tileSize = 16;
  * @see {@link spawnPoint} For the initial spawn point of the player.
  * @see {@link enemySpawn1} For the spawn point of the first type of enemy.
  * @see {@link enemySpawn2} For the spawn point of the second type of enemy.
- * @see {@link invBlock} For invisible colliding blocks in the environment.
- * @see {@link spikes} For tiles that cause damage when the player collides with them.
- * @see {@link platform} For floating platforms in the environment.
  * 
  * @example
  * //Group Properties Explanation

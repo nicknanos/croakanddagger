@@ -11,3 +11,5 @@ Featuring stunning pixel art inspired by classic games, an emotional story, and 
 Will you embrace your new form?  
 
 [**Play Croak and Dagger Now!**](https://nicknanos.github.io/croakanddagger/)  
+
+[**Documentation**](https://nicknanos.github.io/croakanddagger/docs/index.html)

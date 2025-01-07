@@ -74,7 +74,7 @@ function cameraControll(player,map, zoom) {
  * @returns {void}
  * 
  * @see {@link currentMap} For the current map, which determines the background to display.
- * @see {@link changeStates} For the player states
+ * @see {@link changeState} For the player states
  * @see {@link direction} For the direction in which the background scrolls.
  */
   function displayBackground() {
