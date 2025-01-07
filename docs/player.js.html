@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: player.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: player.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * The speed the player moves
+ * @type {number}
+ */
+const playerSpeed = 1.2;
+
+
+/**
+ * Creates and initializes the lizard character sprite, including its size, animations, health, and various sensors 
+ * that interact with the environment. The function sets up the lizard's appearance, behavior, and associated detection 
+ * sensors to handle movement, collision, and state transitions during gameplay.
+ * 
+ * @function spawnLizard
+ * @param {number} x - The x-coordinate for the lizard's spawn position.
+ * @param {number} y - The y-coordinate for the lizard's spawn position.
+ * @returns {void} Does not return a value.
+ * 
+ * @details
+ * -**Ground Sensor**
+ * -Sprite attached to bottom of player, used in @see{@link isOnGround}
+ * -**Left/Right Sensors**
+ * -Sprites attached in the left and right of the player used in @see stuckCheck
+ * -**Top Sensor**
+ * -Currently not in use
+ * -**Camera Sensor**
+ * - Floating Sprite on top of player used in @see {@link cameraControll}
+ * 
+ */
+function spawnLizard(x,y){
+    lizard = new Sprite(x, y);
+	lizard.w=12;
+	lizard.h=24;
+	lizard.layer = 5;
+	lizard.rotationLock = 'true';
+	lizard.spriteSheet = lizardImg;
+	lizard.anis.offset.x = 0;
+	lizard.anis.offset.y = 1.5;
+	lizard.anis.frameDelay = 6;
+	lizard.friction = 0;
+	lizard.anis.w=64;
+	lizard.anis.h=64;
+	lizard.maxHealth = 3;
+	lizard.health = lizard.maxHealth;
+
+	lizard.addAnis({
+		run: { row: 1, frames: 8, frameDelay: 7 },
+		jump: { row: 1, frames: 6, frameDelay:5 },
+		hit: { row: 4, frames: 4, frameDelay: 14 },
+		block: { row: 3, frames: 4 },
+		blocking: { row: 6, frames: 1 },
+		blockRelease: { row: 7, frames: 2, frameDelay:7 },
+		stand: { row: 0, frames: 4, frameDelay:10 },
+		slash: { row: 2, frames: 6 },
+		death: { row: 5, frames: 5, frameDelay: 15},
+		dead: { row: 8, frames: 1}
+	});
+	lizard.changeAni('stand');
+
+	//Sensor Sprite to detect when the player touches the ground
+	groundSensor = new Sprite();
+	groundSensor.w = 15;
+	groundSensor.h = 5;
+	groundSensor.x = lizard.x;
+	groundSensor.y = lizard.y + lizard.h/2 + 2;
+	groundSensor.mass = 0.0;
+	groundSensor.collider = 'none';
+	groundSensor.visible = false;
+	groundSensor.overlaps(allSprites);
+	g = new GlueJoint(lizard, groundSensor);
+	g.visible = false
+
+	//Left side sensor
+	leftSensor = new Sprite();
+	leftSensor.w = 2;
+	leftSensor.h = lizard.h - 3;
+	leftSensor.x = lizard.x - 8;
+	leftSensor.y = lizard.y;
+	leftSensor.mass = 0.0;
+	leftSensor.collider = 'none';
+	leftSensor.visible = false;
+	leftSensor.overlaps(allSprites);
+	l = new GlueJoint(lizard, leftSensor);
+	l.visible = false
+
+	//Right side sensor
+	rightSensor = new Sprite();
+	rightSensor.w = 2;
+	rightSensor.h = lizard.h - 3;
+	rightSensor.x = lizard.x + 8;
+	rightSensor.y = lizard.y;
+	rightSensor.mass = 0.0;
+	rightSensor.collider = 'none';
+	rightSensor.visible = false;
+	rightSensor.overlaps(allSprites);
+	r = new GlueJoint(lizard, rightSensor);
+	r.visible = false
+
+	//Top side sensor
+	topSensor = new Sprite();
+	topSensor.w = 15;
+	topSensor.h = 2;
+	topSensor.x = lizard.x;
+	topSensor.y = lizard.y - (lizard.h/2 + 0.5);
+	topSensor.mass = 0.0;
+	topSensor.collider = 'none';
+	topSensor.visible = false;
+	topSensor.overlaps(allSprites);
+	t = new GlueJoint(lizard, topSensor);
+	t.visible = false;
+
+
+	cameraSensor = new Sprite();
+	cameraSensor.w = 3;
+	cameraSensor.h = 3;
+	cameraSensor.x = lizard.x;
+	cameraSensor.y = lizard.y;
+	cameraSensor.collider ='none';
+	cameraSensor.overlaps(allSprites);
+	cameraSensor.visible = false;
+
+	lizard.states = {
+		IDLE: 0,
+		WALK: 1,
+		JUMP: 2,
+		ATTACK: 3,
+		BLOCK: 4,
+		STUCK: 5
+	};
+	lizard.currentState = lizard.states.IDLE;
+	lizard.prevState = lizard.states.IDLE;
+}
+
+/**
+ * Changes the current state of the player.
+ * The state transition is based on the provided state argument, which can either be a number or string representing 
+ * the desired state.
+ * 
+ * @function changeState
+ * @param {string|number} state - The new state to change the lizard to. This can be:
+ *   - 'IDLE' or 0: Idle state.
+ *   - 'WALK' or 1: Walking state.
+ *   - 'JUMP' or 2: Jumping state.
+ *   - 'ATTACK' or 3: Attacking state.
+ *   - 'BLOCK' or 4: Blocking state.
+ *   - 'STUCK' or 5: Stuck state.
+ * 
+ * @returns {void}
+ * 
+ * @see spawnLizard for state initialization
+ */
+function changeState(state) {
+	lizard.prevState = lizard.currentState;	
+	switch(state) {
+		case 0:
+		case 'IDLE':
+			lizard.currentState = lizard.states.IDLE;
+			break;
+		case 1:
+		case 'WALK':
+			lizard.currentState = lizard.states.WALK;
+			break;
+		case 2:
+		case 'JUMP':
+			lizard.currentState = lizard.states.JUMP;
+			break;
+		case 3:
+		case 'ATTACK':
+			lizard.currentState = lizard.states.ATTACK;
+			break;
+		case 4:
+		case 'BLOCK':
+			lizard.currentState = lizard.states.BLOCK;
+			break;
+		case 5:
+		case 'STUCK':
+			lizard.currentState = lizard.states.STUCK;
+			break;
+	}
+}
+
+
+/**
+ * Checks if the player is stuck by checking if either the left or right sensor
+ * is overlapping with any walkable tiles. If the character is stuck, it changes the state to 'STUCK',
+ * otherwise, it changes the state to 'IDLE'.
+ * Used to prevent sprite bouncing and to controll the moving background
+ * @function stuckCheck
+ * @returns {void} 
+ * 
+ * @see spawnLizard for sensor initialization
+
+ */
+function stuckCheck() {
+	if(leftSensor.overlapping(walkableTiles) || rightSensor.overlapping(walkableTiles)){
+		changeState('STUCK')
+	}
+	else {
+		changeState('IDLE')
+	}
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#allSpritesGroup">allSpritesGroup</a></li><li><a href="global.html#attack">attack</a></li><li><a href="global.html#attackAreaProximity">attackAreaProximity</a></li><li><a href="global.html#attackSpeed">attackSpeed</a></li><li><a href="global.html#attackTimer">attackTimer</a></li><li><a href="global.html#backgroundColor">backgroundColor</a></li><li><a href="global.html#backgroundMusic">backgroundMusic</a></li><li><a href="global.html#boss">boss</a></li><li><a href="global.html#bossAI">bossAI</a></li><li><a href="global.html#bossAttack">bossAttack</a></li><li><a href="global.html#bossAttackArea">bossAttackArea</a></li><li><a href="global.html#bossAttackAreaTimer">bossAttackAreaTimer</a></li><li><a href="global.html#bossBackground">bossBackground</a></li><li><a href="global.html#bossBody">bossBody</a></li><li><a href="global.html#bossPrevFrame">bossPrevFrame</a></li><li><a href="global.html#cWidth">cWidth</a></li><li><a href="global.html#cameraControll">cameraControll</a></li><li><a href="global.html#cameraYOffset">cameraYOffset</a></li><li><a href="global.html#canAttack">canAttack</a></li><li><a href="global.html#canBossAttack">canBossAttack</a></li><li><a href="global.html#canDamage">canDamage</a></li><li><a href="global.html#canvasSetup">canvasSetup</a></li><li><a href="global.html#castleBackground">castleBackground</a></li><li><a href="global.html#changeLevel">changeLevel</a></li><li><a href="global.html#changeState">changeState</a></li><li><a href="global.html#chasing">chasing</a></li><li><a href="global.html#coins">coins</a></li><li><a href="global.html#coinsImg">coinsImg</a></li><li><a href="global.html#constrainCamera">constrainCamera</a></li><li><a href="global.html#currentLevel">currentLevel</a></li><li><a href="global.html#currentMap">currentMap</a></li><li><a href="global.html#currentScene">currentScene</a></li><li><a href="global.html#damage">damage</a></li><li><a href="global.html#damageBoss">damageBoss</a></li><li><a href="global.html#damageTimer">damageTimer</a></li><li><a href="global.html#death">death</a></li><li><a href="global.html#deathTrigger">deathTrigger</a></li><li><a href="global.html#direction">direction</a></li><li><a href="global.html#displayBackground">displayBackground</a></li><li><a href="global.html#drawFrame">drawFrame</a></li><li><a href="global.html#endLevel">endLevel</a></li><li><a href="global.html#endgame">endgame</a></li><li><a href="global.html#enemies">enemies</a></li><li><a href="global.html#enemies1">enemies1</a></li><li><a href="global.html#enemyCurrentY">enemyCurrentY</a></li><li><a href="global.html#enemyGroup">enemyGroup</a></li><li><a href="global.html#enemyProximity">enemyProximity</a></li><li><a href="global.html#entranceBackground">entranceBackground</a></li><li><a href="global.html#fScale">fScale</a></li><li><a href="global.html#forestBackground">forestBackground</a></li><li><a href="global.html#forestMusic">forestMusic</a></li><li><a href="global.html#forestTiles">forestTiles</a></li><li><a href="global.html#gameControlls">gameControlls</a></li><li><a href="global.html#gameState">gameState</a></li><li><a href="global.html#groundSensor">groundSensor</a></li><li><a href="global.html#heart">heart</a></li><li><a href="global.html#heartImg">heartImg</a></li><li><a href="global.html#heroImg">heroImg</a></li><li><a href="global.html#inSequence">inSequence</a></li><li><a href="global.html#initializeBoss">initializeBoss</a></li><li><a href="global.html#initializeEnemies">initializeEnemies</a></li><li><a href="global.html#intro">intro</a></li><li><a href="global.html#introScenes">introScenes</a></li><li><a href="global.html#isOnGround">isOnGround</a></li><li><a href="global.html#keepScore">keepScore</a></li><li><a href="global.html#killEnemy">killEnemy</a></li><li><a href="global.html#levels">levels</a></li><li><a href="global.html#mapGravity">mapGravity</a></li><li><a href="global.html#menu">menu</a></li><li><a href="global.html#menuImg">menuImg</a></li><li><a href="global.html#mountainBackground">mountainBackground</a></li><li><a href="global.html#myTiles">myTiles</a></li><li><a href="global.html#outroScenes">outroScenes</a></li><li><a href="global.html#playerSpeed">playerSpeed</a></li><li><a href="global.html#preload">preload</a></li><li><a href="global.html#preloadLevels">preloadLevels</a></li><li><a href="global.html#prevFrame">prevFrame</a></li><li><a href="global.html#resetPlayer">resetPlayer</a></li><li><a href="global.html#runGame">runGame</a></li><li><a href="global.html#score">score</a></li><li><a href="global.html#setEnviroment">setEnviroment</a></li><li><a href="global.html#setInput">setInput</a></li><li><a href="global.html#setup">setup</a></li><li><a href="global.html#shake">shake</a></li><li><a href="global.html#spawnEnemies">spawnEnemies</a></li><li><a href="global.html#spawnLizard">spawnLizard</a></li><li><a href="global.html#spawnPoint">spawnPoint</a></li><li><a href="global.html#spawner">spawner</a></li><li><a href="global.html#stuckCheck">stuckCheck</a></li><li><a href="global.html#tileGroup">tileGroup</a></li><li><a href="global.html#tileSize">tileSize</a></li><li><a href="global.html#topSensor">topSensor</a></li><li><a href="global.html#ui">ui</a></li><li><a href="global.html#update">update</a></li><li><a href="global.html#updateTileset">updateTileset</a></li><li><a href="global.html#walkableTiles">walkableTiles</a></li><li><a href="global.html#witch">witch</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue Jan 07 2025 22:41:45 GMT+0200 (Χειμερινή ώρα Ανατολικής Ευρώπης)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

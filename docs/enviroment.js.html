@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: enviroment.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: enviroment.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * The pixel size of each tile | 16x16
+ * @type {number}
+ */
+let tileSize = 16;
+
+/**
+ * Sets up the environment for the current map by defining various tiles and objects such as platforms,
+ * spawn points, enemy spanwers, and coins. It also assigns sprites and animations for different tile types.
+ * This function initializes myTiles and walkable tiles.
+ * 
+ * @function setEnviroment
+ * @param {Object} tileSet - The tile set used to create the environment for the level (e.g., forest, mountain).
+ * @returns {void} Does not return a value.
+ * 
+ * @see {@link myTiles} For the group that holds all tile-related objects in the environment.
+ * @see {@link walkableTiles} For the collection of tiles the player can walk on.
+ * @see {@link spawnPoint} For the initial spawn point of the player.
+ * @see {@link enemySpawn1} For the spawn point of the first type of enemy.
+ * @see {@link enemySpawn2} For the spawn point of the second type of enemy.
+ * @see {@link invBlock} For invisible colliding blocks in the environment.
+ * @see {@link spikes} For tiles that cause damage when the player collides with them.
+ * @see {@link platform} For floating platforms in the environment.
+ * 
+ * @example
+ * //Group Properties Explanation
+ * 
+ *group = new Group() (No parent group)
+ * 	group = new myTiles.Group() | walkableTiles.Group(); (Determines which subgroup the group belongs)
+ *	group.layer = 'number'; (Determines the layer of a Sprite in case of overlapping)
+ *	group.collider = 'static'; (Determines sprite collider('none', 'static', 'kinematic'))
+ *	group.w = tileSize; (Sprite width)
+ *	group.h = tileSize; (Sprite Height)
+ *	group.tile = 'character'; (Determines which character the sprite represents in the tile map)
+ *	group.addAni({  (Determines which part of the spritesheet is corresponds to the Sprite)
+ *		w: tileSize,
+ *		h: tileSize,
+ *		row: 0,
+ *		col: 0
+ *	});
+ */
+function setEnviroment(tileSet){
+		myTiles = new Group()
+		myTiles.spriteSheet = tileSet;
+
+		//current level spawn point
+		spawnPoint = new myTiles.Group();
+		spawnPoint.layer = 3;
+		spawnPoint.collider = 'static';
+		spawnPoint.w = 1;
+		spawnPoint.h = 1;
+		spawnPoint.tile = 'S';
+		spawnPoint.visible = false;
+		spawnPoint.overlaps(allSprites);
+
+
+		//current level end point
+		endPoint = new myTiles.Group();
+		endPoint.layer = 3;
+		endPoint.collider = 'static';
+		endPoint.w = 3;
+		endPoint.h = 3;
+		endPoint.tile = 'E';
+		endPoint.visible = false;
+		endPoint.overlaps(allSprites);
+
+
+
+		//coins
+		coins  = new myTiles.Group();
+		coins.layer = 5;
+		coins.collider = 'static';
+		coins.w = 18;
+		coins.h = 18;
+		coins.tile = 'c';
+		coins.overlaps(enemies);
+		coins.spriteSheet = coinsImg;
+		coins.anis.offset.y = -2;
+		coins.scale = 0.7;
+		coins.addAnis({
+			mountain: {row: 2, frames: 7, frameSize: [18,18], frameDelay: 8},
+			forest: {row: 1, frames: 7, frameSize: [18,18], frameDelay: 8},
+			castle: {row: 0, frames: 7, frameSize: [18,18], frameDelay: 8},
+			entrance: {row: 0, frames: 7, frameSize: [18,18], frameDelay: 8},
+			bossRoom: {row: 0, frames: 7, frameSize: [18,18], frameDelay: 8}
+
+		})
+		
+		walkableTiles = new myTiles.Group();
+
+		//ground
+		ground = new walkableTiles.Group();
+		ground.layer = 1;
+		ground.collider = 'static';
+		ground.w = tileSize;
+		ground.h = tileSize;
+		ground.tile = 'g';
+		ground.addAni({
+			w: tileSize,
+			h: tileSize,
+			row: 0,
+			col: 0
+		});
+
+		//ground left wall
+		groundL = new walkableTiles.Group();
+		groundL.layer = 1;
+		groundL.collider = 'static';
+		groundL.w = tileSize;
+		groundL.h = tileSize;
+		groundL.tile = 'l';
+		groundL.addAni({
+			w: tileSize,
+			h: tileSize,
+			row: 0,
+			col: 3
+		});
+		groundL.isWalkable =true;
+
+		//ground right wall
+		groundR = new walkableTiles.Group();
+		groundR.layer = 1;
+		groundR.collider = 'static';
+		groundR.w = tileSize;
+		groundR.h = tileSize;
+		groundR.tile = 'r';
+		groundR.addAni({
+			w: tileSize,
+			h: tileSize,
+			row: 0,
+			col: 4
+		});
+		groundR.isWalkable = true;
+
+
+		//ground right corner
+		cornerR = new walkableTiles.Group();
+		cornerR.layer = 1;
+		cornerR.collider = 'static';
+		cornerR.w = tileSize;
+		cornerR.h = tileSize;
+		cornerR.tile = '>';
+		cornerR.addAni({
+			w: tileSize,
+			h: tileSize,
+			row: 0,
+			col: 6
+		});
+		cornerR.isWalkable = true;
+
+		cornerL = new walkableTiles.Group();
+		cornerL.layer = 1;
+		cornerL.collider = 'static';
+		cornerL.w = tileSize;
+		cornerL.h = tileSize;
+		cornerL.tile = '&lt;';
+		cornerL.addAni({
+			w: tileSize,
+			h: tileSize,
+			row: 0,
+			col: 5
+		});
+		cornerL.isWalkable = true;
+
+		topBlock = new walkableTiles.Group();
+		topBlock.layer = 1;
+		topBlock.collider = 'static';
+		topBlock.w = tileSize;
+		topBlock.h = tileSize;
+		topBlock.tile = 't';
+		topBlock.addAni({
+			w: tileSize,
+			h: tileSize,
+			row: 0,
+			col: 7
+		});
+		topBlock.isWalkable = true;
+
+		//underground
+		underGround = new walkableTiles.Group();
+		underGround.layer = 1;
+		underGround.collider = 'static';
+		underGround.w = tileSize;
+		underGround.h = tileSize;
+		underGround.tile = 'b';
+		underGround.addAni({
+			w: tileSize,
+			h: tileSize,
+			row: 0,
+			col: 1
+		});
+		underGround.isWalkable = true;
+
+		//floating platforms
+		platform = new walkableTiles.Group();
+		platform.layer = 2;
+		platform.collider = 'static';
+		platform.w = tileSize;
+		platform.h = tileSize;
+		platform.tile = 'f';
+		platform.addAni({
+			w: tileSize,
+			h: tileSize,
+			row: 0,
+			col: 2
+		});
+		platform.isWalkable = true;
+
+		//spikes
+		spikes = new walkableTiles.Group();
+		spikes.layer = 1;
+		spikes.collider = 'static';
+		spikes.w = tileSize;
+		spikes.h = tileSize;
+		spikes.tile = 'n';
+		spikes.addAni({
+			w: tileSize,
+			h: tileSize,
+			row: 1,
+			col: 0
+		});
+
+		//spawn point for first kind of enemy
+		enemySpawn1 = new myTiles.Group();
+		enemySpawn1.layer = 3;
+		enemySpawn1.collider = 'static';
+		enemySpawn1.w = 1;
+		enemySpawn1.h = 1;
+		enemySpawn1.tile = '1';
+		enemySpawn1.visible = false;
+		enemySpawn1.overlaps(allSprites);
+
+		//spawn point for second kind of enemy
+		enemySpawn2 = new Group();
+		enemySpawn2.layer = 3;
+		enemySpawn2.collider = 'static';
+		enemySpawn2.w = 1;
+		enemySpawn2.h = 1;
+		enemySpawn2.tile = '2';
+		enemySpawn2.visible = false;
+		enemySpawn2.overlaps(allSprites);
+
+		//Invisible colliding block
+		invBlock = new myTiles.Group();
+		invBlock.layer = 3;
+		invBlock.collider = 'static';
+		invBlock.w = tileSize;
+		invBlock.h = tileSize;
+		invBlock.tile = 'i';
+		invBlock.visible = false;
+
+		bossSpawner = new Group();
+		bossSpawner.layer = 3;
+		bossSpawner.collider = 'static';
+		bossSpawner.w = 1;
+		bossSpawner.h = 1;
+		bossSpawner.tile = 'B';
+		bossSpawner.visible = false;
+		bossSpawner.overlaps(allSprites);
+
+		finaleTrigger = new Group();
+		finaleTrigger.layer = 3;
+		finaleTrigger.collider = 'static';
+		finaleTrigger.w = 1;
+		finaleTrigger.h = 1;
+		finaleTrigger.tile = 'T';
+		finaleTrigger.visible = false;
+		finaleTrigger.overlaps(allSprites);
+
+}
+//Updates the tileset image
+//All the tiles have to be reset with addAni()
+
+/**
+ * Updates the tileset image used for all the tile images
+ * Here addAni adds a single frame animation to each tile
+ * For the tile images to update on map change
+ * the animation need to be reassigned
+ * @function updateTileset
+ * @param {q5.Image} set The tileset image of the current map
+ * @see {@link changeLevel} For function implementation
+ * @see https://p5play.org/docs/Sprite.html#addAni for addAni documentayion
+ */
+function updateTileset(set){
+	myTiles.spriteSheet = set;
+	ground.addAni({w: tileSize, h: tileSize, row: 0, col: 0});
+	groundL.addAni({w: tileSize, h: tileSize, row: 0, col: 3});
+	groundR.addAni({w: tileSize, h: tileSize, row: 0, col: 4});
+	cornerR.addAni({w: tileSize, h: tileSize, row: 0, col: 6});
+	cornerL.addAni({w: tileSize, h: tileSize, row: 0, col: 5});
+	topBlock.addAni({w: tileSize, h: tileSize, row: 0, col: 7});
+	underGround.addAni({w: tileSize, h: tileSize, row: 0, col: 1});
+	platform.addAni({w: tileSize, h: tileSize, row: 0, col: 2});
+	spikes.addAni({w: tileSize, h: tileSize, row: 1, col: 0});
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#allSpritesGroup">allSpritesGroup</a></li><li><a href="global.html#attack">attack</a></li><li><a href="global.html#attackAreaProximity">attackAreaProximity</a></li><li><a href="global.html#attackSpeed">attackSpeed</a></li><li><a href="global.html#attackTimer">attackTimer</a></li><li><a href="global.html#backgroundColor">backgroundColor</a></li><li><a href="global.html#backgroundMusic">backgroundMusic</a></li><li><a href="global.html#boss">boss</a></li><li><a href="global.html#bossAI">bossAI</a></li><li><a href="global.html#bossAttack">bossAttack</a></li><li><a href="global.html#bossAttackArea">bossAttackArea</a></li><li><a href="global.html#bossAttackAreaTimer">bossAttackAreaTimer</a></li><li><a href="global.html#bossBackground">bossBackground</a></li><li><a href="global.html#bossBody">bossBody</a></li><li><a href="global.html#bossPrevFrame">bossPrevFrame</a></li><li><a href="global.html#cWidth">cWidth</a></li><li><a href="global.html#cameraControll">cameraControll</a></li><li><a href="global.html#cameraYOffset">cameraYOffset</a></li><li><a href="global.html#canAttack">canAttack</a></li><li><a href="global.html#canBossAttack">canBossAttack</a></li><li><a href="global.html#canDamage">canDamage</a></li><li><a href="global.html#canvasSetup">canvasSetup</a></li><li><a href="global.html#castleBackground">castleBackground</a></li><li><a href="global.html#changeLevel">changeLevel</a></li><li><a href="global.html#changeState">changeState</a></li><li><a href="global.html#chasing">chasing</a></li><li><a href="global.html#coins">coins</a></li><li><a href="global.html#coinsImg">coinsImg</a></li><li><a href="global.html#constrainCamera">constrainCamera</a></li><li><a href="global.html#currentLevel">currentLevel</a></li><li><a href="global.html#currentMap">currentMap</a></li><li><a href="global.html#currentScene">currentScene</a></li><li><a href="global.html#damage">damage</a></li><li><a href="global.html#damageBoss">damageBoss</a></li><li><a href="global.html#damageTimer">damageTimer</a></li><li><a href="global.html#death">death</a></li><li><a href="global.html#deathTrigger">deathTrigger</a></li><li><a href="global.html#direction">direction</a></li><li><a href="global.html#displayBackground">displayBackground</a></li><li><a href="global.html#drawFrame">drawFrame</a></li><li><a href="global.html#endLevel">endLevel</a></li><li><a href="global.html#endgame">endgame</a></li><li><a href="global.html#enemies">enemies</a></li><li><a href="global.html#enemies1">enemies1</a></li><li><a href="global.html#enemyCurrentY">enemyCurrentY</a></li><li><a href="global.html#enemyGroup">enemyGroup</a></li><li><a href="global.html#enemyProximity">enemyProximity</a></li><li><a href="global.html#entranceBackground">entranceBackground</a></li><li><a href="global.html#fScale">fScale</a></li><li><a href="global.html#forestBackground">forestBackground</a></li><li><a href="global.html#forestMusic">forestMusic</a></li><li><a href="global.html#forestTiles">forestTiles</a></li><li><a href="global.html#gameControlls">gameControlls</a></li><li><a href="global.html#gameState">gameState</a></li><li><a href="global.html#groundSensor">groundSensor</a></li><li><a href="global.html#heart">heart</a></li><li><a href="global.html#heartImg">heartImg</a></li><li><a href="global.html#heroImg">heroImg</a></li><li><a href="global.html#inSequence">inSequence</a></li><li><a href="global.html#initializeBoss">initializeBoss</a></li><li><a href="global.html#initializeEnemies">initializeEnemies</a></li><li><a href="global.html#intro">intro</a></li><li><a href="global.html#introScenes">introScenes</a></li><li><a href="global.html#isOnGround">isOnGround</a></li><li><a href="global.html#keepScore">keepScore</a></li><li><a href="global.html#killEnemy">killEnemy</a></li><li><a href="global.html#levels">levels</a></li><li><a href="global.html#mapGravity">mapGravity</a></li><li><a href="global.html#menu">menu</a></li><li><a href="global.html#menuImg">menuImg</a></li><li><a href="global.html#mountainBackground">mountainBackground</a></li><li><a href="global.html#myTiles">myTiles</a></li><li><a href="global.html#outroScenes">outroScenes</a></li><li><a href="global.html#playerSpeed">playerSpeed</a></li><li><a href="global.html#preload">preload</a></li><li><a href="global.html#preloadLevels">preloadLevels</a></li><li><a href="global.html#prevFrame">prevFrame</a></li><li><a href="global.html#resetPlayer">resetPlayer</a></li><li><a href="global.html#runGame">runGame</a></li><li><a href="global.html#score">score</a></li><li><a href="global.html#setEnviroment">setEnviroment</a></li><li><a href="global.html#setInput">setInput</a></li><li><a href="global.html#setup">setup</a></li><li><a href="global.html#shake">shake</a></li><li><a href="global.html#spawnEnemies">spawnEnemies</a></li><li><a href="global.html#spawnLizard">spawnLizard</a></li><li><a href="global.html#spawnPoint">spawnPoint</a></li><li><a href="global.html#spawner">spawner</a></li><li><a href="global.html#stuckCheck">stuckCheck</a></li><li><a href="global.html#tileGroup">tileGroup</a></li><li><a href="global.html#tileSize">tileSize</a></li><li><a href="global.html#topSensor">topSensor</a></li><li><a href="global.html#ui">ui</a></li><li><a href="global.html#update">update</a></li><li><a href="global.html#updateTileset">updateTileset</a></li><li><a href="global.html#walkableTiles">walkableTiles</a></li><li><a href="global.html#witch">witch</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue Jan 07 2025 22:41:45 GMT+0200 (Χειμερινή ώρα Ανατολικής Ευρώπης)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

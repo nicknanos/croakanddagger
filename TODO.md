@@ -1,17 +1,21 @@
 - [x]Add Sensors to player (top, bottom, left, right)
 - [x]Tune enemy chase(colliders, damage)
 - [x]Make forest leveles
-- []Use only one variable for player(remove activeplayer, character, lizard)
-- []Enemies die on spikes
+- [x]Use only one variable for player(remove activeplayer)
+- [x]Enemies die on spikes
 - [x]Vertical level for mountain
-- []Hide mouse on final build
+- [x]Hide mouse on final build
 - []Fix UI
 - [x]Coins overlap enemies
 - [x]Fix boss room background
 - [x]Add boss fight logic
-- [] Finish cutscenes
-- [] Tutorial level
+- [x] Add controlls
 - [] Add tint according to level
-- [] Change asset routing to work online
-
+- [x] Change asset routing to work online
+- [x]Optimize assets
+- []Minify JS
+- []Disable blocking
 - []JsDoc Documentation?
+    -[x] Better sensor,coin explanation
+    -[x] addAnis explanation on lizard, enemies
+    -[x]@example on eneviroment, enemies

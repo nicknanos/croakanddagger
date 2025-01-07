@@ -1,52 +1,44 @@
-function spawnPortal(x, y){
-    portal = new Sprite(x, y);
-	portal.w=2;
-	portal.h=12;
-	portal.layer = 5;
-	portal.rotationLock = 'true';
-	portal.spriteSheet = portalImg;
-    //portal.scale =1;
-
-    //portal.addCollider(0,4,6)
-
-	portal.anis.offset.x = 1.2;
-	portal.anis.offset.y = -20;
-	portal.anis.frameDelay = 6;
-	portal.friction = 0;
-	portal.anis.w=64;
-	portal.anis.h=64;
-
-	portal.addAnis({
-		open: { row: 1, frames: 8 },
-		active: { row: 0, frames: 8, frameDelay:7 },
-		close: { row: 2, frames: 8, frameDelay: 7 },
-	});
-	portal.changeAni('active');
-}
-
-function spawnHex(x, y) {
-    hex = new Sprite(x, y);
-    hex.w = hero.w;
-    hex.h = hero.h;
-    hex.layer = 6
-    hex.rotationLock = true;
-    hex.spriteSheet = hexImg;
-    hex.friction = 0;
-    hex.anis.w = 32;
-    hex.anis.h = 32;
-    hex.anis.offset.y = -2;
-	hex.frameDelay = 5;
-
-    hex.addAnis({
-        cast: { row: 0, frames: 1},
-		fly: { row: 1, frames: 1},
-		explode: {row: 2, frames: 2, frameDelay: 30}  		
-    });
-	hex.changeAni(['cast'])
-
-
-}
+/**
+ * The pixel size of each tile | 16x16
+ * @type {number}
+ */
 let tileSize = 16;
+
+/**
+ * Sets up the environment for the current map by defining various tiles and objects such as platforms,
+ * spawn points, enemy spanwers, and coins. It also assigns sprites and animations for different tile types.
+ * This function initializes myTiles and walkable tiles.
+ * 
+ * @function setEnviroment
+ * @param {Object} tileSet - The tile set used to create the environment for the level (e.g., forest, mountain).
+ * @returns {void} Does not return a value.
+ * 
+ * @see {@link myTiles} For the group that holds all tile-related objects in the environment.
+ * @see {@link walkableTiles} For the collection of tiles the player can walk on.
+ * @see {@link spawnPoint} For the initial spawn point of the player.
+ * @see {@link enemySpawn1} For the spawn point of the first type of enemy.
+ * @see {@link enemySpawn2} For the spawn point of the second type of enemy.
+ * @see {@link invBlock} For invisible colliding blocks in the environment.
+ * @see {@link spikes} For tiles that cause damage when the player collides with them.
+ * @see {@link platform} For floating platforms in the environment.
+ * 
+ * @example
+ * //Group Properties Explanation
+ * 
+ *group = new Group() (No parent group)
+ * 	group = new myTiles.Group() | walkableTiles.Group(); (Determines which subgroup the group belongs)
+ *	group.layer = 'number'; (Determines the layer of a Sprite in case of overlapping)
+ *	group.collider = 'static'; (Determines sprite collider('none', 'static', 'kinematic'))
+ *	group.w = tileSize; (Sprite width)
+ *	group.h = tileSize; (Sprite Height)
+ *	group.tile = 'character'; (Determines which character the sprite represents in the tile map)
+ *	group.addAni({  (Determines which part of the spritesheet is corresponds to the Sprite)
+ *		w: tileSize,
+ *		h: tileSize,
+ *		row: 0,
+ *		col: 0
+ *	});
+ */
 function setEnviroment(tileSet){
 		myTiles = new Group()
 		myTiles.spriteSheet = tileSet;
@@ -81,7 +73,6 @@ function setEnviroment(tileSet){
 		coins.w = 18;
 		coins.h = 18;
 		coins.tile = 'c';
-		//coins.overlaps(activePlayer);
 		coins.overlaps(enemies);
 		coins.spriteSheet = coinsImg;
 		coins.anis.offset.y = -2;
@@ -279,6 +270,17 @@ function setEnviroment(tileSet){
 }
 //Updates the tileset image
 //All the tiles have to be reset with addAni()
+
+/**
+ * Updates the tileset image used for all the tile images
+ * Here addAni adds a single frame animation to each tile
+ * For the tile images to update on map change
+ * the animation need to be reassigned
+ * @function updateTileset
+ * @param {q5.Image} set The tileset image of the current map
+ * @see {@link changeLevel} For function implementation
+ * @see https://p5play.org/docs/Sprite.html#addAni for addAni documentayion
+ */
 function updateTileset(set){
 	myTiles.spriteSheet = set;
 	ground.addAni({w: tileSize, h: tileSize, row: 0, col: 0});

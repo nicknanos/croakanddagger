@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: camera.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: camera.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Color of the background color of the document body (Area outside of canvas)
+ * @type {string}
+ */
+const backgroundColor = '#1f1f1f'
+
+/**
+ * Canvas width and height
+ * @type {number}
+ */
+let cWidth,cHeight;
+
+/**
+ * Canvas scale
+ * @type {number}
+ */
+let fScale;
+
+/**
+ * Y coordinate offset for the camera location
+ * @type {number}
+ */
+let cameraYOffset;
+
+/**
+ * Sets up the canvas for the game by defining its scale and dimensions
+ * The 'pixelated' attribute sets pixelDensity to 1 
+ * and various css styles are applied to the canvas to make it render without image smoothing
+ * 
+ * @function canvasSetup
+ * @returns {void} 
+ * 
+ * @see https://q5js.org/learn/#createCanvas For the createCanvas documentations
+ * @see backgroundColor For the color value used to set the background color.
+ * @see https://p5play.org/docs/p5play.js.html#line9287 for documentayion
+ */
+function canvasSetup() {
+    fScale = 4;
+    cWidth = Math.floor(320*fScale)
+    cHeight = Math.floor(190*fScale)
+    
+    createCanvas(cWidth,cHeight,"pixelated");
+    document.body.style.backgroundColor = color(backgroundColor);
+  }
+
+/**
+ * Controls the camera's movement and zoom level based on the player's position.
+ * The camera is follownig the camera sensor, a sprite following the player with 
+ * a speed lower than the player speed 
+ * 
+ * @function cameraControll
+ * @param {Sprite} player - The player sprite, used to determine the cameraSensors's target.
+ * @param {Tiles} map - The map tiles or that define the camera's constraints.
+ * @param {number} zoom - The zoom level to set for the camera.
+ * @returns {void} Does not return a value.
+ * 
+ * @see constrainCamera For constraining the camera within the map's boundaries.
+ * @see {@link spawnLizard} For detecting the camera's position and smoothly moving it towards the player.
+ * @see https://p5play.org/docs/Camera.html For the camera object documentaion
+ */
+function cameraControll(player,map, zoom) {
+    constrainCamera(map);
+    cameraSensor.moveTowards(player, 0.07)
+    camera.zoom = zoom;
+
+  }
+
+ /**
+ * Displays a parallax background based on the current map.
+ * The background image is chosen according to the current map, and it is drawn
+ * multiple times to create a scrolling effect. The background scrolls horizontally
+ * when the player is walking, unless the map is "entrance" or "bossRoom".
+ * 
+ * @function displayBackground
+ * @returns {void}
+ * 
+ * @see {@link currentMap} For the current map, which determines the background to display.
+ * @see {@link changeStates} For the player states
+ * @see {@link direction} For the direction in which the background scrolls.
+ */
+  function displayBackground() {
+    switch(currentMap){
+      case 'forest':
+        level = forestBackground;
+        break;
+      case 'mountain':
+        level = mountainBackground;
+        break;
+      case 'entrance':
+        level = entranceBackground;
+        break;
+      case 'castle':
+        level = castleBackground;
+        break;
+      case 'bossRoom':
+        level = bossBackground;
+        break;
+    }
+    for (b of level){
+      image(b.img, int(b.x), 0, canvas.w, canvas.h);
+      image(b.img, int(b.x)+ width, 0, canvas.w, canvas.h); // draw background to the right of the base one || int() resolves seams between 
+      image(b.img, int(b.x)- width, 0, canvas.w, canvas.h); // draw background to the left of the base one  || the instances of the background
+      if (lizard.currentState == lizard.states.WALK &amp;&amp; currentMap != "entrance" &amp;&amp; currentMap != 'bossRoom') b.x -= b.speed*direction+1*direction;
+      if (b.x &lt; -width) b.x = 0;
+      }
+  }
+
+  /**
+ * Constrains the camera's position to ensure it stays within the boundaries of the level.
+ * The camera's x and y coordinates are adjusted based on the player's position and
+ * the defined limits for the map. The function ensures that the camera does not go
+ * outside the designated area of the level, both horizontally and vertically.
+ * 
+ * The horizontal borders boundaries are determined by the x coordinates of
+ * the spawn point and the end point
+ * 
+ * The vertical borders boundaries are determined by the y coordinates of
+ * the cameraSensor and the last(lowest) tile
+ * 
+ * 
+ * @function constrainCamera
+ * @param {Array} tileGroup - The group of tiles for the current level, used to calculate
+ *                             the vertical bounds of the camera.
+ * @returns {void} 
+ * 
+ * @see cameraControll For the camera sensor logic
+ */
+  function constrainCamera(tileGroup){
+   //X Axi
+   let firstX = spawner().x + 30;                             //x cord of spawner tile
+   let lastX = endPoint[0].position.x -30
+   camera.x = constrain(cameraSensor.x, firstX, lastX);
+   //Y Axis
+   let firstY = tileGroup[0].position.y;                 //y cord of first tile in map
+   let lastY = tileGroup[tileGroup.length-1].position.y; //y cord of last tile in map
+   cameraYOffset = 30;
+   if(currentMap=="entrance") cameraYOffset = 70;
+   camera.y = constrain(cameraSensor.y-cameraYOffset, cameraSensor.y-200, lastY);
+  }</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#allSpritesGroup">allSpritesGroup</a></li><li><a href="global.html#attack">attack</a></li><li><a href="global.html#attackAreaProximity">attackAreaProximity</a></li><li><a href="global.html#attackSpeed">attackSpeed</a></li><li><a href="global.html#attackTimer">attackTimer</a></li><li><a href="global.html#backgroundColor">backgroundColor</a></li><li><a href="global.html#backgroundMusic">backgroundMusic</a></li><li><a href="global.html#boss">boss</a></li><li><a href="global.html#bossAI">bossAI</a></li><li><a href="global.html#bossAttack">bossAttack</a></li><li><a href="global.html#bossAttackArea">bossAttackArea</a></li><li><a href="global.html#bossAttackAreaTimer">bossAttackAreaTimer</a></li><li><a href="global.html#bossBackground">bossBackground</a></li><li><a href="global.html#bossBody">bossBody</a></li><li><a href="global.html#bossPrevFrame">bossPrevFrame</a></li><li><a href="global.html#cWidth">cWidth</a></li><li><a href="global.html#cameraControll">cameraControll</a></li><li><a href="global.html#cameraYOffset">cameraYOffset</a></li><li><a href="global.html#canAttack">canAttack</a></li><li><a href="global.html#canBossAttack">canBossAttack</a></li><li><a href="global.html#canDamage">canDamage</a></li><li><a href="global.html#canvasSetup">canvasSetup</a></li><li><a href="global.html#castleBackground">castleBackground</a></li><li><a href="global.html#changeLevel">changeLevel</a></li><li><a href="global.html#changeState">changeState</a></li><li><a href="global.html#chasing">chasing</a></li><li><a href="global.html#coins">coins</a></li><li><a href="global.html#coinsImg">coinsImg</a></li><li><a href="global.html#constrainCamera">constrainCamera</a></li><li><a href="global.html#currentLevel">currentLevel</a></li><li><a href="global.html#currentMap">currentMap</a></li><li><a href="global.html#currentScene">currentScene</a></li><li><a href="global.html#damage">damage</a></li><li><a href="global.html#damageBoss">damageBoss</a></li><li><a href="global.html#damageTimer">damageTimer</a></li><li><a href="global.html#death">death</a></li><li><a href="global.html#deathTrigger">deathTrigger</a></li><li><a href="global.html#direction">direction</a></li><li><a href="global.html#displayBackground">displayBackground</a></li><li><a href="global.html#drawFrame">drawFrame</a></li><li><a href="global.html#endLevel">endLevel</a></li><li><a href="global.html#endgame">endgame</a></li><li><a href="global.html#enemies">enemies</a></li><li><a href="global.html#enemies1">enemies1</a></li><li><a href="global.html#enemyCurrentY">enemyCurrentY</a></li><li><a href="global.html#enemyGroup">enemyGroup</a></li><li><a href="global.html#enemyProximity">enemyProximity</a></li><li><a href="global.html#entranceBackground">entranceBackground</a></li><li><a href="global.html#fScale">fScale</a></li><li><a href="global.html#forestBackground">forestBackground</a></li><li><a href="global.html#forestMusic">forestMusic</a></li><li><a href="global.html#forestTiles">forestTiles</a></li><li><a href="global.html#gameControlls">gameControlls</a></li><li><a href="global.html#gameState">gameState</a></li><li><a href="global.html#groundSensor">groundSensor</a></li><li><a href="global.html#heart">heart</a></li><li><a href="global.html#heartImg">heartImg</a></li><li><a href="global.html#heroImg">heroImg</a></li><li><a href="global.html#inSequence">inSequence</a></li><li><a href="global.html#initializeBoss">initializeBoss</a></li><li><a href="global.html#initializeEnemies">initializeEnemies</a></li><li><a href="global.html#intro">intro</a></li><li><a href="global.html#introScenes">introScenes</a></li><li><a href="global.html#isOnGround">isOnGround</a></li><li><a href="global.html#keepScore">keepScore</a></li><li><a href="global.html#killEnemy">killEnemy</a></li><li><a href="global.html#levels">levels</a></li><li><a href="global.html#mapGravity">mapGravity</a></li><li><a href="global.html#menu">menu</a></li><li><a href="global.html#menuImg">menuImg</a></li><li><a href="global.html#mountainBackground">mountainBackground</a></li><li><a href="global.html#myTiles">myTiles</a></li><li><a href="global.html#outroScenes">outroScenes</a></li><li><a href="global.html#playerSpeed">playerSpeed</a></li><li><a href="global.html#preload">preload</a></li><li><a href="global.html#preloadLevels">preloadLevels</a></li><li><a href="global.html#prevFrame">prevFrame</a></li><li><a href="global.html#resetPlayer">resetPlayer</a></li><li><a href="global.html#runGame">runGame</a></li><li><a href="global.html#score">score</a></li><li><a href="global.html#setEnviroment">setEnviroment</a></li><li><a href="global.html#setInput">setInput</a></li><li><a href="global.html#setup">setup</a></li><li><a href="global.html#shake">shake</a></li><li><a href="global.html#spawnEnemies">spawnEnemies</a></li><li><a href="global.html#spawnLizard">spawnLizard</a></li><li><a href="global.html#spawnPoint">spawnPoint</a></li><li><a href="global.html#spawner">spawner</a></li><li><a href="global.html#stuckCheck">stuckCheck</a></li><li><a href="global.html#tileGroup">tileGroup</a></li><li><a href="global.html#tileSize">tileSize</a></li><li><a href="global.html#topSensor">topSensor</a></li><li><a href="global.html#ui">ui</a></li><li><a href="global.html#update">update</a></li><li><a href="global.html#updateTileset">updateTileset</a></li><li><a href="global.html#walkableTiles">walkableTiles</a></li><li><a href="global.html#witch">witch</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue Jan 07 2025 22:41:45 GMT+0200 (Χειμερινή ώρα Ανατολικής Ευρώπης)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

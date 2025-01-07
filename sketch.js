@@ -1,75 +1,308 @@
 //Set Variables
+
+/**
+ * Current game state
+ * @type {string} */
 let gameState = "menu";
+
+/**
+ * World gravity value
+ * @type {number} */
 let mapGravity = 10;
 
-//Level Creation
+
+/**
+ * @typedef {Object} Level
+ * @property {string} platforms  // The tile layout of the level
+ * @property {string} map 		// The map of the level
+ * @property {number} level     //Number of the level
+ */
+
+/**
+ * Array of game levels
+ * @type {Array.<Level>}
+* @see {@link preloadLevels} for usage
+* @see https://p5play.org/learn/tiles.html?page=0 for Tile documentation
+ * */
 let levels = [];
+
+/**
+ * Current game map
+ * @type {string} */
 let currentMap = 'forest'
+
+/**
+ * Current game level
+ * @type {number} */
 let currentLevel = 0;
+
+
 //Map Tiles
+/**
+ * Group of all the tiles of the current level
+ * Utilizes p5play's 'Tiles' class for handling tile generation.
+ * @type {Tiles}
+ * @see https://p5play.org/learn/tiles.html?page=0 for Tile examples
+ * @see https://p5play.org/docs/Tiles.html For Tile class source code
+ * @see {@link changeLevel} for utilization
+ */
 let tileGroup;
+
+/**
+ * Parent group for all the Sprite groups that build the level tiles
+ * Utilizes p5play's 'Group' class for handling collections of sprites.
+ * @see https://p5play.org/learn/group.html for Group examples
+ * @see https://p5play.org/docs/Group.html for Group class source code
+ * @see {@link setEnviroment} for utilization
+ * @type {Group}
+ */
 let myTiles;
-//Only Walkable Tiles
+
+/**
+ * A subset of `myTiles` containing only walkable tiles.
+ * Represents areas the player can move on.
+ * @type {Group}
+ * @see myTiles For the parent group of all tiles.
+ * @see {@link setEnviroment} for initialization
+ */
 let walkableTiles;
+
+/**
+ * A subset of `myTiles` containing the spawn and level end point Groups.
+ * Only one Sprite of each groupe is used per level to declare its starting and end point
+ * @type {Group}
+ * @see myTiles For the parent group of all tiles.
+ * @see {@link setEnviroment} for initialization
+ */
 let spawnPoint, endPoint;
 
-//reset level helper
+/**
+ * A helper group  used to remove all unwanted Sprites from previous level
+ * @type {Group}
+ * @see {@link changeLevel} for utilization
+ */
 let allSpritesGroup;
 
-
-let activePlayer;
-
-//Checks to see if player is in a movement sequence (prevents sequence cancellation)
+/**
+ *Checks to see if player is in a movement sequence (prevents sequence cancellation)
+ * @type {boolean}
+ */
 let inSequence = false;
 
-//Player Sensors
-let groundSensor,leftSensor,rightSensor,topSensor, cameraSensor;
+/**
+ * Sprites attached to the player, used as "sensors"
+ * @type {Sprite}
+ * @see {@link spawnLizard} for initialization
+ */
+let groundSensor,leftSensor,rightSensor, cameraSensor;
 
+/**
+ * Sprites attached to the top of the player, used as "sensor"
+ * @type {Sprite}
+ * @see {@link spawnLizard} for initialization
+ * @deprecated and to be removed
+ */
+let topSensor;
+
+/**
+ * Keeps track of score (number of coins collected)
+ * @type {number}
+ * @see keepScore for usage
+ */
 let score = 0;
 
 //Enviroment
+/**
+ * Children Sprite Groups of my myTiles Group
+ * Each Group has multuple instances(Sprites) on each level
+ * @type {Group}
+ * @see myTiles
+ */
 let coins, ground, groundL, groundR, invBlock, topBlock, underGround, platform, spikes;
+
+/**
+ * Animation spritesheet for the collecatble coins
+ * Different animations are used in each level
+ * @type {q5.Image}
+ */
 let coinsImg;
 
-//Movement helpers
-let blocking = false
+/**
+ * Used to indicate player direction
+ * Takes values of 1 or -1
+ * @type {number}
+ * @see gameControlls
+ */
 let direction = 0;
 
-//Attack capability flag
+/**
+ * Timer ID for managing attack intervals.
+ * @type {number}
+ * @see attack
+ */
 let attackTimer;
+
+/**
+ * Flag indicating when a character can attack
+ * @type {boolean}
+ * @see attack
+ */
 let canAttack  = true;
+
+/**
+ * Indicates the time between player attacks
+ * @type {number}
+ * @see attack
+ */
 let attackSpeed = 300//ms
 
+/**
+ * Timer ID for managing damge taking intervals.
+ * @type {number}
+ * @see damage
+ */
 let damageTimer;
+
+/**
+ * Flag indicating when a character can get damaged
+ * @type {boolean}
+ * @see damage
+ */
 let canDamage  = true;
+
+/**
+ * Stores the frame of the time of an attack
+ * Used to calculate when the players sprite opacity returns to normal
+ * @type {number}
+ * @see damge
+ * @see runGame
+ */
 let prevFrame = 0
 
-//getting chased flag(prevens enemy animation overlap)
+/**
+ * Flag indicating when the player's getting chased by an enemy(prevens enemy animation overlap)
+ * @see killEnemy
+ * 
+ */
 let chasing = false;
 
 //Sprites and Assets
-let hero, partner, witch, lizard, portal, hex, frog, enemies, fly, leaf, bat, cobra, ghoul, imp, boss, goblinKing, bossAttackArea;
-let heroImg, partnerImg, witchImg, lizardImg, portalImg, hexImg, frogImg, cloudImg, flyImg, leafImg, batImg, cobraImg, ghoulImg, impImg, bossImg, bossAttackAreaImg, menuImg;
 
+/**
+ * Sprite groups for the player and the enemies
+ * @type {Group}
+ * @see {@link initializeEnemies}
+ * @see {@link spawnLizard}
+ */
+let witch, lizard, frog, fly, leaf, bat, cobra, ghoul, imp, goblinKing;
+
+/**
+ * Animation spritesheets caontaining the animaations for the player and enemies
+ * @type {q5.Image}
+ * @see preload
+ * @see https://q5js.org/learn/#loadImage for loadImage documantation
+ */
+let heroImg, partnerImg, witchImg, lizardImg, portalImg, hexImg, frogImg, cloudImg, flyImg, leafImg, batImg, cobraImg, ghoulImg, impImg, bossImg, bossAttackAreaImg;
+
+/**
+ * Parent group for all enemy groups
+ * Used to acces all enemies from one place
+ * @type {Group}
+ * @see {@link initializeEnemies}
+ */
+let enemies;
+
+/**
+ * A subset of 'myTiles' used to determin the spawn coordinates for each enemy type
+ * @type {Group}
+ * @see myTiles For the parent group of all tiles.
+ * @see {@link setEnviroment} for initialization
+ */
+let enemies1, enemies2;
+
+/**
+ * An object containing enemy groups for different types of enemies.
+ * Every map has its own two unique enemies
+ * @type {{e1: Group | undefined, e2: Group | undefined}}
+ * @see {@link changeLevel}
+ */
 let enemyGroup = {e1: undefined, e2: undefined}
 
+/**
+ * Conatins the single tile image sheets for each map
+ * @type {q5.Image}
+ */
 let forestTiles, mountainTiles, castleTiles;
 
-//let cloudX = 0;
+/**
+ * Sprite Group specifically for the boss
+ * Even if theres one boss, using a Group helps with spawning in the boss
+ * @type {Group}
+ * @see {@link initializeEnemies}
+ */
+let boss;
 
-//Intro Scene
-let floor, waitingRoom;
-let backgroundImg;
+/**
+ * Sprite representing the area that the bosses attack takes
+ * Used to detect if the bosses attack hits the player
+ * @type {Sprite}
+ * @see {@link initializeBoss}
+ */
+let bossAttackArea;
 
 //Sounds
+/**
+ * Sound files for background music and sound effects
+ * @type {q5.Sound}
+ * @see preload
+ * @see https://q5js.org/learn/#loadSound for loadSound documantation
+ */
 let forestMusic, mountainMusic, entranceMusic, castleMusic, coinSound, damageSound, defeatSound, bossMusic, menuMusic, introMusic, outroMusic;
-let mapMusic;
 
-//ui
-let ui, heart
+/**
+ * Sprite Group used for the UI (Health bar)
+ * @type {Group}
+ * @see setUI
+ */
+let ui;
+
+/**
+ * Sprite belonging to ui group
+ * Represents individual hearts(player hit points)
+ * @type {Sprite}
+ * @see setUI
+ */
+let heart;
+
+/**
+ * Image sprite sheet for the ui's hearts
+ * @type {q5.Image}
+ */
 let heartImg
 
-// background images object
+/**
+ * Images for the main menu and Controlls page
+ * @type {q5.Image}
+ * @see menu
+ */
+let menuImg, controllsImg;
+
+
+/**
+ * @typedef backgroundLayer
+ * @property {string} file         		// The file path to the background image.
+ * @property {q5.Image | undefined} img // The q5.Image object for the layer, initially undefined.
+ * @property {number} x      			// The x-coordinate of the background layer.
+ * @property {number} speed          	// The scrolling speed of the background layer.
+ */
+
+/**
+ * An array representing layers of the forest background for a parallax effect.
+ * Each layer contains the file path to the image, an image object (assigned later), 
+ * its x-coordinate, and its scrolling speed.
+ * 
+ * @type {Array<{backgroundLayer}>}
+*/
 let forestBackground = [
 	{
 		file: 'assets/Backgrounds/forest/1.png',
@@ -97,6 +330,13 @@ let forestBackground = [
 	}
 ];
 
+/**
+ * An array representing layers of the mountain background for a parallax effect.
+ * Each layer contains the file path to the image, an image object (assigned later), 
+ * its x-coordinate, and its scrolling speed.
+ * 
+* @type {Array<{backgroundLayer}>}
+*/
 let mountainBackground = [
 	{
 		file: 'assets/Backgrounds/mountain/sky.png',
@@ -130,6 +370,13 @@ let mountainBackground = [
 	}
 ];
 
+/**
+ * An array representing layers of the entance background for a parallax effect.
+ * Each layer contains the file path to the image, an image object (assigned later), 
+ * its x-coordinate, and its scrolling speed.
+ * 
+* @type {Array<{backgroundLayer}>}
+*/
 let entranceBackground = [
 	{
 		file: 'assets/Backgrounds/entrance/1.png',
@@ -163,6 +410,13 @@ let entranceBackground = [
 	}
 ];
 
+/**
+ * An array representing layers of the castle background for a parallax effect.
+ * Each layer contains the file path to the image, an image object (assigned later), 
+ * its x-coordinate, and its scrolling speed.
+ * 
+* @type {Array<{backgroundLayer}>}
+*/
 let castleBackground = [
 	{
 		file: 'assets/Backgrounds/castle/wall.png',
@@ -172,6 +426,13 @@ let castleBackground = [
 	}
 ];
 
+/**
+ * An array representing layers of the boss room background for a parallax effect.
+ * Each layer contains the file path to the image, an image object (assigned later), 
+ * its x-coordinate, and its scrolling speed.
+ * 
+* @type {Array<{backgroundLayer}>}
+*/
 let bossBackground = [
 	{
 		file: 'assets/Backgrounds/boss/sky-full.png',
@@ -199,7 +460,23 @@ let bossBackground = [
 	}
 ];
 
+/**
+ * @typedef storyScene
+ * @property {string} file 				// The file path to the background image.
+ * @property {q5.Image | undefined} img // The q5.Image object for the layer, initially undefined.
+ */
+
+/**
+ * An array representing the intro story scenes. 
+ * Each layer contains the file path to the image and  an image object (assigned later), 
+ * 
+ * @type {Array<{storyScene}>}
+*/
 let introScenes = [
+	{
+		file: 'assets/controlls.jpg',
+		img: undefined,
+	},
 	{
 		file: 'assets/intro/1.jpg',
 		img: undefined,
@@ -218,6 +495,12 @@ let introScenes = [
 	},
 ]
 
+/**
+ * An array representing the outro story scenes. 
+ * Each layer contains the file path to the image and  an image object (assigned later), 
+ * 
+ * @type {Array<{storyScene}>}
+*/
 let outroScenes = [
 	{
 		file: 'assets/outro/1.jpg',
@@ -240,11 +523,19 @@ let outroScenes = [
 		img: undefined,
 	},
 ]
+
+/**
+ * Represents the current story scene shown in the intro and outro of the game
+ * @type {number}
+ * @see intro
+ * @see outro
+ */
 let currentScene = 0;
 
-let test
-
-//Preload assets
+/**
+ * Q5 function that pre-loads assets before these are needed in the setup and update/draw function
+ * @see https://q5js.org/learn/#preload for documentation
+ */
 function preload() {
 	for (let b of forestBackground){
 		b.img = loadImage(`${b.file}`)
@@ -272,15 +563,10 @@ function preload() {
 		b.img = loadImage(`${b.file}`)
 	}
 
-	heroImg = loadImage('assets/player/hero.png');
-	partnerImg  = loadImage('assets/player/partner.png');
 	witchImg = loadImage('assets/boss/witch.png');
 	lizardImg = loadImage('assets/player/lizard.png');
-	portalImg =loadImage('assets/boss/portal.png');
-	hexImg = loadImage('assets/boss/hex.png');
 	frogImg = loadImage('assets/boss/frog.png');
 
-	cloudImg =loadImage('assets/Backgrounds/forest/cloud.png');
 
 	forestTiles = loadImage('assets/Enviroment/forestTiles2.png');
 	mountainTiles = loadImage('assets/Enviroment/mountainTiles.png');
@@ -298,13 +584,13 @@ function preload() {
 
 	forestMusic = loadSound('assets/sound/forest.ogg');
 	mountainMusic = loadSound('assets/sound/mountain.ogg');
-	entranceMusic = loadSound('assets/sound/entrance.mp3');
+	entranceMusic = loadSound('assets/sound/entrance.ogg');
 	castleMusic = loadSound('assets/sound/castle.ogg');
 	bossMusic = loadSound('assets/sound/boss-music.ogg');
-	coinSound = loadSound('assets/sound/coin.wav');
-	damageSound = loadSound('assets/sound/damage.wav');
+	coinSound = loadSound('assets/sound/coin.ogg');
+	damageSound = loadSound('assets/sound/damage.ogg');
 	damageSound.setVolume(.5)
-	defeatSound = loadSound('assets/sound/enemy-defeat.wav');
+	defeatSound = loadSound('assets/sound/enemy-defeat.ogg');
 	defeatSound.setVolume(1);
 	menuMusic = loadSound('assets/sound/menu.ogg');
 	menuMusic.setVolume(.3);
@@ -315,28 +601,84 @@ function preload() {
 
 	heartImg = loadImage('assets/ui/heart.png');
 	menuImg = loadImage('assets/menu.jpg');
+	controllsImg = loadImage('assets/controlls.jpg');
 
 	initializeEnemies();
 }
-//let cube 
+
+
+/**
+ * Q5 function that runs one time when the program starts
+ * Sets up the game environment, including canvas, sprites, levels, and UI elements.
+ * Initializes global variables, loads resources, and prepares the game for play.
+ * 
+ * @function setup
+ * @global
+ * @returns {void} Does not return a value.
+ * 
+ * @see {@link canvasSetup} For the canvas initialization details.
+ * @see {@link preloadLevels} For preloading all the level maps.
+ * @see {@link changeLevel} For setting up the environment groups/tiles.
+ * @see {@link spawnLizard} For creating the lizard(player) sprite function.
+ * @see setUI For initializing the user interface.
+ * @see spawner for determining the spanw point coordinates
+ * @see https://q5js.org/learn/#setup for documantaion
+ * @see https://p5play.org/docs/Sprite.html#pixelPerfect for pixelPerfect documanation
+ */
 function setup() {
 	allSpritesGroup = new Group();
-	//SetUp Canvas
-    canvasSetup()
 	world.gravity.y = mapGravity;
-	allSprites.pixelPerfect = true;
-	preloadLevels();
+	allSprites.pixelPerfect = true; //The sprite will be drawn at integer coordinates, while retaining the precise position of its collider.
+    canvasSetup() // sets up the canvas
+	preloadLevels(); //load all level maps
+	changeLevel(); // change level function, here it loads firt level
+	spawnLizard(spawner().x,spawner().y); //spawns player at spawner tile coordinates
+	lizard.overlaps(coins);	//Player can overlap coins, has to be declared here after player and enviroment initialization
+	setUI(); //displays UI
+}
 
-	//Eniroment (tiles, objects etx)
-	changeLevel();
+/**
+ * Q5 function that runs 60 times per second by default.
+ * Acts as game state machine
+ * 
+ * @function update
+ * @global
+ * @returns {void} Does not return a value.
+ * @see menu for the starting menu 
+ * @see intro for the intro story
+ * @see runGame for main game functionality
+ * @see endGame for ending story
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/Location/reload for location.reload documantation
+ * */
+function update() {
+	clear();
+	if(gameState=='menu') menu();
+	if(gameState=='intro') intro();
+	if(gameState=='runGame') runGame();
+	if(gameState=='endGame') endGame();
+	if(gameState=='replay') location.reload();
+}
 
-	spawnLizard(spawner().x,spawner().y);
-	activePlayer = lizard;
-	activePlayer.overlaps(coins);	
+/**
+ * Draws the UI after turning of the camera, making it static
+ * @function drawFrame
+ * @returns {void}
+ * @see https://p5play.org/learn/camera.html?page=2 for camera.off explanation
+ */
+function drawFrame() {
+	camera.off();
+	ui.draw();
+}
 
-	//UI
+/**
+ * Sets up the UI - Player Health
+ * Creates heart sprites, same ammount as the players maxHealth property
+ * @function setInput
+ * @return {void}
+ */
+function setUI(){
 	ui = new Group();
-	ui.isPerm = true;
+	ui.isPerm = true; //Used to except UI from sprite resseting at changeLevel()
 	ui.overlaps(allSprites);
 	ui.layer = 100;
 	for (let i = 0; i < lizard.maxHealth; i++) {
@@ -349,30 +691,22 @@ function setup() {
 		heart.changeAni('full')
 	}
 }
-function update() {
-	clear();
-	if(gameState=='menu') menu();
-	if(gameState=='intro') intro();
-	if(gameState=='runGame') runGame();
-	if(gameState=='endGame') endGame();
-	if(gameState=='replay') location.reload();
-}
 
-//Draws elements ignoring camera controll
-function drawFrame() {
-	camera.off();
-	ui.draw();
-}
-
-//Menu function
+/**
+ * Displays main menu.
+ * The first level is loaded in setup() but its turned invisible in the main menu
+ * @function menu
+ * @global
+ * @returns {void}
+ */
 function menu(){
-	mouse.visible = false;
-	menuMusic.play();
-	walkableTiles.visible = false;
-	enemies.visible = false;
-	lizard.visible  = false;
-	ui.visible      = false;
-	coins.visible   = false;
+	mouse.visible = false;          
+	menuMusic.play();				
+	walkableTiles.visible = false;	//
+	enemies.visible = false;		//
+	lizard.visible  = false;		//Turns loaded first level invisible
+	ui.visible      = false;		//
+	coins.visible   = false;		//
 	background(menuImg)
 	textAlign(CENTER, MIDDLE);
 	fill('white');
@@ -381,6 +715,13 @@ function menu(){
 	if(kb.presses('space')) gameState = 'intro';
 }
 
+/**
+ * Displays the intro story scenes
+ * Starts the game when the scenes end
+ * @function intro
+ * @global
+ * @returns {void}
+ */
 function intro(){
 	menuMusic.pause();
 	introMusic.play();
@@ -394,6 +735,13 @@ function intro(){
 	} 
 }
 
+/**
+ * Displays the outro story scenes
+ * Has option to restart the game at last scene
+ * @function endgame
+ * @global
+ * @returns {void}
+ */
 function endGame(){
 	allSprites.remove();
 	bossMusic.pause();
@@ -405,25 +753,59 @@ function endGame(){
 	} else gameState = 'replay';
 }
 
+/**
+ * Executes the main game loop, managing player interactions, camera controls, level transitions, 
+ * enemy behavior, and game state logic. This function is called continuously to keep the game running.
+ *
+ * @function runGame
+ * @global
+ * @returns {void} Does not return a value.
+ *
+ * @see {@link displayBackground} For background rendering logic.
+ * @see gameControlls For managing player input.
+ * @see {@link cameraControll} For controlling the camera.
+ * @see {@link enemyProximity} For enemy chase logic
+ * @see {@link bossAI} For handling boss-specific behavior.
+ * @see endLevel For transitioning to the next level.
+ * @see damage For applying damage to the player.
+ * @see gameDebug For enabling debug mode and debugging utilities.
+ */
 function runGame(){
 	mouse.visible = false;
 	introMusic.pause();
-	walkableTiles.visible = true;
-	enemies.visible = true;
-	lizard.visible  = true;
-	ui.visible      = true;
-	coins.visible   = true;
+
+	walkableTiles.visible = true;	//
+	enemies.visible = true;			//
+	lizard.visible  = true;			// Makes first level visible again
+	ui.visible      = true;			//
+	coins.visible   = true;			//
+
 	//Background
 	displayBackground();
+
 	//Player Controlls
-	gameControlls (activePlayer);
+	gameControlls (lizard);
+
 	//Camera Controlls
 	if(currentMap!='bossRoom'){
-		cameraControll(activePlayer, tileGroup, 4);
+		cameraControll(lizard, tileGroup, 4);
 		enemyProximity();
 	}else {
 		camera.x =spawner().x + 34;
 		camera.y =spawner().y - 48;
+
+		//Boss Fight Logic
+		lizard.overlaps(goblinKing)
+		bossAI();
+		if(lizard.overlaps(finaleTrigger)&&deathTrigger) endLevel();
+
+		//Final room logic
+		if(currentLevel==7) { 
+			witch.mirror.x = true;
+			frog.mirror.x = true;
+			if(lizard.overlaps(frog)) gameState = 'endGame'
+		}
+
 	}
 	//Die on spikes
 	if(groundSensor.overlaps(spikes)) {
@@ -432,45 +814,51 @@ function runGame(){
 	}
 	//Change to next level
 	if(lizard.overlaps(endPoint)) endLevel();
-	//collect coins
-	lizard.overlaps(coins)
+
+	//Collect coins and keep Score
 	keepScore();
 	
-	//Check when enemy is close enought to chase player
 	//Background Music
 	backgroundMusic(volume = .2);
+
 	//check if player gets damaged
 	if(enemies.overlapping(lizard)&&canDamage) damage();
+
+	//Resets player opacity after 100 frames pass from the time player gets damaged
 	if (frameCount-prevFrame > 100){
 		lizard.opacity = 1
 		prevFrame = frameCount
 	}
 
 	//Debug Mode
-	gameDebug(showSprites = true);
-
-	if (currentMap == 'bossRoom'){
-		lizard.overlaps(goblinKing)
-		bossAI();
-		if(lizard.overlaps(finaleTrigger)&&deathTrigger){
-			endLevel();
-		}
-		if(currentLevel==7) {
-			witch.mirror.x = true;
-			frog.mirror.x = true;
-			if(lizard.overlaps(frog)) gameState = 'endGame'
-		}
-	}	
+	gameDebug(showSprites = true);	
 }
 
-//keyboard/controller controlls
+
+/**
+ * Manages character controls, including movement, jumping and attacking.
+ * Handles input from the keyboard and controller, and updates the character's state and animation accordingly.
+ *
+ * @function gameControlls
+ * @param {Sprite} character - The character sprite whose controls are being managed.
+ * @returns {void} Does not return a value.
+ * 
+ * @see {@link stuckCheck} For handling scenarios where the character is stuck.
+ * @see {@link changeState} For updating the character's state.
+ * @see isOnGround For checking if the character is on the ground.
+ * @see attack For handling attack actions.
+ * @see block For initiating a block action.
+ * @see releaseBlock For releasing a block action.
+ */
 function gameControlls(character){	
 	//----------Controls----------\\
-	if((character.currentState != character.states.ATTACK) && (character.currentState != character.states.BLOCK) && !inSequence){
+	if((character.currentState != character.states.ATTACK) && !inSequence){
 		stuckCheck();
 		if (kb.pressing('left')|| contro.leftStick.x < -0.25) {
 			character.mirror.x = true;
 			character.changeAni('run');
+			//If the character is stucks, dont let him move towards stuck area
+			//Prevents player sprite from shaking
 			if(character.currentState == character.states.STUCK){
 				character.vel.x = 0;
 				if(rightSensor.overlapping(walkableTiles)){
@@ -487,6 +875,8 @@ function gameControlls(character){
 		else if ((kb.pressing('right')|| contro.leftStick.x > 0.25)){
 			character.mirror.x = false;
 			character.changeAni('run');
+			//If the character is stucks, dont let him move towards stuck area
+			//Prevents player sprite from shaking
 			if(character.currentState == character.states.STUCK){
 				character.vel.x = 0;
 				if(leftSensor.overlapping(walkableTiles)){	
@@ -509,24 +899,31 @@ function gameControlls(character){
 			if(kb.presses('space')||kb.presses('up')){
 				world.gravity.y = 15;
 				character.vel.y = -3.5;
-				//character.changeAni(['jump','stand']);
 				world.gravity.y = 10;
 			}
 		}
 	}
 	if(kb.presses('e')){
-		if(canAttack) atttack(character);
+		if(canAttack) attack(character);
 	}
-	if(kb.presses('q')){
-		block();
-	}
-	if(kb.released('q')){
-		releaseBlock();
-	}
+//	if(kb.presses('q')){
+//		block();
+//	}
+//	if(kb.released('q')){
+//		releaseBlock();
+//	}
 	
 }
 
-//resets player to starting position
+
+/**
+ * Resets player back to spawning point
+ * @function resetPlayer
+ * @param {boolean} resetCamera Option to reset the camera | Avoid weird camera movements during level change
+ * @param {boolean} resetHealth Option to reseet player health | Doesnt reset health on level change
+ * @returns {void}
+ * @see spawner For spawning coordinates
+ */
 function resetplayer(resetCamera, resetHealth){
 	if(resetHealth){
 		lizard.health = lizard.maxHealth;
@@ -551,7 +948,7 @@ function gameDebug(showSprites){
 		allSprites.debug = true; //shows all colliders
 		textSize(60)
 		fill('white')
-		text(round(frameRate()), 0, 100); //displays frames per second
+		text(round(frameRate()), 50, 100); //displays frames per second
 	}
 //	else if (kb.released('`')){
 //		allSprites.debug = false;
@@ -559,27 +956,47 @@ function gameDebug(showSprites){
 //	}
 }
 
-//Attack action
-async function atttack(character) {
+
+/**
+ * Executes an attack action for the given character. Creates an invisible attack area in front of the character,
+ * plays the attack animation, and applies damage to enemies or the boss depending on the current level.
+ * 
+ * This function uses GlueJoint to attach the attack area sprite to the player
+ * 
+ * This function uses asynchronous operations to manage attack timing and resets the ability to attack after a cooldown period.
+ * Using await the attack animation is completed before damage calculations take place
+ * 
+ * @async
+ * @function attack
+ * @param {Sprite} character - The character performing the attack.
+ * @returns {Promise<void>} Resolves when the attack sequence is complete.
+ * 
+ * @see {@link changeState} For updating the character's state.
+ * @see attackAreaProximity For handling proximity-based attack effects on regular enemies.
+ * @see {@link damageBoss} For applying damage to the boss in level 6.
+ * @see https://p5play.org/docs/GlueJoint.html for GlueJoint documentation
+ * @see https://p5play.org/learn/animation.html?page=6 for using async/await for animation sequencing
+ */
+async function attack(character) {
 	canAttack = false;
 	character.vel.x = 0;
 	changeState('ATTACK')
 	let attackArea = new Sprite((character.x+(8)*direction), (character.y), 25, 20) //creates an invisible sprite in front of player
 	attackArea.visible = false;
 	attackArea.mass = 0.0;
-	character.overlaps(attackArea);                                               //
-	attackArea.overlaps(allSprites);                                           	  //
-	let area =  new GlueJoint(character, attackArea);                             //
-	area.visible = false;                                                         //
+	character.overlaps(attackArea);                                               
+	attackArea.overlaps(allSprites);                                           	  
+	let area =  new GlueJoint(character, attackArea); //Connects attack area to player
+	area.visible = false;                                                         
 	await character.changeAni('slash'); //plays attack animation
 	character.changeAni('stand');       //
 	changeState('IDLE')
-	if(!(currentLevel == 6)){
+	if(!(currentLevel == 6)){ //level 6 = boss fight room
 		await attackAreaProximity(attackArea);
 	}else{
 		await damageBoss(attackArea);
 	}
-	attackArea.remove(); //removes sprite after attackends
+	attackArea.remove(); //removes attack sprite after attack ends
 	attackTimer = setInterval(()=>{
 		canAttack = true
 		console.log('attack')
@@ -588,35 +1005,26 @@ async function atttack(character) {
 	}, attackSpeed)
 }
 
-//Block action(hold)
-let blockingArea;
-function block(){
-	lizard.vel.x = 0;
-	changeState('BLOCK')
-	blocking = true
-	blockingArea = new Sprite((lizard.x+(12)*direction), (lizard.y), 2, 24) //creates an invisible sprite in front of player
-	blockingArea.visible = false;											//
-	lizard.overlaps(blockingArea);											//
-	blockingArea.overlaps(allSprites);										//
-	let area =  new GlueJoint(lizard, blockingArea);						//
-	area.visible = false;													//
-	lizard.changeAni(['block','blocking'])	//blocking animation
-}
-
-//Block Action(release)
-function releaseBlock(){
-	lizard.changeAni(['blockRelease','stand']);
-	blockingArea.remove();
-	changeState('IDLE');
-	blocking = false;
-}
-
-//helper function: Grabs and returns coordinates from spawnPoint tile
+/**
+ * Determines and returns the spawn coordinates for the character.
+ * Calculates the position based on the spawnPoint Sprite/Tile and adjusts the x and y coordinates for placement.
+ * 
+ * @function spawner
+ * @returns {{x: number, y: number}} An object containing the x and y coordinates for the spawn point.
+ * 
+ * @see spawnPoint For the reference to the spawn point from which the coordinates are derived.
+ */
 function spawner(){
 	return {x: spawnPoint[0].position.x+24, y: spawnPoint[0].position.y-5};
 }
 
-//check if player touches a ground surface
+/**
+ * Detects if the charater is on a Sprite/Tile that allows jumping
+ * Prevents multiple jumps and jumping while touching the sides of walls
+ * @function isOnGround
+ * @returns {boolean}
+ * @see groundSensor
+ */
 function isOnGround() {
 	return  groundSensor.overlapping(ground)||
 			groundSensor.overlapping(platform)||
@@ -626,7 +1034,14 @@ function isOnGround() {
 
 }
 
-//play death animation and reset player
+/**
+ * Plays dying animation and resets the player
+ * @async
+ * @function death
+ * @returns {void}
+ * @see resetPlayer for player reset
+ * @see inSequence for its usage/logic
+ */
 async function death() {
 	inSequence = true;
 	lizard.opacity = 1;
@@ -637,7 +1052,13 @@ async function death() {
 	inSequence = false;
 }
 
-//checks for coin collection and updates score
+/**
+ * Checks if player goes through a coin
+ * The coin gets removed and the score updates
+ * Collecting coins also heals the player
+ * @function keepScore
+ * @returns {void}
+ */
 function keepScore() {
 	for (let c of coins){
 		if (lizard.overlaps(c)){
@@ -652,26 +1073,51 @@ function keepScore() {
 	}
 }
 
-//Checks if attack hits an enemy
-// checks if enemy x cord is close enought to the attack area sprite x cord
-// this is used beacause attackArea.overlaps(enemy) doesnt work, even thought it should
-async function attackAreaProximity(area) {
+/**
+ * Checks if the attacking area overlaps an enemy
+ * checks if enemy x cord is close enought to the attack area sprite x cord
+ * Kills enemies hit
+ * @function attackAreaProximity
+ * @param {Sprite} area The attacking area created during an attack
+ * @returns {void}
+ * @see attack for attacking area creation
+ * @see killEnemy for killing enemy logic
+ */
+function attackAreaProximity(area) {
 	for (let e of enemies){
 		if(abs(e.x - area.x) < 18 && abs(e.y - area.y) < 25){
-			canDamage = false;
-			defeatSound.play();
-			await e.changeAni(['death','dead'])
-			chasing = false;
-			e.vel.x = 0;
-			e.vel.y = 0;
-			e.speed = 0;
-			e.remove();	
-			canDamage = true;
+			killEnemy(e)
 		}
 	}
 }
 
-//Plays background music according to level
+/**
+ * Cripples attacked enemy, plays its death animation and removes it
+ * @function killEnemy
+ * @param {Sprite} e The specific enemy that gets hit by the attack
+ * @returns {void}
+ * @see attackAreaProximity for attack detection
+ */
+async function killEnemy(e) {
+	canDamage = false;
+	defeatSound.play();
+	await e.changeAni(['death','dead'])
+	chasing = false;
+	e.vel.x = 0;
+	e.vel.y = 0;
+	e.speed = 0;
+	e.remove();	
+	canDamage = true;
+}
+
+/**
+ * Plays background music according to level
+ * Pauses previous level music and plays the current one
+ * @function backgroundMusic
+ * @param {number} volume The volume at which the background music is played
+ * @returns {void}
+ * @see currentMap
+ */
 function backgroundMusic(volume){
 	switch(currentMap){
 		case 'forest':
@@ -701,22 +1147,38 @@ function backgroundMusic(volume){
 	}
 }
 
-//Handles reaching the end of current leve;
+/**
+ * Handles reaching the end of current level
+ * The player moves to the right and the level changes
+ * @function endLevel
+ * @returns {void}
+ * @see {@link changeLevel}
+ */
 async function endLevel() {
 	inSequence = true;
 	await lizard.changeAni('run');
 	await lizard.move(160, 'right', 1);
-	console.log('wait')
 	changeLevel();
 	lizard.changeAni('stand');
 	inSequence = false;
 }
+
+/**
+ * Applies damage to the player. Reduces health, plays a damage sound, 
+ * shakes the character, and updates the UI to reflect the change in health. 
+ * The function also manages the cooldown for when the character can take damage again.
+ *
+ * @function damage
+ * @returns {void}
+ * 
+ * @see shake For handling the player shake effect when the character takes damage.
+ * @see death For triggering the death sequence when health reaches zero.
+ */
 function damage() {
 	canDamage = false;
 	lizard.opacity = 0.4;
 	damageSound.play();
 	shake(lizard);
-	console.log(frameCount-prevFrame);
 	ui[lizard.health-1].changeAni('empty');
 	lizard.health--;
 	if(lizard.health==0) death();
@@ -726,13 +1188,31 @@ function damage() {
 		damageTimer = undefined;
 	}, 2000)
 }
-//shakes sprite
+
+/**
+ * Moves entity left and right
+ * @async
+ * @function shake
+ * @param {Sprite} entity Sprite that the shake is applied to
+ * @returns {void}
+ */
 async function shake(entity){
 	await entity.move(15, 'left',  1);
 	await entity.move(5, 'right', 1);
-
 }
 
+/**
+ * Spawns enemies at predefined spawn points. This function creates enemy sprites for the specified enemies
+ * and places them at the positions defined in `enemySpawn1` and `enemySpawn2`.
+ * 
+ * @function spawnEnemies
+ * @param {Object} enemy1 - Spawner tile for the first enemy type
+ * @param {Object} enemy2 - Spawner tile for the first enemy type
+ * @returns {void} 
+ * 
+ * @see enemySpawn1 For the first set of spawn points where enemy1 is placed.
+ * @see enemySpawn2 For the second set of spawn points where enemy2 is placed.
+ */
 function spawnEnemies(enemy1, enemy2){
 	for(e1 of enemySpawn1){
 		 e = new enemy1.Sprite(e1.position.x, e1.position.y)

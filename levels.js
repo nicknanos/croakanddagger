@@ -1,16 +1,24 @@
-//sets spawn point on current level
-function setSpawn(){
-
-}
-
-//generates current level
-function levelGenerator(){
-
-
-}
-
+/**
+ * Handles the transition between levels by removing previous level's elements, 
+ * setting up the environment, updating the tileset, and spawning new enemies.
+ * Also updates the player's position and other level-specific attributes like coin color and map name.
+ *
+ * This function handles the environment setup based on the current level, including tile groups and enemies.
+ *
+ * @function changeLevel
+ * @returns {void} Does not return a value.
+ * 
+ * @see {@link setEnviroment} For setting up the tileset based on the level.
+ * @see {@link updateTileset} For updating the current tileset.
+ * @see {@link spawnEnemies} For spawning the enemies specific to the current level.
+ * @see {@link resetplayer} For resetting the player's state at the beginning of the new level.
+ * @see {@link initializeBoss} For initializing the boss encounter when the level is a boss room.
+ * @see {@link allSpritesGroup} For the usage of allSpritesGroup
+ * @see {@link enemyGrouo} For the usage of enemyGrouo
+ * @see https://p5play.org/docs/global.html#allSprites for the allSprites Group documentation
+ */
 function changeLevel(){
-    //Remove Previous Level(Removes all sprites except player and sensors)
+    //Remove Previous Level(Removes all sprites except player, sensors and UI)
     for (let i = 0; i < allSprites.length; i++) {
         if (
             allSprites[i] != lizard &&
@@ -30,10 +38,8 @@ function changeLevel(){
         if(currentLevel == 0){
             setEnviroment(forestTiles);
             enemyGroup = {e1: fly, e2: leaf}
-            //mapMusic = forestMusic;
 
         }else if(levels[currentLevel].map != levels[currentLevel - 1].map){ //Checks if the current level is different than the previous one
-            console.log(levels[currentLevel].map)
             switch(levels[currentLevel].map){
                 case 'forest':
                     currentMap = 'forest';
@@ -44,7 +50,6 @@ function changeLevel(){
                     currentMap = 'mountain';
                     updateTileset(mountainTiles);
                     enemyGroup = {e1: bat, e2: cobra}
-                    mapMusic = mountainMusic;
                     break;
                 case 'entrance':
                     currentMap = 'entrance';
@@ -69,15 +74,26 @@ function changeLevel(){
         for(let c of coins) c.changeAni(currentMap);
         //update map name
         currentMap = levels[currentLevel].map;
-        //reste player to spawn point
+        //reset player to spawn point
         if(currentLevel>0) resetplayer(resetCamera = true, resetHealth = false);
+
         currentLevel++;
-        console.log(currentLevel);
+
         if(currentMap=='bossRoom') initializeBoss();
+
 	    spawnEnemies(enemyGroup.e1, enemyGroup.e2);
 }
 
-//preloads all the levels info
+/**
+ * Preloads the level data by populating the `levels` array with information about platforms, maps, and level number.
+ * Sets `currentLevel` to the level of the first entry.
+ *
+ * @function preloadLevels
+ * @returns {void} 
+ * 
+ * @see {@link levels} For the array that stores the information of all levels in the game.
+ * @see {@link currentLevel} For the variable that tracks the current level during gameplay.
+ */
 function preloadLevels() {
     levels.push({
         platforms: [

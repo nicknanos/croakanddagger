@@ -1,35 +1,31 @@
+/**
+ * The speed the player moves
+ * @type {number}
+ */
 const playerSpeed = 1.2;
 
-function spawnHero(){
-    hero = new Sprite(90, 500);
-	hero.w=20;
-	hero.h=18;
-	hero.layer = 5;
-	hero.rotationLock = 'true';
-	hero.spriteSheet = heroImg;
-    //hero.scale =1;
 
-    hero.addCollider(0,10,hero.w,3)
-
-	hero.anis.offset.x = 1.2;
-	hero.anis.offset.y = -1;
-	hero.anis.frameDelay = 6;
-	hero.friction = 0;
-	hero.anis.w=32;
-	hero.anis.h=32;
-
-	hero.addAnis({
-		run: { row: 1, frames: 8 },
-		jump: { row: 5, frames: 6, frameDelay:5 },
-		roll: { row: 2, frames: 5, frameDelay: 14 },
-		turn: { row: 3, frames: 7 },
-		stand: { row: 0, frames: 13, frameDelay:10 },
-		slashUp: { row: 10, frames: 10 },
-		slashDown: { row: 11, frames: 10 }
-	});
-	hero.changeAni('stand');
-}
-
+/**
+ * Creates and initializes the lizard character sprite, including its size, animations, health, and various sensors 
+ * that interact with the environment. The function sets up the lizard's appearance, behavior, and associated detection 
+ * sensors to handle movement, collision, and state transitions during gameplay.
+ * 
+ * @function spawnLizard
+ * @param {number} x - The x-coordinate for the lizard's spawn position.
+ * @param {number} y - The y-coordinate for the lizard's spawn position.
+ * @returns {void} Does not return a value.
+ * 
+ * @details
+ * -**Ground Sensor**
+ * -Sprite attached to bottom of player, used in @see{@link isOnGround}
+ * -**Left/Right Sensors**
+ * -Sprites attached in the left and right of the player used in @see stuckCheck
+ * -**Top Sensor**
+ * -Currently not in use
+ * -**Camera Sensor**
+ * - Floating Sprite on top of player used in @see {@link cameraControll}
+ * 
+ */
 function spawnLizard(x,y){
     lizard = new Sprite(x, y);
 	lizard.w=12;
@@ -134,6 +130,24 @@ function spawnLizard(x,y){
 	lizard.prevState = lizard.states.IDLE;
 }
 
+/**
+ * Changes the current state of the player.
+ * The state transition is based on the provided state argument, which can either be a number or string representing 
+ * the desired state.
+ * 
+ * @function changeState
+ * @param {string|number} state - The new state to change the lizard to. This can be:
+ *   - 'IDLE' or 0: Idle state.
+ *   - 'WALK' or 1: Walking state.
+ *   - 'JUMP' or 2: Jumping state.
+ *   - 'ATTACK' or 3: Attacking state.
+ *   - 'BLOCK' or 4: Blocking state.
+ *   - 'STUCK' or 5: Stuck state.
+ * 
+ * @returns {void}
+ * 
+ * @see spawnLizard for state initialization
+ */
 function changeState(state) {
 	lizard.prevState = lizard.currentState;	
 	switch(state) {
@@ -164,15 +178,23 @@ function changeState(state) {
 	}
 }
 
-//Checks if player is pushing against a platform
-//Used to prevent sprite bouncing and to controll the moving background
+
+/**
+ * Checks if the player is stuck by checking if either the left or right sensor
+ * is overlapping with any walkable tiles. If the character is stuck, it changes the state to 'STUCK',
+ * otherwise, it changes the state to 'IDLE'.
+ * Used to prevent sprite bouncing and to controll the moving background
+ * @function stuckCheck
+ * @returns {void} 
+ * 
+ * @see spawnLizard for sensor initialization
+
+ */
 function stuckCheck() {
 	if(leftSensor.overlapping(walkableTiles) || rightSensor.overlapping(walkableTiles)){
-		console.log('STUCK');
-		
 		changeState('STUCK')
 	}
-	else {//if(!(leftSensor.overlapping(walkable) && rightSensor.overlapping(walkable))){
+	else {
 		changeState('IDLE')
 	}
 }

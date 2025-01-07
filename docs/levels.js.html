@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: levels.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: levels.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Handles the transition between levels by removing previous level's elements, 
+ * setting up the environment, updating the tileset, and spawning new enemies.
+ * Also updates the player's position and other level-specific attributes like coin color and map name.
+ *
+ * This function handles the environment setup based on the current level, including tile groups and enemies.
+ *
+ * @function changeLevel
+ * @returns {void} Does not return a value.
+ * 
+ * @see {@link setEnviroment} For setting up the tileset based on the level.
+ * @see {@link updateTileset} For updating the current tileset.
+ * @see {@link spawnEnemies} For spawning the enemies specific to the current level.
+ * @see {@link resetplayer} For resetting the player's state at the beginning of the new level.
+ * @see {@link initializeBoss} For initializing the boss encounter when the level is a boss room.
+ * @see {@link allSpritesGroup} For the usage of allSpritesGroup
+ * @see {@link enemyGrouo} For the usage of enemyGrouo
+ * @see https://p5play.org/docs/global.html#allSprites for the allSprites Group documentation
+ */
+function changeLevel(){
+    //Remove Previous Level(Removes all sprites except player, sensors and UI)
+    for (let i = 0; i &lt; allSprites.length; i++) {
+        if (
+            allSprites[i] != lizard &amp;&amp;
+            allSprites[i] != groundSensor &amp;&amp;
+            allSprites[i] != cameraSensor &amp;&amp;
+            allSprites[i] != leftSensor &amp;&amp;
+            allSprites[i] != rightSensor &amp;&amp;
+            allSprites[i] != topSensor &amp;&amp;
+            !allSprites[i].isPerm
+        ) {
+            allSpritesGroup.add(allSprites[i]);
+        }
+    }
+    allSpritesGroup.removeAll();
+    //Create new level
+        //Changes which tileset is used depnding on the level
+        if(currentLevel == 0){
+            setEnviroment(forestTiles);
+            enemyGroup = {e1: fly, e2: leaf}
+
+        }else if(levels[currentLevel].map != levels[currentLevel - 1].map){ //Checks if the current level is different than the previous one
+            switch(levels[currentLevel].map){
+                case 'forest':
+                    currentMap = 'forest';
+	                updateTileset(forestTiles);
+                    enemyGroup = {e1: fly, e2: leaf}
+                    break;
+                case 'mountain':
+                    currentMap = 'mountain';
+                    updateTileset(mountainTiles);
+                    enemyGroup = {e1: bat, e2: cobra}
+                    break;
+                case 'entrance':
+                    currentMap = 'entrance';
+                    updateTileset(castleTiles);
+                    enemyGroup = {e1:imp , e2:ghoul}
+                    break;
+                case 'castle':
+                    currentMap = 'castle';
+                    updateTileset(castleTiles);
+                    enemyGroup = {e1:imp , e2:ghoul}
+                    break;
+                case 'bossRoom':
+                    enemyGroup = {e1:frog , e2:witch}
+                    currentMap = 'bossRoom';
+                    break;
+            }
+        }
+
+        //New Level Tiles
+        tileGroup = new Tiles(levels[currentLevel].platforms, 0, 0, ground.w, ground.h);
+        //Change coin color
+        for(let c of coins) c.changeAni(currentMap);
+        //update map name
+        currentMap = levels[currentLevel].map;
+        //reset player to spawn point
+        if(currentLevel>0) resetplayer(resetCamera = true, resetHealth = false);
+
+        currentLevel++;
+
+        if(currentMap=='bossRoom') initializeBoss();
+
+	    spawnEnemies(enemyGroup.e1, enemyGroup.e2);
+}
+
+/**
+ * Preloads the level data by populating the `levels` array with information about platforms, maps, and level number.
+ * Sets `currentLevel` to the level of the first entry.
+ *
+ * @function preloadLevels
+ * @returns {void} 
+ * 
+ * @see {@link levels} For the array that stores the information of all levels in the game.
+ * @see {@link currentLevel} For the variable that tracks the current level during gameplay.
+ */
+function preloadLevels() {
+    levels.push({
+        platforms: [
+"........................................................................................................................................................................................................................................................",
+"........................................................................................................................................................................................................................................................",
+"........................................................................................................................................................................................................................................................",
+"........................................................................................................................................................................................................................................................",
+"........................................................................................................................................................................................................................................................",
+"........................................................................................................................................................................................................................................................",
+"........................................................................................................................................................................................................................................................",
+"........................................................................................................................................................................................................................................................",
+"........................................................................................................................................................................................................................................................",
+"........................................................................................................................................................................................................................g...............................",
+"...............................................................................................1......c........................................c.......................................................................&lt;b...............................",
+".....................................................................................................ff..............................fffffff...ffff..............................................................f....&lt;bb...............................",
+"..........................................................................................fffffffff.................................................f................................................................&lt;bbb..ffff.........................",
+"..................................................1..........................................................................................................................................................f......&lt;bbbb...............................",
+"................................................................c.......................f.........................................c..................f...............1..........f....................c.............&lt;bbbbb........ffff...................",
+"......c...................................&lt;g>.......f..........fff......................................fff.......................f......................g...g...............g.....g.............ffffffff.........&lt;bbbbbb...............................",
+"b.....f..............................fff..rbl..f.......f..&lt;g>.......................fff...........................................1.....................&lt;b...b>.............&lt;b.....b>............................&lt;bbbbbbb..............fff..............",
+"b........fffff...............f.&lt;g>........rbl.....f.......rbl......f.........................................f.........................................&lt;bb...bb>...........&lt;bb.....bb>..........................&lt;bbbbbbbb...............................",
+"b..............................rbb>.......rbl.............rbl....................f................c...................f.......f...f...f...............&lt;bbb...bbb>.........&lt;bbb.....bbb>........................&lt;bbbbbbbbb.........ff....................",
+"b...............&lt;gg>.......ff..rbbb>......................rbl........ff.............f............c.c.................................................&lt;bbbb...bbbb>.......&lt;bbbb.....bbbb>......................&lt;bbbbbbbbbb...............................",
+"b.........S.....rbbl.........2.rbbbb>............2....2...rbl.............................2..g......................................................&lt;bbbbbnnnbbbbb>.....&lt;bbbbbnnnnnbbbbb>............2.......&lt;bbbbbbbbbbb.ccc.................E.........",
+"bgggggggggggggggbbbbgggggggggggbbbbbbgggggggggggggggggggggbbbgggggggggggg...gggggggggggggggggbggg...ggggggggggggggggggggggggggggggggggggggggggggggggbbbbbbbbbbbbbbbgggggbbbbbbbbbbbbbbbbbggggggggggggggggggggbbbbbbbbbbbbggggggggggggggggggggggggggggggg",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbnnnbbbbbbbbbbbbbbbbbbbbbnnnbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        ],
+        map: "forest",
+        level: 0
+    });
+    levels.push({
+        platforms: [
+"............................................................................................................................................................................................................................................................",
+"............................................................................................................................................................................................................................................................",
+"............................................................................................................................................................................................................................................................",
+"............................................................................................................................................................................................................................................................",
+"............................................................................................................................................................................................................................................................",
+"............................................................................................................................................................................................................................................................",
+"............................................................................................................................................................................................................................................................",
+"............................................................................................................................................................................................................................................................",
+"..............................................................................................................1.............................................................................................................................................",
+"............................................................................................................................................................................................................................................................",
+"................................................................................................................b...........................................................................................................................................",
+"................................................................................................................b..................c...........................................................................................c............................",
+"................................................................................................................b...........................................................................................................................................",
+".......................................1....................................................................c...b................f...f...................................................................................&lt;g>................................",
+"..............................c.........................................c..............................&lt;gg..g...b......................................................................&lt;.ffff............................rbl...fffffff......................",
+".................................................................................................&lt;g>...rbbnnbnnnb..............f.......f..............1...............................&lt;b...............1...............g.rbl................................",
+"................................g..g..........c...................&lt;gg......................&lt;g>...rbl...rbbbbbbbbb..........................................&lt;ggfff....................&lt;b.......fff......................b.rbl................................",
+"............................g...b..b............................&lt;gbb....................f..rbl...rbl...rbl...................f...........f.................rbl......................&lt;b...............................&lt;.b.rbl...........ffff.................",
+"............................b...b..b.g.........................&lt;bbb........................rbl...rbl...rbl..............................................f..rblc..ffff..............&lt;b.............ff................&lt;b.b.rbl................................",
+".........................g..b...b..b.b...g...................&lt;gbbbb..................f.....rbl...rbl.......................f...............f...........ff..rbl....................&lt;bbc..ffff.......................&lt;bb.b.rbl........f.......................",
+"............S.........g..b..b...b..b.b...b..g.............&lt;ggbbbb................2.........rbbnnnbbl..............................................2........rbl...............2...&lt;bbbgg...........................&lt;bbb.b.rbl.........................E............",
+"ggggggggggggggggggggggbnnbnnbnnnbnnbnbnnnbnnbgggggggggggggbbbbbbbnnnnnnngggggggggggggggggggbbbbbbbbbgggggggggggggggggggggggggnnnnnnnnnnnnngggggggggggggggggbbbgggggggggggggggggggbbbbbbnnnngggggggggggggggggggggggbbbbnbnbbbgggggggggggggggggggggggggggggggggggggg",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        ],
+        map: "forest",
+        level: 1
+    });
+    levels.push({
+        platforms: [
+".......r......................................l",
+".......r......................................l",
+".......r......................................l",
+".......r......................................l",
+".......r......................................l",
+".......r......................................l",
+".......r......................................l",
+".......r......................................l",
+".......r....................1.................l",
+".......r..............................................l",
+".......r..........g...2......2.............E...........l",
+".......r......ffffbffffffffffffffffffffffffffffffffffff",
+".......r......................................l",
+".......r...f..................................l",
+".......r......................................l",
+".......r.f....................................l",
+".......r...f....c..f..f..f..f.................l",
+".......r.....f................g...............l",
+".......r........&lt;gnnnnnnnnnnnnb.f.....c.......l",
+".......r........bbbbbbbbbbbbbbb...f...........l",
+".......r............................fffff.....l",
+".......r......................................l",
+".......r..................................f...l",
+".......r......................................l",
+".......r............f.....f....f....f.......f.l",
+".......r.........f......................f.....l",
+".......r...............f.....f....f...f...ff..l",
+".......r.......f..............................l",
+".......r......................................l",
+".......r.....f................................l",
+".......r......................................l",
+".......r...f..................................l",
+".......r...............1......................l",
+".......r.f....................................l",
+".......r.....f.f.fffff...ffff..fffff...f......l",
+".......r..ff............................f.....l",
+".......r.................................f....l",
+".......r......................................l",
+".......r...................................f..l",
+".......r................c.....................l",
+".......r................f................f....l",
+".......r........................2.............l",
+".......rc........ffffg.....gffffg..gffff......l",
+".......bg>....f......bnnnnnb....bnnb..........l",
+".......bbb>...........bbbbb......bb...........l",
+".......bbbb>..................................l",
+".......bbbbb>.................................l",
+".......bbbbbb>................................l",
+".......bbbbbbb>...............................l",
+".......bbbbbbbb>..............................l",
+".......bbbbbbbbb>.............................l",
+".......bbbbbbbbbb>............................l",
+".......bbbbbbbbbbb>...........................l",
+"bbbbbbbbbbbbbbbbbbb>.f........................l",
+"........................fff...................l",
+".............................ffff.............l",
+"..................................fffff.......l",
+".....................................1...f....l",
+"..............................................l",
+".................................fffffff......l",
+"...........................fffff..............l",
+".b............................................l",
+".b.....................fff..................c.l",
+".b...........S................................l",
+"ggggggggggggggggggggggggggggggggggggggggggggggb",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        ],
+        map: "mountain",
+        level: 2
+    });
+    levels.push({
+        platforms: [
+".......................................................",
+".......................................................",
+".......................................................",
+".......................................................",
+".......................................................",
+".......................................................",
+".......................................................",
+".......................................................",
+".......................................................",
+".......................................................",
+".......................................................",
+".......................................................",
+".......................................................",
+".......................................................",
+".......................................................",
+".......................................................",
+".......................................................",
+".......................................................",
+".......................................................",
+"b......................................................",
+"b......................................................",
+"b......................................................",
+"b........S.............................E...............",
+"ggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+],
+        map: "entrance",
+        level: 3
+    });
+ 
+    levels.push({
+        platforms: [
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"lttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttr",
+"l......................................................................................................................................................................................................r",
+"l......................................................................................................................................................................................................r",
+"l......................................................................................................................................................................................................r",
+"l.....................................................................................................................2................................................................................r",
+"l.....................................................................................................................&lt;>........&lt;ggg..>................................................................r",
+"l.....................................................................................................................rl........r....fb>...............................................................r",
+"l...........................................................................................................f.....c...rl.......&lt;b.....bb>....c.........................................................rbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"l..........................c..........................................................................1...............rl......&lt;bb...f.bbb>.............................................................rbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"l...........................................................................................&lt;gg>...&lt;ggggg>.....&lt;ggggggbb.....&lt;bbb.....bbbb>............................................................rbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"l........................................................................................f..bbbb...bbbbbbb.....bbbbbbbbb.....rbbbf....bbbbb>...........................................................rbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"l..................f...f...f...f...f...f....................................c...............................................&lt;bbbbfff..bbbbbb>..........................................................rbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"...............f..........................f..........................f...............fff...................f................rbbbb....fbbbbbbb>.........................................................rtttttttttttttttttttttttttt",
+".............................................f...................g.......g.................................................&lt;bbbbb.....bbbbbbbb>...................................................................................",
+".............f................................................g..b.......b.........f..........................f...........&lt;bbbbbbcc.f.bbbbbbbbb>..................................................................................",
+".........S.................................c..........1.......b..b2....2gb...............................................&lt;bbbbbbb2c...bbbbbbbbbb>...........1g........2g....1......2g.............E...............................",
+"nnggggggggggggggnnnnnnnnnnnnnnnnnnnnnnnnnnggggggggggggggggggggbggbggggggbbggggggggggggnnnnnnnnnnnnnnnnnnnnnnnnnngggggggggbbbbbbbbgggggbbbbbbbbbbbggggggggggggbgggggggggbggggggggggggbggggggggggggggggggggggggggggggggggggggggggggg",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+],
+        map: "castle",
+        level: 4
+    });
+
+    levels.push({
+        platforms: [
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".............E...........................................",
+".........................................................",
+"b.....................b..................................",
+"b.....................b..................................",
+"b.....................b..................................",
+"b.......S.........B.T.b..................................",
+"iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
+],
+        map: "bossRoom",
+        level: 5
+    });
+
+    levels.push({
+        platforms: [
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".........................................................",
+".............E...........................................",
+".........................................................",
+"b.....................b..................................",
+"b.....................b..................................",
+"b.....................b..................................",
+"b.......S......2...1..b..................................",
+"iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
+],
+        map: "bossRoom",
+        level: 6
+    });
+    
+    currentLevel = levels[0].level;
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#allSpritesGroup">allSpritesGroup</a></li><li><a href="global.html#attack">attack</a></li><li><a href="global.html#attackAreaProximity">attackAreaProximity</a></li><li><a href="global.html#attackSpeed">attackSpeed</a></li><li><a href="global.html#attackTimer">attackTimer</a></li><li><a href="global.html#backgroundColor">backgroundColor</a></li><li><a href="global.html#backgroundMusic">backgroundMusic</a></li><li><a href="global.html#boss">boss</a></li><li><a href="global.html#bossAI">bossAI</a></li><li><a href="global.html#bossAttack">bossAttack</a></li><li><a href="global.html#bossAttackArea">bossAttackArea</a></li><li><a href="global.html#bossAttackAreaTimer">bossAttackAreaTimer</a></li><li><a href="global.html#bossBackground">bossBackground</a></li><li><a href="global.html#bossBody">bossBody</a></li><li><a href="global.html#bossPrevFrame">bossPrevFrame</a></li><li><a href="global.html#cWidth">cWidth</a></li><li><a href="global.html#cameraControll">cameraControll</a></li><li><a href="global.html#cameraYOffset">cameraYOffset</a></li><li><a href="global.html#canAttack">canAttack</a></li><li><a href="global.html#canBossAttack">canBossAttack</a></li><li><a href="global.html#canDamage">canDamage</a></li><li><a href="global.html#canvasSetup">canvasSetup</a></li><li><a href="global.html#castleBackground">castleBackground</a></li><li><a href="global.html#changeLevel">changeLevel</a></li><li><a href="global.html#changeState">changeState</a></li><li><a href="global.html#chasing">chasing</a></li><li><a href="global.html#coins">coins</a></li><li><a href="global.html#coinsImg">coinsImg</a></li><li><a href="global.html#constrainCamera">constrainCamera</a></li><li><a href="global.html#currentLevel">currentLevel</a></li><li><a href="global.html#currentMap">currentMap</a></li><li><a href="global.html#currentScene">currentScene</a></li><li><a href="global.html#damage">damage</a></li><li><a href="global.html#damageBoss">damageBoss</a></li><li><a href="global.html#damageTimer">damageTimer</a></li><li><a href="global.html#death">death</a></li><li><a href="global.html#deathTrigger">deathTrigger</a></li><li><a href="global.html#direction">direction</a></li><li><a href="global.html#displayBackground">displayBackground</a></li><li><a href="global.html#drawFrame">drawFrame</a></li><li><a href="global.html#endLevel">endLevel</a></li><li><a href="global.html#endgame">endgame</a></li><li><a href="global.html#enemies">enemies</a></li><li><a href="global.html#enemies1">enemies1</a></li><li><a href="global.html#enemyCurrentY">enemyCurrentY</a></li><li><a href="global.html#enemyGroup">enemyGroup</a></li><li><a href="global.html#enemyProximity">enemyProximity</a></li><li><a href="global.html#entranceBackground">entranceBackground</a></li><li><a href="global.html#fScale">fScale</a></li><li><a href="global.html#forestBackground">forestBackground</a></li><li><a href="global.html#forestMusic">forestMusic</a></li><li><a href="global.html#forestTiles">forestTiles</a></li><li><a href="global.html#gameControlls">gameControlls</a></li><li><a href="global.html#gameState">gameState</a></li><li><a href="global.html#groundSensor">groundSensor</a></li><li><a href="global.html#heart">heart</a></li><li><a href="global.html#heartImg">heartImg</a></li><li><a href="global.html#heroImg">heroImg</a></li><li><a href="global.html#inSequence">inSequence</a></li><li><a href="global.html#initializeBoss">initializeBoss</a></li><li><a href="global.html#initializeEnemies">initializeEnemies</a></li><li><a href="global.html#intro">intro</a></li><li><a href="global.html#introScenes">introScenes</a></li><li><a href="global.html#isOnGround">isOnGround</a></li><li><a href="global.html#keepScore">keepScore</a></li><li><a href="global.html#killEnemy">killEnemy</a></li><li><a href="global.html#levels">levels</a></li><li><a href="global.html#mapGravity">mapGravity</a></li><li><a href="global.html#menu">menu</a></li><li><a href="global.html#menuImg">menuImg</a></li><li><a href="global.html#mountainBackground">mountainBackground</a></li><li><a href="global.html#myTiles">myTiles</a></li><li><a href="global.html#outroScenes">outroScenes</a></li><li><a href="global.html#playerSpeed">playerSpeed</a></li><li><a href="global.html#preload">preload</a></li><li><a href="global.html#preloadLevels">preloadLevels</a></li><li><a href="global.html#prevFrame">prevFrame</a></li><li><a href="global.html#resetPlayer">resetPlayer</a></li><li><a href="global.html#runGame">runGame</a></li><li><a href="global.html#score">score</a></li><li><a href="global.html#setEnviroment">setEnviroment</a></li><li><a href="global.html#setInput">setInput</a></li><li><a href="global.html#setup">setup</a></li><li><a href="global.html#shake">shake</a></li><li><a href="global.html#spawnEnemies">spawnEnemies</a></li><li><a href="global.html#spawnLizard">spawnLizard</a></li><li><a href="global.html#spawnPoint">spawnPoint</a></li><li><a href="global.html#spawner">spawner</a></li><li><a href="global.html#stuckCheck">stuckCheck</a></li><li><a href="global.html#tileGroup">tileGroup</a></li><li><a href="global.html#tileSize">tileSize</a></li><li><a href="global.html#topSensor">topSensor</a></li><li><a href="global.html#ui">ui</a></li><li><a href="global.html#update">update</a></li><li><a href="global.html#updateTileset">updateTileset</a></li><li><a href="global.html#walkableTiles">walkableTiles</a></li><li><a href="global.html#witch">witch</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue Jan 07 2025 22:41:45 GMT+0200 (Χειμερινή ώρα Ανατολικής Ευρώπης)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

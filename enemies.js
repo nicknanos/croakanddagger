@@ -1,5 +1,47 @@
-// Forest Enemies \\
-    //Fly
+/**
+ * Initializes various enemy groups and assigns their properties, animations, and behaviors.
+ * Each enemy group is configured with specific attributes such as size, movement type, sprite sheet, 
+ * animations, and other properties like speed, friction, and scale. The function also sets their initial 
+ * animations to 'stand'.
+ * 
+ * @function initializeEnemies
+ * @returns {void}
+ * 
+ * @description 
+ * This function creates multiple types of enemies with different behaviors and characteristics. The enemies 
+ * include flying enemies (like `fly` and `bat`), ground-based enemies (like `leaf`, `cobra`, `imp`, and `ghoul`), 
+ * as well as special enemies like `boss`, `witch`, and `frog`. Each enemy type is configured with a sprite sheet, 
+ * animations (stand, move, attack, death, etc.), speed, friction, and other relevant properties. The function 
+ * ensures each enemy is set to its idle 'stand' animation upon initialization.
+ * 
+ * 
+ * @example 
+ * //Enemy Properties explanation
+ * 
+ * 	enemy = new enemies.Group(); (Subgroup of enemies Group)
+ *	enemy.w = number;  (enemy width)
+ *	enemy.h = number;  (enemy height)
+ *	enemy.layer = number;   (Determines the layer of a Sprite in case of overlapping)
+ *	enemy.flying = false;	(attribute determining if an enemy can fly)
+ *	enemy.rotationLock = 'true'; (Prevents sprite from spinning)
+ *	enemy.spriteSheet = 'img';   (Sets animation spritesheet to group) 
+ *	enemy.mass = 'number;	     (Sprites mass, is affected by gravity)
+ *	enemy.speed = 0.015;  		 (Enemy speed, used in chasing)
+ *	enemy.friction = 0;			 (Sprite friction with other sprites)
+ *	enemy.anis.w= 32;			 (Widht of animation frame in spritesheet)
+ *	enemy.anis.h= 32;			 (Height of animation frame in spritesheet)
+ *	enemy.scale = 1.7;			 (Sprite size scalling)
+ *	enemy.anis.offset.x = 0;	 (x cord offset of the animation frame to the center of the sprite)
+ *	enemy.anis.offset.y = -2.4;  (y cord offset of the animation frame to the center of the sprite)
+ *	enemy.addAnis({										(Determines which part of the spritesheet is corresponds to each animation)
+ *		stand: { row: 0, frames: 4, frameDelay: 10 },	
+ *		move: { row: 1, frames: 8, frameDelay: 10 },
+ *		attack: { row: 2, frames: 6, frameDelay: 13 },
+ *      death: { row: 4, frames: 6, frameDelay: 10},
+ *      dead: { row: 20, frames: 0}
+ *	});
+ * 
+ */
 function initializeEnemies(){
 	enemies = new Group();
 
@@ -159,7 +201,7 @@ function initializeEnemies(){
 	boss.spriteSheet = bossImg;
 	boss.friction = 0;
 	boss.speed = 0.01;
-	boss.health  = 2;
+	boss.health  = 4;
 	boss.anis.w = 64;
 	boss.anis.h = 64;
 	boss.scale = 2;
@@ -227,12 +269,37 @@ function initializeEnemies(){
 	for(f of frog)  f.changeAni('stand');
 }
 
-//Constantly checks if enemy is near player
+/**
+ * Enemy Y coordinate at begging of chase
+ * @type {number}
+ * @see enemyProximity for use
+ */
 let enemyCurrentY
+
+/**
+ * Constantly checks if an enemy is near the player and updates enemy behavior accordingly.
+ * If the enemy is within a specified proximity of the player, it will start chasing the player.
+ * It also handles enemy orientation, movement, and interactions with environmental elements like spikes and platforms.
+ * 
+ * @function enemyProximity
+ * @returns {void}
+ * 
+ * @description 
+ * This function iterates over all the enemies in the map and checks if any of them are near the player.
+ * The proximity is determined by a distance check (100 units in both the X and Y axes).
+ * If an enemy is within this range, the following actions occur:
+ * - Enemy orientation is adjusted based on the player's position.
+ * - If the enemy is not already chasing, it begins chasing the player, and its Y-coordinate is tracked.
+ * - If the enemy's Y-coordinate changes significantly (i.e., falls to a lower level), it applies a downward force.
+ * - Flying enemies can move freely toward the player, while walking enemies are limited to moving along the X-axis.
+ * - Enemies also interact with environmental hazards (e.g., spikes) by dying upon overlap.
+ * 
+ */
 function enemyProximity() {
 	for(e of enemies){
-		if ((abs(activePlayer.x - e.x))<100 && (abs(activePlayer.y - e.y))<100){		//Checks distance
-			if((activePlayer.x - e.x)<0){ //fixes enemy orientation
+		if(e.overlaps(spikes)) killEnemy(e); //enemies die on spikes
+		if ((abs(lizard.x - e.x))<100 && (abs(lizard.y - e.y))<100){		//Checks distance
+			if((lizard.x - e.x)<0){ //fixes enemy orientation
 				e.mirror.x = true;
 				e.dir = 1;
 			}else{
@@ -249,14 +316,26 @@ function enemyProximity() {
 				e.applyForceScaled(0, 50)	//Pushes enemy down
 			} else e.mass = 0	//Pushes enemy down
 			if(e.flying){	//Flying enemies move freely
-				e.moveTowards(activePlayer, e.groups[2].speed)	
+				e.moveTowards(lizard, e.groups[2].speed)	
 			}else{		//Walking enemies move only on the X axis
-				e.moveTowards(activePlayer.x - (20*e.dir),enemyCurrentY, e.groups[2].speed)	
+				e.moveTowards(lizard.x - (20*e.dir),enemyCurrentY, e.groups[2].speed)	
 			}
 		}
 	}
 }
-
+/**
+ * Initializes the boss character and its associated attack area.
+ * 
+ * @function initializeBoss
+ * @returns {void} Does not return a value.
+ * 
+ * @description 
+ * This function creates an instance of the boss (Goblin King) at the boss spawner location
+ * and sets up its attack area. The boss attack area is an invisible sprite that overlaps 
+ * with both the boss and the player (lizard) to detect attacks. The function configures the 
+ * boss's visual properties, its attack area, and the animation states for the attack area.
+ * 
+ */
 function initializeBoss(){
 	for(sp of bossSpawner){		
 		goblinKing = new boss.Sprite(sp.position.x, sp.position.y)
@@ -278,7 +357,33 @@ function initializeBoss(){
 		bossAttackArea.changeAni('inactive')
    }
 }
-let bossBody, deathTrigger = false;
+
+/**
+ * Sprite spawned when the boss is defeated
+ * representing the defeated boss body
+ * @type {Sprite}
+ */
+let bossBody; 
+
+/**
+ * Indicator of the boss dying
+ * @type {boolean}
+ */
+let deathTrigger = false;
+
+/**
+ * Handles the behavior and logic of the boss character during gameplay.
+ * 
+ * @async
+ * @function bossAI
+ * @returns {Promise<void>} Resolves when the boss's death sequence is complete.
+ * 
+ * @description 
+ * This asynchronous function manages the boss's actions and state transitions. If the boss's health is greater than zero, 
+ * it performs its attacks. When the boss's health reaches zero, the function triggers its death sequence, including removing 
+ * its attack area, transitioning its animations, and handling its removal from the game.
+ * 
+ */
 async function bossAI(){
 	if(goblinKing.health>0){
 		bossAttack();
@@ -292,14 +397,56 @@ async function bossAI(){
 		await bossBody.changeAni(['death','dead']);
 	}
 }
-let bossAttackAreaTimer, canBossAttack = true, bossPrevFrame;
+
+/**
+ * Timer ID for managing boss attack intervals.
+ * @type {number}
+ * @see bossAttack
+ */
+let bossAttackAreaTimer;
+
+/**
+ * Flag indicating when the boss can attack
+ * @type {boolean}
+ * @see bossAttack
+ */
+let canBossAttack = true; 
+
+/**
+ * Stores the frame of the time of a boss attack
+ * Used to calculate when the boss can attack again
+ * @type {number}
+ * @see bossAttack
+ */
+let bossPrevFrame;
+
+/**
+ * Executes the boss's attack behavior, including animation transitions and damage logic.
+ * 
+ * @async
+ * @function bossAttack
+ * @returns {Promise<void>} Resolves when the attack sequence is complete.
+ * 
+ * @details 
+ * - **Attack Triggering**: 
+ *   - The attack can only occur if `canBossAttack` is `true`.
+ *   - Sets a cooldown for the boss's attack by toggling `canBossAttack` and storing the frame count in `bossPrevFrame`.
+ * - **Animation Sequence**:
+ *   - Plays an upward and downward bounce animation for the boss (`bounceU` and `bounceD`).
+ *   - Activates the attack area by making it visible, enabling damage, and switching to the 'active' animation state.
+ *   - After the attack, transitions the boss back to its 'stand' animation state.
+ * - **Damage Logic**:
+ *   - If the attack area overlaps with the player (`lizard`), the `damage` function is triggered.
+ * - **Attack Reset**:
+ *   - After a specific number of frames, the attack area is deactivated by hiding it, disabling damage, and changing its animation state to 'inactive'.
+ *   - Once the cooldown period is reached (350 frames), the boss is ready to attack again by setting `canBossAttack` to `true`.
+ */
 async function bossAttack(){
 	if(canBossAttack){
 		canBossAttack = false
 		bossPrevFrame = frameCount;
 		await goblinKing.changeAni(['bounceU','bounceD']);
 		bossAttackArea.canDmg = true;
-		//bossAttackArea = new Sprite(b.x,b.y,100,8);
 		bossAttackArea.visible = true;
 		bossAttackArea.changeAni('active');
 		await goblinKing.changeAni('stand');
@@ -313,15 +460,21 @@ async function bossAttack(){
 	if(abs(bossPrevFrame-frameCount)>350){
 		canBossAttack = true
 	}	
-
-	//bossAttackAreaTimer = setInterval(()=>{
-	//	//bossAttackArea.remove();
-//
-	//	clearInterval(bossAttackAreaTimer);
-	//	bossAttackAreaTimer = undefined;
-	//}, 5000)
 }
 
+/**
+ * Handles applying damage to the boss when certain conditions are met.
+ * 
+ * @async
+ * @function damageBoss
+ * @param {Sprite} area - The sprite or representing the bosses attack area.
+ * @returns {Promise<void>} Resolves after the boss's damage animation sequence is complete.
+ * 
+ * @description 
+ * Checks if the boss can damage the player and then if the player is within range. If so, it reduces the boss's health, 
+ * plays a sound effect, and transitions the boss through its damage animation sequence.
+ * 
+ */
 async function damageBoss(area){
 	if(!bossAttackArea.canDmg){
 		if(abs(goblinKing.x - area.x) < 30 && abs(goblinKing.y - area.y) < 30){
