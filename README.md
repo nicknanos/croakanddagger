@@ -13,3 +13,5 @@ Will you embrace your new form?
 [**Play Croak and Dagger Now!**](https://nicknanos.github.io/croakanddagger/)  
 
 [**Documentation**](https://nicknanos.github.io/croakanddagger/docs/index.html)
+
+[**Sources and Licenses**](https://nicknanos.github.io/croakanddagger/licenses.html)

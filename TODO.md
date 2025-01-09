@@ -15,7 +15,9 @@
 - [x]Optimize assets
 - []Minify JS
 - [x]Disable blocking
+- []Add Score at the End
 - [x]JsDoc Documentation?
     -[x] Better sensor,coin explanation
     -[x] addAnis explanation on lizard, enemies
     -[x]@example on eneviroment, enemies
+- [x]Add Licences
