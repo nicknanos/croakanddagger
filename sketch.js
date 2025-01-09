@@ -739,7 +739,7 @@ function intro(){
 /**
  * Displays the outro story scenes
  * Has option to restart the game at last scene
- * @function endgame
+ * @function endGame
  * @global
  * @returns {void}
  */
