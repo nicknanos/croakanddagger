@@ -666,6 +666,8 @@ function update() {
  * @see https://p5play.org/learn/camera.html?page=2 for camera.off explanation
  */
 function drawFrame() {
+	camera.on()
+	allSprites.draw()
 	camera.off();
 	ui.draw();
 }
